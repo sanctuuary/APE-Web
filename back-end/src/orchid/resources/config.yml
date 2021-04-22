@@ -1,0 +1,60 @@
+
+site:
+  theme: 'Editorial'
+  baseUrl: './'
+  about:
+    siteName: APE back-end
+    siteDescription: The APE website's back-end, which is written in Kotlin and uses Spring as the webserver.
+
+theme:
+  primaryColor: '#DE9149'
+  legacySearch: false
+  social:
+    github: 'username/project'
+  metaComponents:
+    - type: 'orchidSearch'
+  menu:
+    - type: 'page'
+      title: 'Home'
+      url: '/'
+    - type: 'pages'
+    - type: 'separator'
+      title: 'Wiki'
+    - type: 'wiki'
+    - type: 'separator'
+      title: 'API Docs'
+    - type: 'sourcedocPages'
+      moduleType: 'kotlindoc'
+      node: 'classes'
+      asSubmenu: true
+      submenuTitle: 'Classes'
+    - type: 'sourcedocPages'
+      moduleType: 'kotlindoc'
+      node: 'packages'
+      asSubmenu: true
+      submenuTitle: 'Packages'
+
+kotlindoc:
+  name: 'back-end'
+  sourceDirs:
+    - './../../main/kotlin'
+  homePagePermalink: ':moduleType/:moduleGroup/:module'
+  sourcePagePermalink: ':moduleType/:moduleGroup/:module/:sourceDocPath'
+  showRunnerLogs: false
+  homePageOnly: false
+  pages:
+    menu:
+      - type: 'sourcedocPageLinks'
+        moduleType: 'kotlindoc'
+        itemTitleType: 'SIGNATURE'
+        includeItems: true
+
+services:
+  publications:
+    stages:
+      githubPages:
+        branch: gh-pages
+        repo: 'project'
+        username: 'username'
+      githubReleases:
+        repo: 'username/project'

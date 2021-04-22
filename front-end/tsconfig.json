@@ -1,0 +1,52 @@
+/*
+ * This program has been developed by students from the bachelor Computer Science at
+ * Utrecht University within the Software Project course.
+ *
+ * © Copyright Utrecht University (Department of Information and Computing Sciences)
+ */
+
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      // Path aliases, same as in jest.config.js
+      "@components/*": ["src/components/*"],
+      "@pages/*": ["src/pages/*"],
+      "@models/*": ["src/models/*"],
+      "@helpers/*": ["src/helpers/*"],
+      "@tests/*": ["tests/*"],
+    },
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "./tests/**/*.tsx",
+  ],
+  "typedocOptions": {
+    "name": "APE front-end documentation",
+    "includeVersion": true,
+    "entryPoints": ["src"],
+    "out": "docs"
+  }
+}

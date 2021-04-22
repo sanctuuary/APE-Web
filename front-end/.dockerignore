@@ -1,0 +1,5 @@
+.git/
+/.next/
+/coverage
+/docs
+/node_modules

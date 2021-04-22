@@ -1,0 +1,58 @@
+/*
+ * This program has been developed by students from the bachelor Computer Science at
+ * Utrecht University within the Software Project course.
+ *
+ * © Copyright Utrecht University (Department of Information and Computing Sciences)
+ */
+
+@import '../../styles/globals';
+
+.Header {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    background-color: $header-color;
+    height: 64px;
+    z-index: 99;
+    color: white;
+    font-size: 16px;
+    box-shadow: 0 2px 8px #7c7c7c;
+}
+
+.Header-logo {
+    max-height: 64px;
+    transition: transform .5s ease;
+    display: inline;
+}
+
+.Header-logo:hover {
+    transform: scale(1.1);
+}
+
+.Header-logo-link {
+    max-height: 64px;
+    height: 64px;
+}
+
+.Header-menu {
+    font-size: 2em;
+    line-height: 69px;
+    max-height: 64px;
+    margin-left: 24px;
+}
+
+.Header-user {
+    line-height: 69px;
+    padding-bottom: 20px;
+    font-size: 16px;
+}
+
+.Header-user:hover {
+    cursor: pointer;
+}
+
+.Header-title {
+    margin-left: 5px;
+    color: white;
+    display: inline;
+}

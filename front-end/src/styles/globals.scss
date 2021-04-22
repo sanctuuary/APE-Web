@@ -1,0 +1,45 @@
+/*
+ * This program has been developed by students from the bachelor Computer Science at
+ * Utrecht University within the Software Project course.
+ *
+ * © Copyright Utrecht University (Department of Information and Computing Sciences)
+ */
+
+// Global variables
+@import 'colors';
+@import 'variables';
+
+// Overwrites of default CSS styling
+@import 'resets';
+
+// Styling regarding to layout and scaffolding
+@import 'layout';
+@import 'scaffolding';
+
+// Styling regarding fonts
+@import 'typography';
+
+// Local variables overwrites (e.g. different colour button within a hero container)
+@import 'overwrites';
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+}
+
+.ant-layout {
+  background-color: $background-color !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}

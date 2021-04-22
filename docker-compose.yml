@@ -1,0 +1,48 @@
+#
+# This program has been developed by students from the bachelor Computer Science at
+# Utrecht University within the Software Project course.
+#
+# © Copyright Utrecht University (Department of Information and Computing Sciences)
+#
+
+version: "3"
+services:
+    frontend:
+        build:
+            context: ./front-end/
+        image: ape-front
+        container_name: front-end
+        depends_on:
+            - backend
+        networks:
+            - app
+        ports:
+            - "${FE_PORT}:${FE_PORT}"
+        entrypoint: ["npm", "run", "start", "--", "-p", "${FE_PORT}"]
+
+    backend:
+        build:
+            context: ./back-end/
+        image: ape-back
+        container_name: back-end
+        depends_on:
+            - mongodb
+        networks:
+            - app
+        ports:
+            - "8080:8080"
+        volumes:
+            - "./domains:/app/domains"
+            - "./logs:/app/logs"
+    
+    mongodb:
+        image: mongo
+        container_name: database
+        networks:
+            - app
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+
+networks:
+    app:

@@ -1,0 +1,81 @@
+/*
+ * This program has been developed by students from the bachelor Computer Science at
+ * Utrecht University within the Software Project course.
+ *
+ * © Copyright Utrecht University (Department of Information and Computing Sciences)
+ */
+
+@import '../../../styles/globals.scss';
+
+#ConstraintSketcher {
+  width: min-content;
+  margin: 10px auto;
+}
+
+#Sketch {
+  border-radius: 5px 0 0 5px;
+  background-color: #ffffff;
+}
+
+#Sidebar {
+  background-color: $color-6;
+  border-radius: 0 5px 5px 0;
+  padding: 5px;
+}
+
+.CustomNode {
+  width: 250px;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: $background-color;
+  cursor: auto;
+}
+
+.CustomEdge {
+  fill: none;
+  stroke: #212529;
+  stroke-width: 1;
+}
+
+#Button {
+  border: none;
+  &:hover {
+    color: #212529;
+  }
+}
+
+#Button.Confirm {
+  background-color: $color-2;
+}
+
+#Button.Cancel {
+  background-color: $color-3;
+}
+
+.Translation {
+  width: auto;
+}
+
+#Constraint {
+  margin-bottom: 0.5em;
+  word-wrap: normal;
+  width: inherit;
+}
+
+#ConstraintPart {
+  padding: 1px 4px;
+  border-radius: 4px;
+  width: min-content;
+}
+
+#ConstraintPart.If {
+  background-color: $color-10;
+}
+
+#ConstraintPart.Use {
+  background-color: $color-11;
+}
+
+#ConstraintPart.Value {
+  background-color: $color-12;
+}

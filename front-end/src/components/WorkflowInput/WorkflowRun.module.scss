@@ -1,0 +1,25 @@
+/*
+ * This program has been developed by students from the bachelor Computer Science at
+ * Utrecht University within the Software Project course.
+ *
+ * © Copyright Utrecht University (Department of Information and Computing Sciences)
+ */
+
+@import '../../styles/globals';
+
+.Label {
+  background-color: $background-color;
+  padding: 5px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.Input {
+  text-align: right;
+  width: 60px;
+  margin-left: calc(100% - 60px);
+}
+
+.RunButton {
+  color: black;
+}

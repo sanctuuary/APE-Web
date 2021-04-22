@@ -1,0 +1,47 @@
+/*
+ * This program has been developed by students from the bachelor Computer Science at
+ * Utrecht University within the Software Project course.
+ *
+ * © Copyright Utrecht University (Department of Information and Computing Sciences)
+ */
+
+@import '../../../../styles/globals.scss';
+
+.Extra {
+  background-color: $extra-tool-color;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.Regular {
+  background-color: $regular-tool-color;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.Edge {
+  background-color: $regular-tool-color !important;
+}
+
+.InputNode {
+  background-color: $regular-tool-color;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.OutputNode {
+  background-color: $regular-tool-color;
+  border: none;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.DataType {
+  background-color: $datatype-node-color;
+  border: none;
+  border-radius: 25px;
+  padding: 5px;
+}

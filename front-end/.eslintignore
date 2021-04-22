@@ -1,0 +1,12 @@
+# Directories
+.next/
+config/
+coverage/
+node_modules/
+docs/
+
+# Files
+*.config.js
+/.eslintrc.js
+/setupTests.js
+next-env.d.ts

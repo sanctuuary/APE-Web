@@ -1,0 +1,10 @@
+# Editors
+.idea/
+.vscode/
+
+# Project
+.git/
+.mvn/
+domains/
+logs/
+target/
