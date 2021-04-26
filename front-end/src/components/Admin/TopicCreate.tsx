@@ -39,10 +39,9 @@ function TopicCreate() {
     const name: string = inputRef.current.input.value;
 
     // Upload the topic
-    const endpoint: string = `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/topic/upload`;
+    const endpoint: string = `${process.env.NEXT_PUBLIC_FE_URL}/api/admin/topic/upload`;
     fetch(endpoint, {
       method: 'POST',
-      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
