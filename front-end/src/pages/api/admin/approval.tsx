@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   const session: any = await getSession({ req });
 
   let status: number = 500;
-  await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/approval`, {
+  await fetch(`${process.env.NEXT_PUBLIC_BASE_URL_NODE}/api/admin/approval`, {
     method: 'POST',
     credentials: 'include',
     headers: {
