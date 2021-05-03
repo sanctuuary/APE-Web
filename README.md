@@ -16,6 +16,9 @@ See the docker-compose.yml file for a basic setup.
 
 ## Using APE Web
 
+A running instance of APE Web can be found [here](https://ape.science.uu.nl).
+It is set up with different use cases from the [APE Use Cases Repository](https://github.com/sanctuuary/APE_UseCases).
+
 ### Using Docker
 
 Currently, the APE Web back-end uses a version of APE which is not available on the Maven repository.
