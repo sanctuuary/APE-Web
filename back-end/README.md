@@ -13,15 +13,7 @@ For instruction for Docker, please see the README file in the project root.
 
 ### Build APE Web back-end from source
 
-Currently, the APE Web back-end uses a version of APE which is not available on the Maven repository.
-To build the APE Web back-end from source, please download and build [APE 1.1.7](https://github.com/sanctuuary/APE/releases/tag/v1.1.7) first,
-and place it in this directory.
-Then, run the following command in this directory:
-````shell
-$ mvn install:install-file -Dfile=APE-1.1.7.jar
-````
-This adds APE 1.1.7 to your local Maven repository.
-You can now build the back-end using
+In this directory, simply run:
 ````shell
 $ mvn package -DskipTests=true
 ````
