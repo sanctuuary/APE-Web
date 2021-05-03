@@ -1,0 +1,27 @@
+jobs:
+  include:
+    - stage: "Test"
+      language: java
+      jdk:
+        - openjdk8
+        - openjdk11
+      cache:
+        directories:
+          - $HOME/.m2
+      before_script:
+        - cd back-end
+      script:
+        - mvn clean install
+        - mvn test
+        
+    - stage: "Test"
+      language: node_js
+      node_js:
+        - 12
+        - 14
+      before_script:
+        - cd front-end
+      script:
+        - npm install
+        - npm run test
+      
