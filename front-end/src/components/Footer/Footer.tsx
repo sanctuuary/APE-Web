@@ -20,8 +20,7 @@ function Footer() {
           <a href="/conditions">Conditions</a> -&nbsp;
           <a href="/privacy">Privacy</a> -&nbsp;
           <a
-            // Should go to APE website license in the future
-            href="https://github.com/sanctuuary/APE/blob/master/LICENSE"
+            href="https://github.com/sanctuuary/APE-Web/blob/master/LICENSE"
             target="_blank"
             rel="noreferrer"
           >
@@ -41,7 +40,7 @@ function Footer() {
           <a href="https://github.com/sanctuuary/APE" target="_blank" rel="noreferrer">
             <img className={styles.logo} src="/APE-logo-440px.png" alt="APE logo" />
           </a>
-          <a href="https://git.science.uu.nl/apex-devs/front-end" target="_blank" rel="noreferrer">
+          <a href="https://github.com/sanctuuary/APE-Web" target="_blank" rel="noreferrer">
             <img className={styles.logo} src="/GitHub-Mark-64px.png" alt="GitHub logo" />
           </a>
           <a href="https://www.uu.nl/en" target="_blank" rel="noreferrer">
