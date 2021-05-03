@@ -1,18 +1,5 @@
 jobs:
   include:
-    # Back-end with Java 8 test
-    - stage: "Test"
-      language: java
-      jdk: openjdk8
-      cache:
-        directories:
-          - $HOME/.m2
-      before_script:
-        - cd back-end
-      script:
-        - mvn clean install
-        - mvn test
-    
     # Back-end with Java 11 test
     - stage: "Test"
       language: java
@@ -23,7 +10,6 @@ jobs:
       before_script:
         - cd back-end
       script:
-        - mvn clean install
         - mvn test
     
     # Front-end with Node.js 12 test
