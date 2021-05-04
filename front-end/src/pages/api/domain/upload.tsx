@@ -23,13 +23,14 @@ export default async function handler(req, res) {
   const { values, fileContents } = req.body;
   const formdata = new FormData();
   Object.keys(values).forEach((key) => {
-    // Topics should be handled separately, skip them here.
-    if (key !== 'topics') {
+    // Topics and dataDimensionsTaxonomyRoots should be handled separately, skip them here.
+    if (key !== 'topics' && key !== 'dataDimensionsTaxonomyRoots') {
       formdata.append(key, values[key]);
     }
   });
   // Add topics
   Object.values(values.topics).forEach((topic: string) => formdata.append('topics', topic));
+  Object.values(values.dataDimensionsTaxonomyRoots).forEach((root: string) => formdata.append('dataDimensionsTaxonomyRoots', root));
 
   fileContents.forEach((fc: FileContent) => {
     formdata.append(
