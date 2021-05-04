@@ -156,7 +156,7 @@ class AdminPage extends React.Component<IProps, IState> {
         status="403"
         title="403 Forbidden"
         subTitle="You have to be logged in to access this page."
-        extra={<Button type="primary" onClick={() => signIn}>Go to login</Button>}
+        extra={<Button type="primary" onClick={() => signIn()}>Go to login</Button>}
       />
     );
   }
