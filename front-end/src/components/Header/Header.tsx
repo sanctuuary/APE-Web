@@ -53,7 +53,7 @@ function Header() {
       </>
       )}
       <Menu.Item key="1">
-        <div role="button" tabIndex={0} onClick={() => signOut} onKeyPress={() => {}}>
+        <div role="button" tabIndex={0} onClick={() => signOut()} onKeyPress={() => {}}>
           Sign out
         </div>
       </Menu.Item>
