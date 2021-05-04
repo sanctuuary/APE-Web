@@ -23,7 +23,13 @@ export default async function handler(req, res) {
   const { values, fileContents } = req.body;
   const formdata = new FormData();
   Object.keys(values).forEach((key) => {
-    // Topics and dataDimensionsTaxonomyRoots should be handled separately, skip them here.
+    /*
+     * Topics and dataDimensionsTaxonomyRoots should be handled separately, skip them here.
+     *
+     * They should be handled separately, because in the case of arrays,
+     * each element in the array should be its own FormData entry.
+     * Otherwise, all elements in the array are received as one element on the back-end.
+     */
     if (key !== 'topics' && key !== 'dataDimensionsTaxonomyRoots') {
       formdata.append(key, values[key]);
     }
