@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - A link to the official running instance of APE Web in the README.
 - CHANGELOG.md file.
+- Terms and conditions page.
 
 ### Changed
 - Remove required steps to install APE 1.1.7 to local Maven repository, replace with instructions to optionally use a different version of APE when compiling the back-end.

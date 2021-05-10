@@ -17,7 +17,7 @@ function Footer() {
     <Layout.Footer className={styles.footer} id="Footer">
       <Row>
         <Col span={24}>
-          <a href="/conditions">Conditions</a> -&nbsp;
+          <a href="/terms-and-conditions">Terms and conditions</a> -&nbsp;
           <a href="/privacy">Privacy</a> -&nbsp;
           <a
             href="https://github.com/sanctuuary/APE-Web/blob/master/LICENSE"
