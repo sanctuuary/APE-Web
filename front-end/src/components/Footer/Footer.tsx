@@ -27,8 +27,7 @@ function Footer() {
             License
           </a> -&nbsp;
           <a href="/about">About us</a> -&nbsp;
-          <a href="/contact">Contact us</a> -&nbsp;
-          <a href="/vacancies">Vacancies</a>
+          <a href="/contact">Contact us</a>
         </Col>
       </Row>
       <Divider className={styles.divider} />

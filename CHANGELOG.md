@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove required steps to install APE 1.1.7 to local Maven repository, replace with instructions to optionally use a different version of APE when compiling the back-end.
 - Update the footer links to point to the APE Web GitHub repository.
 
+### Removed
+- Vacancies link in footer.
+
 ### Fixed
 - Domain upload creating corrupted domains.
 - "Sign out" button in header.
