@@ -2,6 +2,7 @@ package com.apexdevs.backend.persistence
 
 import com.apexdevs.backend.persistence.database.entity.RunParameters
 import com.apexdevs.backend.persistence.database.repository.RunParametersRepository
+import com.apexdevs.backend.persistence.exception.GlobalRunParametersNotFoundException
 import com.apexdevs.backend.persistence.exception.RunParametersNotFoundException
 import com.apexdevs.backend.web.controller.entity.runparameters.RunParametersDetails
 import org.bson.types.ObjectId
@@ -66,5 +67,18 @@ class RunParametersOperation(val runParametersRepository: RunParametersRepositor
             runParameters.maxDuration.toString(),
             runParameters.numberOfSolutions.toString()
         )
+    }
+
+    /**
+     * Get the global run parameters settings
+     * @throws GlobalRunParametersNotFoundException when the global run parameters settings could not be found
+     * @return The global run parameters settings
+     */
+    fun getGlobalRunParameters(): RunParameters {
+        val list = runParametersRepository.findAll()
+        if (list.isEmpty()) {
+            throw GlobalRunParametersNotFoundException(this, "Global run parameters could not be found")
+        }
+        return list.first()
     }
 }

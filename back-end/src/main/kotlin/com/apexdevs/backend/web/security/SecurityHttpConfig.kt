@@ -89,6 +89,7 @@ class SecurityHttpConfig(val userDetailsService: UserDetailsService, val passwor
             .antMatchers(HttpMethod.GET, "/api/workflow/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/domain/download/**").permitAll()
             .antMatchers(HttpMethod.PATCH, "/domain/**").hasRole("USER")
+            .antMatchers(HttpMethod.GET, "/runparameters/**").permitAll()
 
             // public api paths
             .antMatchers(HttpMethod.POST, "/api/domain/upload").hasRole("USER")
