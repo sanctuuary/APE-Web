@@ -97,6 +97,7 @@ class SecurityHttpConfig(val userDetailsService: UserDetailsService, val passwor
             .antMatchers(HttpMethod.POST, "/api/user/login", "/api/user/register").permitAll()
             .antMatchers(HttpMethod.GET, "/api/admin/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, "/api/admin/**").hasRole("ADMIN")
+            .antMatchers(HttpMethod.PUT, "/api/admin/**").hasRole("ADMIN")
 
             // the rest is authenticated
             .and()

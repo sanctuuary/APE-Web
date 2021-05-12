@@ -4,6 +4,7 @@
  */
 package com.apexdevs.backend.web.controller.api
 
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.TopicOperation
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.UserRequest
@@ -32,8 +33,9 @@ internal class ApiAdminControllerTest {
 
     private val mockUserOperation = mockk<UserOperation>()
     private val mockTopicOperation = mockk<TopicOperation>()
+    private val mockRunParametersOperation = mockk<RunParametersOperation>()
     private val mockAdmin = mockk<User>()
-    private val apiAdminController = ApiAdminController(mockUserOperation, mockTopicOperation)
+    private val apiAdminController = ApiAdminController(mockUserOperation, mockTopicOperation, mockRunParametersOperation)
 
     @BeforeAll
     fun init() {

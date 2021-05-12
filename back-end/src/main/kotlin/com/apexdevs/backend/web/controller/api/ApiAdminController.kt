@@ -4,21 +4,29 @@
  */
 package com.apexdevs.backend.web.controller.api
 
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.TopicOperation
 import com.apexdevs.backend.persistence.UserOperation
+import com.apexdevs.backend.persistence.database.entity.RunParameters
 import com.apexdevs.backend.persistence.database.entity.Topic
 import com.apexdevs.backend.persistence.database.entity.UserRequest
+import com.apexdevs.backend.persistence.exception.RunParametersNotFoundException
 import com.apexdevs.backend.persistence.exception.UserApproveRequestNotFoundException
 import com.apexdevs.backend.persistence.exception.UserNotFoundException
+import com.apexdevs.backend.web.controller.entity.runparameters.RunParametersDetails
+import com.apexdevs.backend.web.controller.entity.runparameters.RunParametersUploadRequest
 import com.apexdevs.backend.web.controller.entity.topic.TopicUploadRequest
 import com.apexdevs.backend.web.controller.entity.user.AdminApproveRequest
 import com.apexdevs.backend.web.controller.entity.user.PendingUserRequestInfo
+import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -32,7 +40,7 @@ import java.util.logging.Logger
  */
 @RestController
 @RequestMapping("/api/admin")
-class ApiAdminController(val userOperation: UserOperation, val topicOperation: TopicOperation) {
+class ApiAdminController(val userOperation: UserOperation, val topicOperation: TopicOperation, val runParametersOperation: RunParametersOperation) {
     /**
      * Collect all approval requests from unapproved users
      * @return: A list of requests, each containing (id, email, display name, motivation, creation date)
@@ -108,6 +116,56 @@ class ApiAdminController(val userOperation: UserOperation, val topicOperation: T
                 throw AccessDeniedException("User: ${admin.username} not allowed to access this route")
             topicOperation.createTopic(Topic(topicUploadRequest.name))
             log.info("Admin: ${admin.username} created new topic: ${topicUploadRequest.name}")
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.UNAUTHORIZED, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Updates the requested run parameters by replacing them with the given run parameters
+     * @param admin The (possibly admin) user who calls this endpoint
+     * @param id The id of the run parameters to update
+     * @param runParametersUploadRequest The data to update the run parameters with
+     * @return The updated or created run parameters
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/runparameters/{id}")
+    fun updateRunParameterLimits(
+        @AuthenticationPrincipal admin: User,
+        @PathVariable id: ObjectId,
+        @RequestBody runParametersUploadRequest: RunParametersUploadRequest
+    ): RunParametersDetails {
+        try {
+            if (!userOperation.userIsAdmin(admin.username))
+                throw AccessDeniedException("User: ${admin.username} not allowed to access this route")
+            val user = userOperation.getByEmail(admin.username)
+
+            val newRunParameters = RunParameters(
+                id,
+                runParametersUploadRequest.minSteps,
+                runParametersUploadRequest.maxSteps,
+                runParametersUploadRequest.maxDuration,
+                runParametersUploadRequest.numberOfSolutions
+            )
+
+            return try {
+                // Attempt to get the existing run parameters to check if they already exist
+                runParametersOperation.getRunParameters(id)
+                // Update the existing run parameters
+                val updated = runParametersOperation.updateRunParameters(newRunParameters)
+                log.info("Run parameters with id: ${newRunParameters.id} were updated by ${user.displayName}")
+                runParametersOperation.getRunParametersDetails(updated)
+            } catch (exception: RunParametersNotFoundException) {
+                // Run parameters did not exist, add a new entry in the database
+                val created = runParametersOperation.createRunParameters(newRunParameters)
+                log.info("Run parameters with id: ${newRunParameters.id} were created by ${user.displayName}")
+                runParametersOperation.getRunParametersDetails(created)
+            }
         } catch (exc: Exception) {
             when (exc) {
                 is AccessDeniedException ->
