@@ -8,6 +8,7 @@ import com.apexdevs.backend.web.controller.entity.runparameters.RunParametersDet
 import org.bson.types.ObjectId
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Component
+import java.util.logging.Logger
 
 /**
  * Performs run parameters operations on the database
@@ -70,15 +71,21 @@ class RunParametersOperation(val runParametersRepository: RunParametersRepositor
     }
 
     /**
-     * Get the global run parameters settings
-     * @throws GlobalRunParametersNotFoundException when the global run parameters settings could not be found
+     * Get the global run parameters settings.
+     * If they didn't exist before, they will be created with the default values.
      * @return The global run parameters settings
      */
     fun getGlobalRunParameters(): RunParameters {
         val list = runParametersRepository.findAll()
         if (list.isEmpty()) {
-            throw GlobalRunParametersNotFoundException(this, "Global run parameters could not be found")
+            // Global run parameters settings didn't exist before, create it with default settings
+            log.info("No global run parameters settings found: creating them using default values.")
+            return createRunParameters(RunParameters())
         }
         return list.first()
+    }
+
+    companion object {
+        val log: Logger = Logger.getLogger("RunParametersOperation_Logger")
     }
 }

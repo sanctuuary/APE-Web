@@ -1,8 +1,6 @@
 package com.apexdevs.backend.web.controller.routing
 
 import com.apexdevs.backend.persistence.RunParametersOperation
-import com.apexdevs.backend.persistence.database.entity.RunParameters
-import com.apexdevs.backend.persistence.exception.GlobalRunParametersNotFoundException
 import com.apexdevs.backend.web.controller.entity.runparameters.RunParametersDetails
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,21 +24,11 @@ class RunParametersController(private val runParametersOperation: RunParametersO
             val runParameters = runParametersOperation.getGlobalRunParameters()
             runParametersOperation.getRunParametersDetails(runParameters)
         } catch (exc: Exception) {
-            when (exc) {
-                is GlobalRunParametersNotFoundException -> {
-                    // Global run parameters settings didn't exist before, create it with default settings
-                    log.info("No global run parameters settings found: creating them using default values.")
-                    runParametersOperation.getRunParametersDetails(
-                        runParametersOperation.createRunParameters(RunParameters())
-                    )
-                }
-                else ->
-                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
-            }
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
         }
     }
 
     companion object {
-        val log: Logger = Logger.getLogger("ApiAdminController_Logger")
+        val log: Logger = Logger.getLogger("RunParametersController_Logger")
     }
 }
