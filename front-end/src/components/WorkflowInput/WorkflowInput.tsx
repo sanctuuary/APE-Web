@@ -589,7 +589,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       constraints,
       maxLength: runOptions.maxLength,
       minLength: runOptions.minLength,
-      maxDuration: runOptions.maxLength,
+      maxDuration: runOptions.maxDuration,
       solutions: runOptions.solutions,
     };
     const base = process.env.NEXT_PUBLIC_BASE_URL;
