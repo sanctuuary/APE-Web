@@ -841,7 +841,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
    * Updates the run options
    * @param changed updated run options
    */
-  updateRunOptions = (changed) => {
+  updateRunOptions = (changed: RunOptions) => {
     /*
      * Handle each changed field, there can be more than one changed
      * if the the predicate min <= max if violated.

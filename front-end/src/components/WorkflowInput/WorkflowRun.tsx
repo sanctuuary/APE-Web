@@ -22,7 +22,7 @@ interface WorkflowRunProps {
   /** The formRef object to allow updates */
   formRef: RefObject<FormInstance>;
   /** Function to manually update run options */
-  updateRunOptions: (any) => void;
+  updateRunOptions: (runOptions: RunOptions) => void;
   /** The run parameters limits */
   runParametersLimits: RunOptions;
 }
@@ -65,7 +65,7 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
    * Update the state when a run option field's value is changed.
    * @param changed The changed field with value
    */
-  onChange = (changed: any) => {
+  onChange = (changed: RunOptions) => {
     const { updateRunOptions } = this.props;
     updateRunOptions(changed);
   };
