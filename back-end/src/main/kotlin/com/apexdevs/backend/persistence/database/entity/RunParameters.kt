@@ -9,13 +9,13 @@ import org.springframework.data.mongodb.core.mapping.Document
  * They define the upper limit of the run parameter values when running APE.
  *
  * @param id unique identifier
- * @param minSteps the highest allowed minimum step value
- * @param maxSteps the highest allowed maximum step value
+ * @param minLength the highest allowed minimum step value
+ * @param maxLength the highest allowed maximum step value
  * @param maxDuration the highest allowed maximum run duration value
- * @param numberOfSolutions the highest allowed number of solutions value
+ * @param solutions the highest allowed number of solutions value
  */
 @Document
-class RunParameters(@Id val id: ObjectId, var minSteps: Int, var maxSteps: Int, var maxDuration: Int, var numberOfSolutions: Int) {
+class RunParameters(@Id val id: ObjectId, var minLength: Int, var maxLength: Int, var maxDuration: Int, var solutions: Int) {
     /**
      * Constructor to create RunParameters using default values
      */
@@ -24,11 +24,11 @@ class RunParameters(@Id val id: ObjectId, var minSteps: Int, var maxSteps: Int, 
 
     /**
      * Constructor to create RunParameters using custom values
-     * @param minSteps the highest allowed minimum step value
-     * @param maxSteps the highest allowed maximum step value
+     * @param minLength the highest allowed minimum step value
+     * @param maxLength the highest allowed maximum step value
      * @param maxDuration the highest allowed maximum run duration value
-     * @param numberOfSolutions the highest allowed number of solutions value
+     * @param solutions the highest allowed number of solutions value
      */
-    constructor(minSteps: Int, maxSteps: Int, maxDuration: Int, numberOfSolutions: Int) :
-        this(ObjectId.get(), minSteps, maxSteps, maxDuration, numberOfSolutions)
+    constructor(minLength: Int, maxLength: Int, maxDuration: Int, solutions: Int) :
+        this(ObjectId.get(), minLength, maxLength, maxDuration, solutions)
 }

@@ -5,8 +5,8 @@ package com.apexdevs.backend.web.controller.entity.runparameters
  */
 data class RunParametersDetails(
     val id: String,
-    val minSteps: String,
-    val maxSteps: String,
+    val minLength: String,
+    val maxLength: String,
     val maxDuration: String,
-    val numberOfSolutions: String
+    val solutions: String
 )

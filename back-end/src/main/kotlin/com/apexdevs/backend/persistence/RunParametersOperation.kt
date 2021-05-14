@@ -2,7 +2,6 @@ package com.apexdevs.backend.persistence
 
 import com.apexdevs.backend.persistence.database.entity.RunParameters
 import com.apexdevs.backend.persistence.database.repository.RunParametersRepository
-import com.apexdevs.backend.persistence.exception.GlobalRunParametersNotFoundException
 import com.apexdevs.backend.persistence.exception.RunParametersNotFoundException
 import com.apexdevs.backend.web.controller.entity.runparameters.RunParametersDetails
 import org.bson.types.ObjectId
@@ -63,10 +62,10 @@ class RunParametersOperation(val runParametersRepository: RunParametersRepositor
     fun getRunParametersDetails(runParameters: RunParameters): RunParametersDetails {
         return RunParametersDetails(
             runParameters.id.toHexString(),
-            runParameters.minSteps.toString(),
-            runParameters.maxSteps.toString(),
+            runParameters.minLength.toString(),
+            runParameters.maxLength.toString(),
             runParameters.maxDuration.toString(),
-            runParameters.numberOfSolutions.toString()
+            runParameters.solutions.toString()
         )
     }
 

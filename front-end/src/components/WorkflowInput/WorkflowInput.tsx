@@ -58,6 +58,9 @@ interface WorkflowInputProps {
   /** The domain ID */
   domain: string;
 
+  /** The run parameters limits */
+  runParametersLimits: RunOptions;
+
   /** Function to download an ontology file */
   downloadOntologyFile: () => void;
 
@@ -722,15 +725,20 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
 
   importConfigs = (json): void => {
     /** Update the states */
+    const { runParametersLimits } = this.props;
     let { runOptions } = this.state;
     const runOptionsCopy = runOptions;
-    const { minLength, minDuration, minSolutions, maxSolutions } = WorkflowRun.runParameterLimits;
     try {
+      const { minLength, maxLength, maxDuration, solutions } = runParametersLimits;
+      const clamp = (num: number, lower: number, upper: number): number => (
+        Math.max(Math.min(num, upper), lower)
+      );
+
       // Set the run options, with their limits
-      runOptions.maxDuration = Math.max(+json.timeout_sec, minDuration);
-      runOptions.solutions = Math.min(Math.max(+json.max_solutions, minSolutions), maxSolutions);
-      runOptions.minLength = Math.max(json.solution_length.min, minLength);
-      runOptions.maxLength = Math.max(json.solution_length.max, json.solution_length.min);
+      runOptions.minLength = clamp(json.solution_length.min, 0, minLength);
+      runOptions.maxLength = clamp(json.solution_length.max, 0, maxLength);
+      runOptions.maxDuration = clamp(+json.timeout_sec, 0, maxDuration);
+      runOptions.solutions = clamp(+json.max_solutions, 0, solutions);
     } catch (exc) {
       runOptions = runOptionsCopy;
       message.error('Something went wrong while importing run parameters. Please check the run parameters in your config.json and try again.');
@@ -889,6 +897,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       downloadToolsAnnotationsFile,
       useCaseConfig,
       useCaseConstraints,
+      runParametersLimits,
     } = this.props;
 
     return (
@@ -966,6 +975,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
             runOptions={runOptions}
             formRef={this.formRef}
             updateRunOptions={this.updateRunOptions}
+            runParametersLimits={runParametersLimits}
           />
         </div>
         {/* Constraint sketcher, only open if the currentSketch is not undefined */}

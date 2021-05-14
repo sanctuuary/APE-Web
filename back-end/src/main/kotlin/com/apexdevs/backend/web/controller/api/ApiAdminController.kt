@@ -147,10 +147,10 @@ class ApiAdminController(val userOperation: UserOperation, val topicOperation: T
 
             val newRunParameters = RunParameters(
                 id,
-                runParametersUploadRequest.minSteps,
-                runParametersUploadRequest.maxSteps,
+                runParametersUploadRequest.minLength,
+                runParametersUploadRequest.maxLength,
                 runParametersUploadRequest.maxDuration,
-                runParametersUploadRequest.numberOfSolutions
+                runParametersUploadRequest.solutions
             )
 
             return try {
