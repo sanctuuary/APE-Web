@@ -4,6 +4,7 @@
  */
 package com.apexdevs.backend.ape
 
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.DomainVisibility
 import com.apexdevs.backend.persistence.filesystem.FileService
@@ -21,8 +22,9 @@ import org.junit.jupiter.api.assertThrows
 internal class ApeRequestFactoryTest() {
 
     private val storageService = mockk<FileService>()
+    private val runParametersOperation = mockk<RunParametersOperation>()
 
-    private var apeRequestFactory = spyk(ApeRequestFactory(storageService))
+    private var apeRequestFactory = spyk(ApeRequestFactory(storageService, runParametersOperation))
 
     private val test = "Test"
 

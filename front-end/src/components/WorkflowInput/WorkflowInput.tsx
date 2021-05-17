@@ -562,17 +562,22 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
     })
       .then((res) => {
         if (!res.ok) {
-          return Promise.resolve(message.error('Something went wrong :('));
+          return Promise.reject(res.json());
         }
         return res.json();
       })
-      .then((workflows) => {
-        if (workflows && workflows.length > 0) {
-          return Promise.resolve(onRun(workflows));
+      .then((data) => {
+        if (data && data.length > 0) {
+          return Promise.resolve(onRun(data));
         }
         return Promise.resolve(message.warning('APE could not find any results'));
       })
-      .catch((error) => console.error('Workflow error', error));
+      .catch((error) => {
+        // Await error parsing
+        error.then((data: any) => {
+          message.error(data.message, 5);
+        });
+      });
   };
 
   /**

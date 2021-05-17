@@ -12,8 +12,10 @@ import com.apexdevs.backend.ape.entity.workflow.ParsedModuleNode
 import com.apexdevs.backend.ape.entity.workflow.ParsedTypeNode
 import com.apexdevs.backend.ape.entity.workflow.RunConfig
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.DomainVisibility
+import com.apexdevs.backend.persistence.database.entity.RunParameters
 import io.mockk.every
 import io.mockk.mockk
 import nl.uu.cs.ape.sat.APE
@@ -39,6 +41,7 @@ internal class ApeRequestTest {
     private val ape = mockk<APE>()
     private val mockDomainSetup = mockk<APEDomainSetup>()
     private val mockPath = mockk<Path>()
+    private val runParametersOperation = mockk<RunParametersOperation>()
     private val domain = Domain("test", "test", "test", DomainVisibility.Public, "test", "test", listOf("test"), true)
 
     private val inputData = InputData(
@@ -51,7 +54,7 @@ internal class ApeRequestTest {
         solutions = 1
     )
 
-    private val apeRequest = ApeRequest(domain, mockPath, ape)
+    private val apeRequest = ApeRequest(domain, mockPath, ape, runParametersOperation)
 
     @Test
     fun getWorkflows() {
@@ -79,6 +82,11 @@ internal class ApeRequestTest {
         every { mockModuleNode.nodeLabel } returns "Test"
         every { mockModuleNode.inputTypes } returns listOf(mockTypeNode)
         every { mockModuleNode.outputTypes } returns listOf(mockTypeNode)
+        every { runParametersOperation.getGlobalRunParameters() } returns RunParameters()
+        every { mockConfig.solutionMinLength } returns 30
+        every { mockConfig.solutionMaxLength } returns 30
+        every { mockConfig.maxDuration } returns 600
+        every { mockConfig.maxSolutionsToReturn } returns 100
 
         val expectedInOutStates = listOf(ParsedTypeNode("Test", "Test"))
         val expectedModule = listOf(ParsedModuleNode("Test", "Test", expectedInOutStates, expectedInOutStates))
@@ -101,6 +109,11 @@ internal class ApeRequestTest {
         every { mockSolutionList.numberOfSolutions } returns 1
         every { mockSolutionList.get(any()) } returns mockSolutionWorkflow
         every { mockSolutionWorkflow.moduleNodes.size } returns 0
+        every { runParametersOperation.getGlobalRunParameters() } returns RunParameters()
+        every { mockConfig.solutionMinLength } returns 30
+        every { mockConfig.solutionMaxLength } returns 30
+        every { mockConfig.maxDuration } returns 600
+        every { mockConfig.maxSolutionsToReturn } returns 100
 
         val expected = mutableListOf<WorkflowOutput>()
         assertEquals(expected, apeRequest.getWorkflows(mockConfig))
