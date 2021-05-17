@@ -135,15 +135,15 @@ class AdminPage extends React.Component<IProps, IState> {
               <title>Administration | APE</title>
             </Head>
             <div className={styles.section}>
-              <Title>Topics</Title>
+              <Title level={2}>Topics</Title>
               <TopicCreate />
             </div>
             <div className={styles.section}>
-              <Title>Approvals</Title>
+              <Title level={2}>Approvals</Title>
               <Approval approvalRequests={requests} postUserStatus={this.postUserStatus} />
             </div>
             <div className={styles.section}>
-              <Title>Run parameters configuration</Title>
+              <Title level={2}>Run parameters configuration</Title>
               <RunParametersConfig runParameters={runParameters} />
             </div>
           </div>
