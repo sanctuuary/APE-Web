@@ -25,9 +25,9 @@ import org.json.JSONObject
  *  @param maxDuration The maximum amount of time ape is allowed to run its computation, in seconds
  */
 data class RunConfig(
-    private val solutionMinLength: Int,
-    private val solutionMaxLength: Int,
-    private val maxSolutionsToReturn: Int,
+    val solutionMinLength: Int,
+    val solutionMaxLength: Int,
+    val maxSolutionsToReturn: Int,
     private val inputs: List<Data> = emptyList(),
     private val outputs: List<Data> = emptyList(),
     private val noExecutionScripts: Int = 0,
@@ -38,7 +38,7 @@ data class RunConfig(
     private val useWorkflowInput: String = "all",
     private val useGeneratedData: String = "all",
     private val constraints: List<Constraint>? = null,
-    private val maxDuration: Int = 10
+    val maxDuration: Int = 10
 ) {
     fun toJSONObject(): JSONObject {
         val json = JSONObject()

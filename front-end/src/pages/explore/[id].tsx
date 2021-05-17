@@ -9,7 +9,7 @@ import React from 'react';
 import Head from 'next/head';
 import { Layout } from 'antd';
 import Explore from '@components/Explore/Explore';
-import { Ontology, ConstraintType, DataType, OntologyNode } from '@models/workflow/Workflow';
+import { Ontology, ConstraintType, DataType, OntologyNode, RunOptions } from '@models/workflow/Workflow';
 import WorkflowData from '@models/workflow/WorkflowVisualizerData';
 import WorkflowInput from '@components/WorkflowInput/WorkflowInput';
 import Domain from '@models/Domain';
@@ -23,7 +23,9 @@ import { ConstraintsConfig } from '@models/Configuration/ConstraintsConfig';
  */
 interface IExplorePageProps {
   /** The domain to explore */
-  domain: Domain;
+  domain: Domain,
+  /** The run parameters limits from the back-end */
+  runParametersLimits: RunOptions,
 }
 
 /** The state interface for {@link ExplorePage} */
@@ -314,7 +316,7 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
 
   render() {
     const { workflows, data } = this.state;
-    const { domain } = this.props;
+    const { domain, runParametersLimits } = this.props;
     const {
       dataOntology,
       toolOntology,
@@ -339,6 +341,7 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
             useCaseConfig={useCaseConfig}
             useCaseConstraints={useCaseConstraints}
             domain={domain.id}
+            runParametersLimits={runParametersLimits}
           />
         </Layout>
         <div ref={this.workflowViewRef}>
@@ -359,19 +362,26 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
 
 export async function getServerSideProps({ query }) {
   // Get the current domain
-  const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/${query.id}/`;
+  const domainEndpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/${query.id}/`;
   let domain: Domain;
-  await fetch(endpoint, {
+  await fetch(domainEndpoint, {
     method: 'GET',
   })
     .then((response) => response.json())
     .then((data) => { domain = data; })
     .catch(() => { domain = query.id; });
 
-  // TODO: remove this line when back-end is updated to include ID
-  domain.id = query.id;
+  // Get the run parameters limits
+  let runParametersLimits: RunOptions;
+  const runParametersEndpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/runparameters/`;
+  await fetch(runParametersEndpoint, {
+    method: 'GET',
+  })
+    .then((response) => response.json())
+    .then((data) => { runParametersLimits = data; });
+
   return {
-    props: { domain },
+    props: { domain, runParametersLimits },
   };
 }
 

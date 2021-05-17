@@ -1,0 +1,18 @@
+@import '../../styles/globals.scss';
+
+.Form {
+  max-width: 500px;
+}
+
+.Label {
+  background-color: $background-color;
+  padding: 5px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.Input {
+  text-align: right;
+  width: 80px;
+  margin-left: calc(100% - 80px);
+}

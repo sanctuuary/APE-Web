@@ -11,7 +11,9 @@ import com.apexdevs.backend.ape.entity.workflow.ParsedModuleNode
 import com.apexdevs.backend.ape.entity.workflow.ParsedTypeNode
 import com.apexdevs.backend.ape.entity.workflow.RunConfig
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
+import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
 import guru.nidi.graphviz.attribute.Rank
 import nl.uu.cs.ape.sat.APE
 import nl.uu.cs.ape.sat.core.implSAT.SATsolutionsList
@@ -29,7 +31,7 @@ import javax.imageio.ImageIO
  * @param rootLocation the path of the domain folder
  * @param ape APE instantiated with the correct CoreConfig
  */
-class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: APE) {
+class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: APE, val runParametersOperation: RunParametersOperation) {
     private lateinit var solutions: SATsolutionsList
     /**
      * Takes a RunConfig object and adds two local paths and converts it to a JSON object to run the synthesis
@@ -49,9 +51,20 @@ class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: AP
     /**
      * Runs APE with the current config, then parses it to a suitable FE format
      * @param: The amount of workflows wanted
+     * @throws RunParametersExceedLimitsException When the given config exceeds the configured run parameters limits
      * @return: A list of resulting workflows
      */
     fun getWorkflows(runConfig: RunConfig): MutableList<WorkflowOutput> {
+        // check if the given run parameters do not exceed the configured limits
+        val limits = runParametersOperation.getGlobalRunParameters()
+        if (runConfig.solutionMinLength > limits.maxLength ||
+            runConfig.solutionMaxLength > limits.maxLength ||
+            runConfig.maxDuration > limits.maxDuration ||
+            runConfig.maxSolutionsToReturn > limits.solutions
+        ) {
+            throw RunParametersExceedLimitsException(this, "The given run parameters exceed the allowed maximum values.")
+        }
+
         runWithConfig(runConfig)
         val resultingWorkflows = mutableListOf<WorkflowOutput>()
 

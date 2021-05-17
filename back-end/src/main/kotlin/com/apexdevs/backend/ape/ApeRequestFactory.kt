@@ -4,6 +4,7 @@
  */
 package com.apexdevs.backend.ape
 
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.filesystem.FileService
 import com.apexdevs.backend.persistence.filesystem.FileTypes
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Component
  * @param fileService interface for filesystem operations
  */
 @Component
-class ApeRequestFactory(val fileService: FileService) {
+class ApeRequestFactory(val fileService: FileService, val runParametersOperation: RunParametersOperation) {
 
     private val activeApeRequests = mutableMapOf<String, ApeRequest>()
 
@@ -31,7 +32,7 @@ class ApeRequestFactory(val fileService: FileService) {
             if (!activeApeRequests.containsKey(userID)) {
                 val ape = createNewApeInstance(domain)
 
-                val apeRequest = ApeRequest(it, fileService.rootLocation, ape)
+                val apeRequest = ApeRequest(it, fileService.rootLocation, ape, runParametersOperation)
 
                 activeApeRequests[userID] = apeRequest
                 return apeRequest

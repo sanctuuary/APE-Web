@@ -12,6 +12,8 @@ import Approval from '@components/Admin/Approval';
 import ApprovalRequest from '@models/ApprovalRequest';
 import { getSession, signIn } from 'next-auth/client';
 import TopicCreate from '@components/Admin/TopicCreate';
+import RunParametersConfig from '@components/Admin/RunParametersConfig';
+import { RunOptions } from '@models/workflow/Workflow';
 import styles from './Admin.module.scss';
 
 const { Title } = Typography;
@@ -22,6 +24,8 @@ interface IState {
 
 interface IProps {
   session: any;
+  /** The current run parameters configuration. */
+  runParameters: RunOptions;
 }
 
 /**
@@ -121,7 +125,7 @@ class AdminPage extends React.Component<IProps, IState> {
 
   render() {
     const { requests } = this.state;
-    const { session } = this.props;
+    const { session, runParameters } = this.props;
 
     if (session && session.user) {
       if (session.user.admin) {
@@ -131,12 +135,16 @@ class AdminPage extends React.Component<IProps, IState> {
               <title>Administration | APE</title>
             </Head>
             <div className={styles.section}>
-              <Title>Topics</Title>
+              <Title level={2}>Topics</Title>
               <TopicCreate />
             </div>
             <div className={styles.section}>
-              <Title>Approvals</Title>
+              <Title level={2}>Approvals</Title>
               <Approval approvalRequests={requests} postUserStatus={this.postUserStatus} />
+            </div>
+            <div className={styles.section}>
+              <Title level={2}>Run parameters configuration</Title>
+              <RunParametersConfig runParameters={runParameters} />
             </div>
           </div>
         );
@@ -164,9 +172,20 @@ class AdminPage extends React.Component<IProps, IState> {
 
 export async function getServerSideProps({ req }) {
   const session = await getSession({ req });
+
+  // Get the current run parameters configuration
+  let runParameters: RunOptions;
+  const runParametersEndpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/runparameters/`;
+  await fetch(runParametersEndpoint, {
+    method: 'GET',
+  })
+    .then((response) => response.json())
+    .then((data) => { runParameters = data; });
+
   return {
     props: {
       session,
+      runParameters,
     },
   };
 }
