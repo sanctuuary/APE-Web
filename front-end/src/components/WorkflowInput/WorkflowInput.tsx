@@ -126,6 +126,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       importModalEnabled: false,
       downloadModalEnabled: false,
       runOptions: {
+        id: 'noid',
         maxDuration: 10,
         solutions: 10,
         minLength: 1,

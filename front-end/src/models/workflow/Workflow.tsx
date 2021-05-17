@@ -89,15 +89,19 @@ interface Constraint {
   parameters: (Data | Tool)[];
 }
 
-/** Interface for the run options */
+/**
+ * Interface for the run options / run parameters
+ */
 interface RunOptions {
-  /** The maximum run time of the query */
+  /** The ID of the run options. */
+  id: string;
+  /** The maximum run time of the query. */
   maxDuration: number;
-  /** The (maximum) number of solutions */
+  /** The (maximum) number of solutions. */
   solutions: number;
-  /** The minimal length of a solution */
+  /** The minimal length of a solution. */
   minLength: number;
-  /** The maximum length of a solution */
+  /** The maximum length of a solution. */
   maxLength: number;
 }
 
