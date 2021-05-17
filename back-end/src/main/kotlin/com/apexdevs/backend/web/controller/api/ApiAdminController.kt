@@ -141,8 +141,9 @@ class ApiAdminController(val userOperation: UserOperation, val topicOperation: T
         @RequestBody runParametersUploadRequest: RunParametersUploadRequest
     ): RunParametersDetails {
         try {
+            // Check if the user is an administrator
             if (!userOperation.userIsAdmin(admin.username))
-                throw AccessDeniedException("User: ${admin.username} not allowed to access this route")
+                throw AccessDeniedException("User: ${admin.username} is not allowed to access this route")
             val user = userOperation.getByEmail(admin.username)
 
             val newRunParameters = RunParameters(
