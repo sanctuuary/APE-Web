@@ -1,11 +1,13 @@
 stages:
-  - unit
-  - build
-  - lint
+  - "Unit"
+  - "Build"
+  - "Lint"
 jobs:
   include:
+    ### Back-end
+  
     # Back-end with Java 11 test
-    #- stage: unit
+    #- stage: "Unit"
     #  language: java
     #  jdk: openjdk11
     #  before_script:
@@ -14,7 +16,7 @@ jobs:
     #    - mvn test
 
     # Back-end lint test
-    - stage: lint
+    - stage: "Lint"
       language: java
       jdk: openjdk11
       before_script:
@@ -22,8 +24,11 @@ jobs:
       script:
         - mvn ktlint:check
 
+
+    ### Front-end
+
     # Front-end with Node.js 12 unit tests
-    - stage: unit
+    - stage: "Unit"
       language: node_js
       node_js: 12
       before_script:
@@ -33,7 +38,7 @@ jobs:
         - npm run test
 
     # Front-end with Node.js 14 unit tests
-    - stage: unit
+    - stage: "Unit"
       language: node_js
       node_js: 14
       before_script:
@@ -43,7 +48,7 @@ jobs:
         - npm run test
 
     # Front-end with Node.js 12 build test
-    - stage: build
+    - stage: "Build"
       language: node_js
       node_js: 12
       before_script:
@@ -53,7 +58,7 @@ jobs:
         - npm run build
 
     # Front-end with Node.js 14 build test
-    - stage: build
+    - stage: "Build"
       language: node_js
       node_js: 14
       before_script:
@@ -63,7 +68,7 @@ jobs:
         - npm run build
 
     # Front-end with Node.js 12 lint test
-    - stage: lint
+    - stage: "Lint"
       language: node_js
       node_js: 12
       before_script:
@@ -73,7 +78,7 @@ jobs:
         - npm run lint
 
     # Front-end with Node.js 14 lint test
-    - stage: lint
+    - stage: "Lint"
       language: node_js
       node_js: 14
       before_script:
