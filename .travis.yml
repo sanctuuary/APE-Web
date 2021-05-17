@@ -1,19 +1,25 @@
 jobs:
   include:
     # Back-end with Java 11 test
-    - stage: "Test"
+    - stage: "Unit"
       language: java
       jdk: openjdk11
-      cache:
-        directories:
-          - $HOME/.m2
       before_script:
         - cd back-end
       script:
         - mvn test
-    
-    # Front-end with Node.js 12 test
-    - stage: "Test"
+
+    # Back-end lint test
+    - stage: "Lint"
+      language: java
+      jdk: openjdk11
+      before_script:
+        - cd back-end
+      script:
+        - mvn ktlint:check
+
+    # Front-end with Node.js 12 unit tests
+    - stage: "Unit"
       language: node_js
       node_js: 12
       before_script:
@@ -21,9 +27,9 @@ jobs:
       script:
         - npm install
         - npm run test
-    
-    # Front-end with Node.js 14 test
-    - stage: "Test"
+
+    # Front-end with Node.js 14 unit tests
+    - stage: "Unit"
       language: node_js
       node_js: 14
       before_script:
@@ -31,4 +37,43 @@ jobs:
       script:
         - npm install
         - npm run test
-      
+
+    # Front-end with Node.js 12 build test
+    - stage: "Build"
+      language: node_js
+      node_js: 12
+      before_script:
+        - cd front-end
+      script:
+        - npm install
+        - npm run build
+
+    # Front-end with Node.js 14 build test
+    - stage: "Build"
+      language: node_js
+      node_js: 14
+      before_script:
+        - cd front-end
+      script:
+        - npm install
+        - npm run build
+
+    # Front-end with Node.js 12 lint test
+    - stage: "Lint"
+      language: node_js
+      node_js: 12
+      before_script:
+        - cd front-end
+      script:
+        - npm install
+        - npm run lint
+
+    # Front-end with Node.js 14 lint test
+    - stage: "Lint"
+      language: node_js
+      node_js: 14
+      before_script:
+        - cd front-end
+      script:
+        - npm install
+        - npm run lint
