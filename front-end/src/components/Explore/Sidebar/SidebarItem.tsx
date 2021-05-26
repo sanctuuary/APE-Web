@@ -8,7 +8,7 @@
 import React from 'react';
 import { Checkbox } from 'antd';
 import WorkflowData from '@models/workflow/WorkflowVisualizerData';
-import styles from './Sidebar.module.scss';
+import styles from './Sidebar.module.less';
 
 /**
  * Props of the SidebarItem component.

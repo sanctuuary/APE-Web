@@ -10,7 +10,7 @@ import { Button, Divider, Select, Row, Col } from 'antd';
 import ToolSelector from '@components/WorkflowInput/ToolSelector';
 import DataSelector from '@components/WorkflowInput/DataSelector';
 import { Data, ConstraintType, ParameterType, Tool, Constraint, Ontology } from '@models/workflow/Workflow';
-import styles from './WorkflowConstraint.module.scss';
+import styles from './WorkflowConstraint.module.less';
 
 const { Option } = Select;
 

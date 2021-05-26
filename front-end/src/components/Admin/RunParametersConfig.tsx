@@ -1,7 +1,7 @@
 import React from 'react';
 import { RunOptions } from '@models/workflow/Workflow';
 import { Button, Card, Form, Input, InputNumber, message } from 'antd';
-import styles from './RunParametersConfig.module.scss';
+import styles from './RunParametersConfig.module.less';
 
 /**
  * The props for {@link RunParametersConfig}.

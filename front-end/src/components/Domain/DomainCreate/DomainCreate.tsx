@@ -15,7 +15,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { useRouter } from 'next/router';
 import { ReadMultipleFileContents, RMFCInput } from '@helpers/ReadFileContent';
-import styles from './DomainCreate.module.scss';
+import styles from './DomainCreate.module.less';
 
 const { Option } = Select;
 

@@ -23,13 +23,13 @@ module.exports = {
   },
   transformIgnorePatterns: [
     "/node_modules/",
-    "^.+\\.module\\.(css|sass|scss)$",
+    "^.+\\.module\\.(css|less)$",
   ],
   moduleNameMapper: {
-    "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
+    "^.+\\.module\\.(css|less)$": "identity-obj-proxy",
     // Mock antd import
     "antd/dist/antd.less": "<rootDir>/config/jest/cssTransform.js",
-    "../styles/globals.scss": "<rootDir>/config/jest/cssTransform.js",
+    "../styles/globals.less": "<rootDir>/config/jest/cssTransform.js",
     // Path aliases, same as in tsconfig.json
     "@components(.*)$": "<rootDir>/src/components$1",
     "@pages(.*)$": "<rootDir>/src/pages$1",

@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { Col, Divider, Layout, Row } from 'antd';
-import styles from './Footer.module.scss';
+import styles from './Footer.module.less';
 
 /**
  * The footer component, used accross the entire site.

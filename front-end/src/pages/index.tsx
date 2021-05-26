@@ -11,7 +11,7 @@ import { Button, Typography } from 'antd';
 import DomainList from '@components/Domain/DomainList/DomainList';
 import Domain from '@models/Domain';
 import { getSession } from 'next-auth/client';
-import styles from './index.module.scss';
+import styles from './index.module.less';
 
 const { Title, Paragraph } = Typography;
 

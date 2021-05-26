@@ -36,6 +36,7 @@
   },
   "include": [
     "next-env.d.ts",
+    "externals.d.ts",
     "**/*.ts",
     "**/*.tsx"
   ],
@@ -44,7 +45,7 @@
     "./tests/**/*.tsx",
   ],
   "typedocOptions": {
-    "name": "APE front-end documentation",
+    "name": "APE Web front-end documentation",
     "includeVersion": true,
     "entryPoints": ["src"],
     "out": "docs"

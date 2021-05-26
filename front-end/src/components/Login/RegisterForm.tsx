@@ -8,7 +8,7 @@
 import React from 'react';
 import { Form, Input, Button, Row, Col, Result, message } from 'antd';
 import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
-import styles from './Login.module.scss';
+import styles from './Login.module.less';
 import passwordRules from './DefaultRules';
 
 /**

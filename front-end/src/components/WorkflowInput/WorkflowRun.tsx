@@ -8,10 +8,10 @@
 import React, { RefObject } from 'react';
 import { Button, Card, Form, InputNumber, Divider } from 'antd';
 import { FormInstance } from 'antd/lib/form';
-import styles from '@components/Explore/Box.module.scss';
+import styles from '@components/Explore/Box.module.less';
 import { RunOptions } from '@models/workflow/Workflow';
 import TooltipIcon from '@components/TooltipIcon/TooltipIcon';
-import Styles from './WorkflowRun.module.scss';
+import Styles from './WorkflowRun.module.less';
 
 /** Properties of the WorkflowRun component */
 interface WorkflowRunProps {

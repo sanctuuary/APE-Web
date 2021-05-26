@@ -10,7 +10,7 @@ import { Space, Layout } from 'antd';
 import Sidebar from '@components/Explore/Sidebar/Sidebar';
 import WorkflowVisualizer from '@components/Explore/WorkflowVisualizer/WorkflowVisualizer';
 import WorkflowData from '@models/workflow/WorkflowVisualizerData';
-import styles from '@pages/app.module.scss';
+import styles from '@pages/app.module.less';
 
 /**
  * Props of the explore component

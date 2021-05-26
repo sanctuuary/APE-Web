@@ -9,7 +9,7 @@ import React from 'react';
 import Head from 'next/head';
 import RegisterForm from '@components/Login/RegisterForm';
 import { Col, Row } from 'antd';
-import styles from './Register.module.scss';
+import styles from './Register.module.less';
 
 /**
  * The page where users can register an account.
