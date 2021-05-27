@@ -19,14 +19,12 @@ module.exports = {
   },
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
-    "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
   },
   transformIgnorePatterns: [
     "/node_modules/",
-    "^.+\\.module\\.(css|less)$",
   ],
   moduleNameMapper: {
-    "^.+\\.module\\.(css|less)$": "identity-obj-proxy",
+    "\\.(css|less)$": "identity-obj-proxy",
     // Mock antd import
     "antd/dist/antd.less": "<rootDir>/config/jest/cssTransform.js",
     "../styles/globals.less": "<rootDir>/config/jest/cssTransform.js",
