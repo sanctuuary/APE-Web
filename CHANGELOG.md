@@ -23,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Vacancies link in footer.
+- PostCSS (because it was not used).
+- Sass (all CSS is now in Less).
 
 ### Fixed
 - Domain upload creating corrupted domains.
