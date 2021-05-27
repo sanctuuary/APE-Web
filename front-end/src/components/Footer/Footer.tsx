@@ -6,8 +6,11 @@
  */
 
 import React from 'react';
-import { Col, Divider, Layout, Row } from 'antd';
+import { Col, Divider, Layout, Row, Typography } from 'antd';
+import { version } from 'package.json';
 import styles from './Footer.module.less';
+
+const { Text } = Typography;
 
 /**
  * The footer component, used accross the entire site.
@@ -49,6 +52,9 @@ function Footer() {
       </Row>
       <Row>
         <Col span={24}>© Utrecht University (ICS)</Col>
+      </Row>
+      <Row>
+        <Col span={24}><Text type="secondary">Version: {version}</Text></Col>
       </Row>
     </Layout.Footer>
   );
