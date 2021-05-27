@@ -14,7 +14,7 @@ import WorkflowData from '@models/workflow/WorkflowVisualizerData';
 import WorkflowInput from '@components/WorkflowInput/WorkflowInput';
 import Domain from '@models/Domain';
 import fetchWithRedirect from '@helpers/FetchWithRedirect';
-import styles from '@pages/app.module.scss';
+import styles from '@pages/app.module.less';
 import { Config } from '@models/Configuration/Config';
 import { ConstraintsConfig } from '@models/Configuration/ConstraintsConfig';
 

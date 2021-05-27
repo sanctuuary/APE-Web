@@ -11,7 +11,7 @@ import { DownloadOutlined, DownOutlined } from '@ant-design/icons';
 import WorkflowData from '@models/workflow/WorkflowVisualizerData';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import SidebarItem from './SidebarItem';
-import styles from './Sidebar.module.scss';
+import styles from './Sidebar.module.less';
 
 /**
  * The state of the sidebar component

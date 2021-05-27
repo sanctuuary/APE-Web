@@ -8,7 +8,7 @@
 import React from 'react';
 import Head from 'next/head';
 import DomainCreate from '@components/Domain/DomainCreate/DomainCreate';
-import styles from './edit/[id].module.scss';
+import styles from './edit/[id].module.less';
 
 /**
  * The page for creating domains, built around the {@link DomainCreate} component.

@@ -10,7 +10,7 @@ import { Handle, Position } from 'react-flow-renderer';
 import { Ontology, Tool } from '@models/workflow/Workflow';
 import { Row, Col, Button } from 'antd';
 import ToolSelector from '@components/WorkflowInput/ToolSelector';
-import styles from './ConstraintSketcher.module.scss';
+import styles from './ConstraintSketcher.module.less';
 
 /** Props interface for {@link CustomNode} */
 interface CustomNodeProps {

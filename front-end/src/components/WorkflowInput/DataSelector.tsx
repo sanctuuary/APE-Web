@@ -8,7 +8,7 @@
 import React from 'react';
 import OntologyTreeSelect from '@components/WorkflowInput/OntologyTreeSelect';
 import { Data, Ontology } from '@models/workflow/Workflow';
-import styles from './DataSelector.module.scss';
+import styles from './DataSelector.module.less';
 
 /** Props interface for {@link DataSelector} */
 interface DataSelectorProps {

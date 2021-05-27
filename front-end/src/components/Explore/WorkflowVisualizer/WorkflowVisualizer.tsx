@@ -17,7 +17,7 @@ import WorkflowParser from './WorkflowParser';
 import OutputNode from './Nodes/OutputNode';
 import ToolNode from './Nodes/ToolNode';
 import DataTypeNode from './Nodes/DataTypeNode';
-import styles from './Workflow.module.scss';
+import styles from './Workflow.module.less';
 
 /**
  * Custom node types.

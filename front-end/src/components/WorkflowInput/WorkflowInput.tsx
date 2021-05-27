@@ -29,7 +29,7 @@ import ConstraintSketcher, { Sketch } from '@components/WorkflowInput/Constraint
 import { translateSketch } from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Config } from '@models/Configuration/Config';
 import { FormInstance } from 'antd/lib/form';
-import styles from './WorkflowInput.module.scss';
+import styles from './WorkflowInput.module.less';
 
 /** The props for the {@link WorkflowInput} component */
 interface WorkflowInputProps {

@@ -8,7 +8,7 @@
 import React from 'react';
 import { InfoCircleFilled } from '@ant-design/icons';
 import { Popover } from 'antd';
-import styles from './TooltipIcon.module.scss';
+import styles from './TooltipIcon.module.less';
 
 /**
  * Props for {@link TooltipIcon}.

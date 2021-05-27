@@ -13,7 +13,7 @@ import DomainEdit from '@components/Domain/DomainEdit/DomainEdit';
 import Domain, { Topic } from '@models/Domain';
 import { getSession } from 'next-auth/client';
 import { fetchTopics } from '@components/Domain/Domain';
-import styles from './[id].module.scss';
+import styles from './[id].module.less';
 
 /**
  * Props for DomainEditPage

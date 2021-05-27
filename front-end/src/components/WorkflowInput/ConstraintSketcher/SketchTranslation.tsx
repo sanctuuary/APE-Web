@@ -8,7 +8,7 @@
 import React from 'react';
 import { Constraint, ParameterType, Tool } from '@models/workflow/Workflow';
 import { Sketch } from './ConstraintSketcher';
-import styles from './ConstraintSketcher.module.scss';
+import styles from './ConstraintSketcher.module.less';
 
 /**
  * Convert the sketch into an array of constraints.

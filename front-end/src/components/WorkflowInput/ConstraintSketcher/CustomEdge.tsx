@@ -8,7 +8,7 @@
 import { ArrowHeadType, getBezierPath, getMarkerEnd } from 'react-flow-renderer';
 import React from 'react';
 import { Position } from 'react-flow-renderer/dist/types';
-import styles from './ConstraintSketcher.module.scss';
+import styles from './ConstraintSketcher.module.less';
 
 /**
  * Props interface for {@link CustomEdge}. The edge has a circle with a plus

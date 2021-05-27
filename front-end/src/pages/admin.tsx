@@ -14,7 +14,7 @@ import { getSession, signIn } from 'next-auth/client';
 import TopicCreate from '@components/Admin/TopicCreate';
 import RunParametersConfig from '@components/Admin/RunParametersConfig';
 import { RunOptions } from '@models/workflow/Workflow';
-import styles from './Admin.module.scss';
+import styles from './Admin.module.less';
 
 const { Title } = Typography;
 

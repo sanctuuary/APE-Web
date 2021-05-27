@@ -5,21 +5,21 @@
  * © Copyright Utrecht University (Department of Information and Computing Sciences)
  */
 
-@import '../../styles/globals.scss';
+@import '../../styles/globals';
 
-.List {
-  margin-left: -1.3em;
-  ul {
-    list-style-type: none;
-    margin-left: -1.3em;
-    display: inline-block;
-  }
+.Label {
+  background-color: @background-color;
+  padding: 5px;
+  border-radius: 4px;
+  margin-bottom: 6px;
 }
 
-.missing {
-  color: $secondary-color;
+.Input {
+  text-align: right;
+  width: 60px;
+  margin-left: calc(100% - 60px);
 }
 
-.extra {
-  color: $primary-color;
+.RunButton {
+  color: black;
 }

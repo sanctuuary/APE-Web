@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { Form, Input, Button, Row, Col, message } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { signIn, useSession } from 'next-auth/client';
-import styles from './Login.module.scss';
+import styles from './Login.module.less';
 
 /**
  * Form for loging in.

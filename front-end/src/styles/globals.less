@@ -6,21 +6,21 @@
  */
 
 // Global variables
-@import 'colors';
-@import 'variables';
+@import '_colors';
+@import '_variables';
 
 // Overwrites of default CSS styling
-@import 'resets';
+@import '_resets';
 
 // Styling regarding to layout and scaffolding
-@import 'layout';
-@import 'scaffolding';
+@import '_layout';
+@import '_scaffolding';
 
 // Styling regarding fonts
-@import 'typography';
+@import '_typography';
 
 // Local variables overwrites (e.g. different colour button within a hero container)
-@import 'overwrites';
+@import '_overwrites';
 
 html,
 body {
@@ -32,7 +32,7 @@ body {
 }
 
 .ant-layout {
-  background-color: $background-color !important;
+  background-color: @background-color !important;
 }
 
 a {

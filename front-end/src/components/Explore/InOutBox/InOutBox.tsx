@@ -10,7 +10,7 @@ import { Card } from 'antd';
 import WorkflowDataList from '@components/WorkflowInput/WorkflowDataList';
 import { Data, Ontology } from '@models/workflow/Workflow';
 import TooltipIcon from '@components/TooltipIcon/TooltipIcon';
-import styles from '@components/Explore/Box.module.scss';
+import styles from '@components/Explore/Box.module.less';
 
 /**
  * The props for the {@link InOutBox} component
