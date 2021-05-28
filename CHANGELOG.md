@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2021-05-28
+
 ### Added
 - A link to the official running instance of APE Web in the README.
 - CHANGELOG.md file.
@@ -34,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Max run duration being the max length/steps when downloading configuration files.
 - Unknown "text" HTML element error on explore page.
 
-## 1.0.0 - 2021-05-03
+## [1.0.0] - 2021-05-03
 
 ### Added
 - Public and private domains.
@@ -55,3 +57,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.1.0]: https://github.com/sanctuuary/APE-Web/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/sanctuuary/APE-Web/releases/tag/v1.0.0

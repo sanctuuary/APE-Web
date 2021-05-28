@@ -10,9 +10,9 @@
     </parent>
     <groupId>com.apexdevs</groupId>
     <artifactId>backend</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>backend</name>
-    <description>Back-end for APE website</description>
+    <description>APE Web back-end</description>
 
     <properties>
         <java.version>11</java.version>
