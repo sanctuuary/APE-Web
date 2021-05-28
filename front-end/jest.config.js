@@ -28,6 +28,7 @@ module.exports = {
     // Mock antd import
     "antd/dist/antd.less": "<rootDir>/config/jest/cssTransform.js",
     "../styles/globals.less": "<rootDir>/config/jest/cssTransform.js",
+    "package.json": "<rootDir>/config/jest/packageTransform.js",
     // Path aliases, same as in tsconfig.json
     "@components(.*)$": "<rootDir>/src/components$1",
     "@pages(.*)$": "<rootDir>/src/pages$1",

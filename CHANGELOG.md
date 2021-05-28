@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Front-end gets run parameters limits from back-end.
 - Admin page allows configuring the global run parameters limits.
 - Back-end checks if a workflow run does not exceed the configured run parameters limits.
+- Project version is shown in footer.
 
 ### Changed
 - Removed required steps to install APE 1.1.7 to local Maven repository, replaced with instructions to optionally use a different version of APE when compiling the back-end.
