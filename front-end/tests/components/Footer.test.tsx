@@ -24,7 +24,7 @@ describe('Footer', () => {
     // Check if the element has the right link
     expect(linkElement).toHaveAttribute(
       'href',
-      'https://github.com/sanctuuary/APE/blob/master/LICENSE',
+      'https://github.com/sanctuuary/APE-Web/blob/master/LICENSE',
     );
   });
 
@@ -71,7 +71,7 @@ describe('Footer', () => {
     // Check if the image is in a link element with the correct link
     expect(image.parentElement).toHaveAttribute(
       'href',
-      'https://git.science.uu.nl/apex-devs/front-end',
+      'https://github.com/sanctuuary/APE-Web',
     );
   });
 

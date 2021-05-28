@@ -32,13 +32,17 @@ import javax.servlet.http.HttpSession
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ApiWorkflowControllerTest() {
 
-    private val userOperation = mockk<UserOperation>()
     private val apeRequestFactory = mockk<ApeRequestFactory>(relaxed = true)
     private val storageService = mockk<StorageService>()
+    private val userOperation = mockk<UserOperation>()
     private val apeRequest = mockk<ApeRequest>()
     private val domain = mockk<Domain>()
 
-    private val apiWorkflowController = ApiWorkflowController(apeRequestFactory, storageService, userOperation)
+    private val apiWorkflowController = ApiWorkflowController(
+        apeRequestFactory,
+        storageService,
+        userOperation
+    )
     private val test = "Test"
     private val id = ObjectId()
     private val session = mockk<HttpSession>()

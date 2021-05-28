@@ -8,7 +8,7 @@
 import React from 'react';
 import OntologyTreeSelect from '@components/WorkflowInput/OntologyTreeSelect';
 import { Data, Ontology } from '@models/workflow/Workflow';
-import styles from './DataSelector.module.scss';
+import styles from './DataSelector.module.less';
 
 /** Props interface for {@link DataSelector} */
 interface DataSelectorProps {
@@ -35,9 +35,9 @@ function DataSelector(props: DataSelectorProps) {
       {
         dataOntology.roots.map((root, index) => (
           <label key={root.label} style={{ display: 'flex' }}>
-            <text className={styles[getClassName(index)]}>
+            <div className={styles[getClassName(index)]}>
               {root.label}:
-            </text>
+            </div>
             <OntologyTreeSelect
               ontology={root}
               value={data.values[index]}

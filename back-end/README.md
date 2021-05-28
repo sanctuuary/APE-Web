@@ -13,15 +13,7 @@ For instruction for Docker, please see the README file in the project root.
 
 ### Build APE Web back-end from source
 
-Currently, the APE Web back-end uses a version of APE which is not available on the Maven repository.
-To build the APE Web back-end from source, please download and build [APE 1.1.7](https://github.com/sanctuuary/APE/releases/tag/v1.1.7) first,
-and place it in this directory.
-Then, run the following command in this directory:
-````shell
-$ mvn install:install-file -Dfile=APE-1.1.7.jar
-````
-This adds APE 1.1.7 to your local Maven repository.
-You can now build the back-end using
+In this directory, simply run:
 ````shell
 $ mvn package -DskipTests=true
 ````
@@ -45,4 +37,32 @@ In the last line, you can replace `admin:admin@localhost:27017` to configure the
 Now build the back-end with the production profile using:
 ````shell
 $ mvn package -DskipTests=true -P prod
+````
+
+#### Building with a specific APE version
+
+Please note that not every version of APE is guaranteed to work with every version of APE Web.
+Select a different version of APE at your own risk.
+
+If you wish to use APE Web with a specific version of APE, it can be done by modifiying the `pom.xml` file.
+In this file, change the APE version:
+```xml
+<dependency>
+    <groupId>io.github.sanctuuary</groupId>
+    <artifactId>APE</artifactId>
+    <version>1.1.7</version> <!-- Change this version to the preferred version -->
+</dependency>
+```
+If the APE version you wish to use is not available on the [Mvn repository](https://mvnrepository.com/artifact/io.github.sanctuuary/APE)
+you can install APE in your local repository and use it to build the back-end.
+To do so, [download](https://github.com/sanctuuary/APE#releases)
+or [compile](https://github.com/sanctuuary/APE#build-ape-from-source-using-maven) the APE version you wish to use.
+In the location where you have the resulting APE.jar file, run the following command:
+````shell
+$ mvn install:install-file -Dfile=APE-<version>.jar
+````
+This adds the specified APE file to your local Maven repository.
+You can now build the back-end using:
+````shell
+$ mvn package -DskipTests=true
 ````

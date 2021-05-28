@@ -9,7 +9,7 @@ import { Button, Col, Row } from 'antd';
 import React from 'react';
 import SketchTranslation from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Sketch } from '@components/WorkflowInput/ConstraintSketcher/ConstraintSketcher';
-import styles from './ConstraintSketcher.module.scss';
+import styles from './ConstraintSketcher.module.less';
 
 /** Props interface for {@link Sidebar} */
 interface SidebarProps {

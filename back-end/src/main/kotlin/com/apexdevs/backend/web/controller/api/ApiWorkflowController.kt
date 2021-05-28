@@ -13,6 +13,7 @@ import com.apexdevs.backend.ape.entity.workflow.TotalConfig
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.UserStatus
+import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
 import com.apexdevs.backend.persistence.filesystem.FileTypes
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import org.json.JSONObject
@@ -41,8 +42,11 @@ import javax.servlet.http.HttpSession
  */
 @RestController
 @RequestMapping("/api/workflow")
-class ApiWorkflowController(val apeRequestFactory: ApeRequestFactory, val storageService: StorageService, val userOperation: UserOperation) {
-
+class ApiWorkflowController(
+    val apeRequestFactory: ApeRequestFactory,
+    val storageService: StorageService,
+    val userOperation: UserOperation
+) {
     /**
      * @Return: workflow input and output data
      */
@@ -146,6 +150,8 @@ class ApiWorkflowController(val apeRequestFactory: ApeRequestFactory, val storag
             when (exc) {
                 is IllegalArgumentException ->
                     throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough rights for provided run parameters", exc)
+                is RunParametersExceedLimitsException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
                 else ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
             }

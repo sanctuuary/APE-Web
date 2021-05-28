@@ -7,19 +7,14 @@
 
 @import '../../styles/globals';
 
-.Label {
-  background-color: $background-color;
+.Light {
+  background-color: @light-taxonomy-color;
+  border-radius: 10px;
   padding: 5px;
-  border-radius: 4px;
-  margin-bottom: 6px;
 }
 
-.Input {
-  text-align: right;
-  width: 60px;
-  margin-left: calc(100% - 60px);
-}
-
-.RunButton {
-  color: black;
+.Dark {
+  background-color: @dark-taxonomy-color;
+  border-radius: 10px;
+  padding: 5px;
 }

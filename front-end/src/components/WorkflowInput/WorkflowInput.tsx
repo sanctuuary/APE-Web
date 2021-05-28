@@ -29,7 +29,7 @@ import ConstraintSketcher, { Sketch } from '@components/WorkflowInput/Constraint
 import { translateSketch } from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Config } from '@models/Configuration/Config';
 import { FormInstance } from 'antd/lib/form';
-import styles from './WorkflowInput.module.scss';
+import styles from './WorkflowInput.module.less';
 
 /** The props for the {@link WorkflowInput} component */
 interface WorkflowInputProps {
@@ -57,6 +57,9 @@ interface WorkflowInputProps {
 
   /** The domain ID */
   domain: string;
+
+  /** The run parameters limits */
+  runParametersLimits: RunOptions;
 
   /** Function to download an ontology file */
   downloadOntologyFile: () => void;
@@ -123,6 +126,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       importModalEnabled: false,
       downloadModalEnabled: false,
       runOptions: {
+        id: 'noid',
         maxDuration: 10,
         solutions: 10,
         minLength: 1,
@@ -558,17 +562,22 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
     })
       .then((res) => {
         if (!res.ok) {
-          return Promise.resolve(message.error('Something went wrong :('));
+          return Promise.reject(res.json());
         }
         return res.json();
       })
-      .then((workflows) => {
-        if (workflows && workflows.length > 0) {
-          return Promise.resolve(onRun(workflows));
+      .then((data) => {
+        if (data && data.length > 0) {
+          return Promise.resolve(onRun(data));
         }
         return Promise.resolve(message.warning('APE could not find any results'));
       })
-      .catch((error) => console.error('Workflow error', error));
+      .catch((error) => {
+        // Await error parsing
+        error.then((data: any) => {
+          message.error(data.message, 5);
+        });
+      });
   };
 
   /**
@@ -586,7 +595,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       constraints,
       maxLength: runOptions.maxLength,
       minLength: runOptions.minLength,
-      maxDuration: runOptions.maxLength,
+      maxDuration: runOptions.maxDuration,
       solutions: runOptions.solutions,
     };
     const base = process.env.NEXT_PUBLIC_BASE_URL;
@@ -722,15 +731,20 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
 
   importConfigs = (json): void => {
     /** Update the states */
+    const { runParametersLimits } = this.props;
     let { runOptions } = this.state;
     const runOptionsCopy = runOptions;
-    const { minLength, minDuration, minSolutions, maxSolutions } = WorkflowRun.runParameterLimits;
     try {
+      const { minLength, maxLength, maxDuration, solutions } = runParametersLimits;
+      const clamp = (num: number, lower: number, upper: number): number => (
+        Math.max(Math.min(num, upper), lower)
+      );
+
       // Set the run options, with their limits
-      runOptions.maxDuration = Math.max(+json.timeout_sec, minDuration);
-      runOptions.solutions = Math.min(Math.max(+json.max_solutions, minSolutions), maxSolutions);
-      runOptions.minLength = Math.max(json.solution_length.min, minLength);
-      runOptions.maxLength = Math.max(json.solution_length.max, json.solution_length.min);
+      runOptions.minLength = clamp(json.solution_length.min, 0, minLength);
+      runOptions.maxLength = clamp(json.solution_length.max, 0, maxLength);
+      runOptions.maxDuration = clamp(+json.timeout_sec, 0, maxDuration);
+      runOptions.solutions = clamp(+json.max_solutions, 0, solutions);
     } catch (exc) {
       runOptions = runOptionsCopy;
       message.error('Something went wrong while importing run parameters. Please check the run parameters in your config.json and try again.');
@@ -833,7 +847,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
    * Updates the run options
    * @param changed updated run options
    */
-  updateRunOptions = (changed) => {
+  updateRunOptions = (changed: RunOptions) => {
     /*
      * Handle each changed field, there can be more than one changed
      * if the the predicate min <= max if violated.
@@ -889,6 +903,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       downloadToolsAnnotationsFile,
       useCaseConfig,
       useCaseConstraints,
+      runParametersLimits,
     } = this.props;
 
     return (
@@ -966,6 +981,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
             runOptions={runOptions}
             formRef={this.formRef}
             updateRunOptions={this.updateRunOptions}
+            runParametersLimits={runParametersLimits}
           />
         </div>
         {/* Constraint sketcher, only open if the currentSketch is not undefined */}

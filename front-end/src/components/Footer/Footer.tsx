@@ -6,8 +6,11 @@
  */
 
 import React from 'react';
-import { Col, Divider, Layout, Row } from 'antd';
-import styles from './Footer.module.scss';
+import { Col, Divider, Layout, Row, Typography } from 'antd';
+import { version } from 'package.json';
+import styles from './Footer.module.less';
+
+const { Text } = Typography;
 
 /**
  * The footer component, used accross the entire site.
@@ -17,19 +20,17 @@ function Footer() {
     <Layout.Footer className={styles.footer} id="Footer">
       <Row>
         <Col span={24}>
-          <a href="/conditions">Conditions</a> -&nbsp;
+          <a href="/terms-and-conditions">Terms and conditions</a> -&nbsp;
           <a href="/privacy">Privacy</a> -&nbsp;
           <a
-            // Should go to APE website license in the future
-            href="https://github.com/sanctuuary/APE/blob/master/LICENSE"
+            href="https://github.com/sanctuuary/APE-Web/blob/master/LICENSE"
             target="_blank"
             rel="noreferrer"
           >
             License
           </a> -&nbsp;
           <a href="/about">About us</a> -&nbsp;
-          <a href="/contact">Contact us</a> -&nbsp;
-          <a href="/vacancies">Vacancies</a>
+          <a href="/contact">Contact us</a>
         </Col>
       </Row>
       <Divider className={styles.divider} />
@@ -41,7 +42,7 @@ function Footer() {
           <a href="https://github.com/sanctuuary/APE" target="_blank" rel="noreferrer">
             <img className={styles.logo} src="/APE-logo-440px.png" alt="APE logo" />
           </a>
-          <a href="https://git.science.uu.nl/apex-devs/front-end" target="_blank" rel="noreferrer">
+          <a href="https://github.com/sanctuuary/APE-Web" target="_blank" rel="noreferrer">
             <img className={styles.logo} src="/GitHub-Mark-64px.png" alt="GitHub logo" />
           </a>
           <a href="https://www.uu.nl/en" target="_blank" rel="noreferrer">
@@ -51,6 +52,9 @@ function Footer() {
       </Row>
       <Row>
         <Col span={24}>© Utrecht University (ICS)</Col>
+      </Row>
+      <Row>
+        <Col span={24}><Text type="secondary">Version: {version}</Text></Col>
       </Row>
     </Layout.Footer>
   );

@@ -4,6 +4,7 @@
  */
 package com.apexdevs.backend.web.controller.api
 
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.TopicOperation
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.UserRequest
@@ -53,6 +54,9 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
 
     @MockkBean(relaxed = true)
     private lateinit var topicOperation: TopicOperation
+
+    @MockkBean(relaxed = true)
+    private lateinit var runParametersOperation: RunParametersOperation
 
     @Test
     @WithUserDetails("admin@test.test")

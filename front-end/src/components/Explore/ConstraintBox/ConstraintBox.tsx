@@ -9,7 +9,7 @@ import React from 'react';
 import { Card } from 'antd';
 import WorkflowConstraintList from '@components/WorkflowInput/WorkflowConstraintList';
 import { Constraint, ConstraintType, Tool, Data, Ontology } from '@models/workflow/Workflow';
-import styles from '@components/Explore/Box.module.scss';
+import styles from '@components/Explore/Box.module.less';
 import TooltipIcon from '@components/TooltipIcon/TooltipIcon';
 import { Sketch } from '@components/WorkflowInput/ConstraintSketcher/ConstraintSketcher';
 

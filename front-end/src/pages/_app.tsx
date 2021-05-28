@@ -8,13 +8,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import 'antd/dist/antd.less';
-import '../styles/globals.scss';
+import '../styles/globals.less';
 import { AppProps } from 'next/dist/next-server/lib/router/router';
 import Header from '@components/Header/Header';
 import Footer from '@components/Footer/Footer';
 import { Provider } from 'next-auth/client';
 import { Layout } from 'antd';
-import styles from './app.module.scss';
+import styles from './app.module.less';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

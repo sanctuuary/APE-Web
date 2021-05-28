@@ -19,17 +19,16 @@ module.exports = {
   },
   transform: {
     "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest",
-    "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
   },
   transformIgnorePatterns: [
     "/node_modules/",
-    "^.+\\.module\\.(css|sass|scss)$",
   ],
   moduleNameMapper: {
-    "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
+    "\\.(css|less)$": "identity-obj-proxy",
     // Mock antd import
     "antd/dist/antd.less": "<rootDir>/config/jest/cssTransform.js",
-    "../styles/globals.scss": "<rootDir>/config/jest/cssTransform.js",
+    "../styles/globals.less": "<rootDir>/config/jest/cssTransform.js",
+    "package.json": "<rootDir>/config/jest/packageTransform.js",
     // Path aliases, same as in tsconfig.json
     "@components(.*)$": "<rootDir>/src/components$1",
     "@pages(.*)$": "<rootDir>/src/pages$1",

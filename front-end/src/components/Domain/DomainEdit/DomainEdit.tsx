@@ -13,7 +13,7 @@ import { UploadFile } from 'antd/lib/upload/interface';
 import { validateJSON, validateOWL, onFileChange } from '@components/Domain/Domain';
 import { ReadMultipleFileContents, RMFCInput } from '@helpers/ReadFileContent';
 import Domain, { Topic, Visibility } from '@models/Domain';
-import styles from './DomainEdit.module.scss';
+import styles from './DomainEdit.module.less';
 
 const { Option } = Select;
 

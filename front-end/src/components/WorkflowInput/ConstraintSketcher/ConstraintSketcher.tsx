@@ -11,7 +11,7 @@ import ReactFlow, { ArrowHeadType, Edge, FlowElement, Node } from 'react-flow-re
 import { Ontology, Tool } from '@models/workflow/Workflow';
 import CustomNode from '@components/WorkflowInput/ConstraintSketcher/CustomNode';
 import Sidebar from '@components/WorkflowInput/ConstraintSketcher/Sidebar';
-import styles from './ConstraintSketcher.module.scss';
+import styles from './ConstraintSketcher.module.less';
 
 /**
  * The sketch interface. Contains a list of tools used in the sketch.

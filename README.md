@@ -16,13 +16,14 @@ See the docker-compose.yml file for a basic setup.
 
 ## Using APE Web
 
+A running instance of APE Web can be found [here](https://ape.science.uu.nl).
+It is set up with different use cases from the [APE Use Cases Repository](https://github.com/sanctuuary/APE_UseCases).
+
 ### Using Docker
 
-Currently, the APE Web back-end uses a version of APE which is not available on the Maven repository.
-To be able to build the back-end container, please download and build [APE 1.1.7](https://github.com/sanctuuary/APE/releases/tag/v1.1.7) first,
-and place it in the back-end directory.
-
-APE Web can be easily deployed using Docker Compose, simply by running:
+Please follow the configuration instructions in the [front-end](https://github.com/sanctuuary/APE-Web/blob/master/front-end/README.md)
+and [back-end](https://github.com/sanctuuary/APE-Web/blob/master/back-end/README.md) README files first.
+After configuring, APE Web can be easily deployed using Docker Compose, simply by running:
 ```shell
 docker-compose up -d
 ```

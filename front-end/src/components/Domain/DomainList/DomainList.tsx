@@ -11,7 +11,7 @@ import { ColumnsType } from 'antd/lib/table';
 import { ColumnFilterItem } from 'antd/lib/table/interface';
 import { SearchOutlined } from '@ant-design/icons';
 import Domain, { Access } from '@models/Domain';
-import styles from './DomainList.module.scss';
+import styles from './DomainList.module.less';
 
 /**
  * Props for DomainList component.

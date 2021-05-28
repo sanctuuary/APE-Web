@@ -8,10 +8,10 @@
 import React, { RefObject } from 'react';
 import { Button, Card, Form, InputNumber, Divider } from 'antd';
 import { FormInstance } from 'antd/lib/form';
-import styles from '@components/Explore/Box.module.scss';
+import styles from '@components/Explore/Box.module.less';
 import { RunOptions } from '@models/workflow/Workflow';
 import TooltipIcon from '@components/TooltipIcon/TooltipIcon';
-import Styles from './WorkflowRun.module.scss';
+import Styles from './WorkflowRun.module.less';
 
 /** Properties of the WorkflowRun component */
 interface WorkflowRunProps {
@@ -22,7 +22,9 @@ interface WorkflowRunProps {
   /** The formRef object to allow updates */
   formRef: RefObject<FormInstance>;
   /** Function to manually update run options */
-  updateRunOptions: (any) => void;
+  updateRunOptions: (runOptions: RunOptions) => void;
+  /** The run parameters limits */
+  runParametersLimits: RunOptions;
 }
 
 /** State of the WorkflowRun component */
@@ -38,23 +40,6 @@ interface WorkflowRunState {
  * The parent component should handle further actions.
  */
 class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
-  /**
-   * The limits on the run parameters. It would be better to fetch them from
-   * the back-end than to hardcode them.
-   */
-  static runParameterLimits = {
-    /** The lower bound to the minimum length */
-    minLength: 0,
-    /** The lower bound to the duration */
-    minDuration: 10,
-    /** The lower bound to the number of solutions */
-    minSolutions: 0,
-    /** The upper bound to the number of solutions */
-    maxSolutions: 100,
-  };
-
-  /** FormRef imported to allow code-based changes of the form values. */
-
   constructor(props: WorkflowRunProps) {
     super(props);
 
@@ -80,14 +65,14 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
    * Update the state when a run option field's value is changed.
    * @param changed The changed field with value
    */
-  onChange = (changed: any) => {
+  onChange = (changed: RunOptions) => {
     const { updateRunOptions } = this.props;
     updateRunOptions(changed);
   };
 
   render() {
     const { loading } = this.state;
-    const { runOptions: options, formRef } = this.props;
+    const { runOptions: options, formRef, runParametersLimits } = this.props;
     return (
       <div className={styles.Box} id="Run">
         <Card
@@ -124,8 +109,8 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
             <Form.Item name="minLength" label="Min steps" className={Styles.Label}>
               <InputNumber
                 id="minLength"
-                min={WorkflowRun.runParameterLimits.minLength}
-                max={options.maxLength}
+                min={0}
+                max={runParametersLimits.minLength}
                 className={Styles.Input}
               />
             </Form.Item>
@@ -133,7 +118,8 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
             <Form.Item name="maxLength" label="Max steps" className={Styles.Label}>
               <InputNumber
                 id="maxLength"
-                min={options.minLength}
+                min={0}
+                max={runParametersLimits.maxLength}
                 className={Styles.Input}
               />
             </Form.Item>
@@ -141,7 +127,8 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
             <Form.Item name="maxDuration" label="Max duration (s)" className={Styles.Label}>
               <InputNumber
                 id="maxDuration"
-                min={WorkflowRun.runParameterLimits.minDuration}
+                min={0}
+                max={runParametersLimits.maxDuration}
                 className={Styles.Input}
               />
             </Form.Item>
@@ -149,8 +136,8 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
             <Form.Item name="solutions" label="Number of solutions" className={Styles.Label} labelAlign="right">
               <InputNumber
                 id="solutions"
-                min={WorkflowRun.runParameterLimits.minSolutions}
-                max={WorkflowRun.runParameterLimits.maxSolutions}
+                min={0}
+                max={runParametersLimits.solutions}
                 className={Styles.Input}
               />
             </Form.Item>

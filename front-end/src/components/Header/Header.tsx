@@ -9,7 +9,7 @@ import React from 'react';
 import { Layout, Menu, Dropdown, Row, Col } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { useSession, signOut } from 'next-auth/client';
-import styles from './Header.module.scss';
+import styles from './Header.module.less';
 
 /**
  * The header component, used accross the entire site.
@@ -53,7 +53,7 @@ function Header() {
       </>
       )}
       <Menu.Item key="1">
-        <div role="button" tabIndex={0} onClick={() => signOut} onKeyPress={() => {}}>
+        <div role="button" tabIndex={0} onClick={() => signOut()} onKeyPress={() => {}}>
           Sign out
         </div>
       </Menu.Item>

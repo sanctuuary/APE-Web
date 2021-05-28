@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import styles from '@components/Compare/ReferenceCompare.module.scss';
+import styles from '@components/Compare/ReferenceCompare.module.less';
 import WorkflowDifference from '@models/workflow/WorkflowDifference';
 
 /**

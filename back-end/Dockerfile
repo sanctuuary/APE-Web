@@ -3,10 +3,7 @@
 FROM maven:3.6.3-adoptopenjdk-11
 WORKDIR /app
 COPY pom.xml /app
-COPY APE-*.jar /app/
-# Install APE 1.1.7 locally, as it's currently not available in the online maven repository
-RUN mvn install:install-file -Dfile="APE-1.1.7.jar"
 RUN mvn compile
 COPY . /app
 RUN mvn package -DskipTests=true -P docker
-ENTRYPOINT ["java", "-jar", "target/backend-1.0.0.jar"]
+ENTRYPOINT ["java", "-jar", "target/backend-1.1.0.jar"]

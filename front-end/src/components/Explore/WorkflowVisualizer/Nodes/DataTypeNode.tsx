@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { Handle, Position } from 'react-flow-renderer';
-import styles from './Node.module.scss';
+import styles from './Node.module.less';
 
 /**
  * Node representing workflow tools' data type for the {@link WorkflowVisualizer}.
