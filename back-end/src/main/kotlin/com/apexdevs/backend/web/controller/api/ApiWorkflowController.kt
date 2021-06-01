@@ -14,6 +14,7 @@ import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
+import com.apexdevs.backend.persistence.exception.SynthesisFlagException
 import com.apexdevs.backend.persistence.filesystem.FileTypes
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import org.json.JSONObject
@@ -152,6 +153,8 @@ class ApiWorkflowController(
                     throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough rights for provided run parameters", exc)
                 is RunParametersExceedLimitsException ->
                     throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
+                is SynthesisFlagException ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exc.getFriendlyMessage(), exc)
                 else ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
             }
