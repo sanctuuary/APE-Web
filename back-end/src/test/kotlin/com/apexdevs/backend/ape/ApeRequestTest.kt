@@ -27,6 +27,7 @@ import nl.uu.cs.ape.sat.core.solutionStructure.SolutionWorkflow
 import nl.uu.cs.ape.sat.core.solutionStructure.TypeNode
 import nl.uu.cs.ape.sat.models.AllModules
 import nl.uu.cs.ape.sat.models.AllTypes
+import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
 import nl.uu.cs.ape.sat.models.logic.constructs.TaxonomyPredicate
 import nl.uu.cs.ape.sat.utils.APEDomainSetup
 import org.json.JSONObject
@@ -72,6 +73,7 @@ internal class ApeRequestTest {
         every { mockPath.toString() } returns "Test"
         every { mockSolutionList.numberOfSolutions } returns 1
         every { mockSolutionList.get(any()) } returns mockSolutionWorkflow
+        every { mockSolutionList.flag } returns SynthesisFlag.NONE
         every { mockSolutionWorkflow.moduleNodes.size } returns 1
         every { mockSolutionWorkflow.workflowInputTypeStates } returns listOf(mockTypeNode)
         every { mockSolutionWorkflow.workflowOutputTypeStates } returns listOf(mockTypeNode)
@@ -108,6 +110,7 @@ internal class ApeRequestTest {
         every { mockPath.toString() } returns "Test"
         every { mockSolutionList.numberOfSolutions } returns 1
         every { mockSolutionList.get(any()) } returns mockSolutionWorkflow
+        every { mockSolutionList.flag } returns SynthesisFlag.NONE
         every { mockSolutionWorkflow.moduleNodes.size } returns 0
         every { runParametersOperation.getGlobalRunParameters() } returns RunParameters()
         every { mockConfig.solutionMinLength } returns 30
