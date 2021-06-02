@@ -25,7 +25,7 @@ function AboutPage() {
         <Col span={12}>
           <Title>About us</Title>
           <Paragraph>
-            APE Web View is a graphical interface for the <strong>APE library</strong>.
+            APE Web is a graphical interface for the <strong>APE library</strong>.
             APE (Automated Pipeline Explorer) is a command line tool and Java API
             for the automated exploration of possible computational pipelines
             (scientific workflows) from large collections of computational tools.
