@@ -1,0 +1,67 @@
+stages:
+  - "Unit"
+  - "Build"
+  - "Lint"
+jobs:
+  include:
+    ### Back-end
+
+    # Back-end unit tests
+    #- stage: "Unit"
+    #  language: java
+    #  jdk: openjdk11
+    #  before_script:
+    #    - cd back-end
+    #  script:
+    #    - mvn test
+    
+    # Back-end build test
+    - stage: "Build"
+      language: java
+      jdk: openjdk11
+      before_script:
+        - cd back-end
+      script:
+        - mvn package -DskipTests=true
+
+    # Back-end lint test
+    - stage: "Lint"
+      language: java
+      jdk: openjdk11
+      before_script:
+        - cd back-end
+      script:
+        - mvn ktlint:check
+
+
+    ### Front-end
+
+    # Front-end unit tests
+    - stage: "Unit"
+      language: node_js
+      node_js: 14
+      before_script:
+        - cd front-end
+      script:
+        - npm install
+        - npm run test
+
+    # Front-end build test
+    - stage: "Build"
+      language: node_js
+      node_js: 14
+      before_script:
+        - cd front-end
+      script:
+        - npm install
+        - npm run build
+
+    # Front-end lint test
+    - stage: "Lint"
+      language: node_js
+      node_js: 14
+      before_script:
+        - cd front-end
+      script:
+        - npm install
+        - npm run lint
