@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - More specific error messages are shown when a workflow run / synthesis gets interrupted.
 - Change occurrences of "APE Web View" to "APE Web".
+- Moved front-end Docker container from Node.js 12 to Node.js 14.
+- Logging of back-end tests is less verbose (information about the tests themselves is not affected).
+
+### Fixed
+
+- Test application.properties of back-end was in the wrong location.
 
 ## [1.1.0] - 2021-05-28
 
