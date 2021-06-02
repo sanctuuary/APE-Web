@@ -5,8 +5,8 @@ stages:
 jobs:
   include:
     ### Back-end
-  
-    # Back-end with Java 11 test
+
+    # Back-end unit tests
     #- stage: "Unit"
     #  language: java
     #  jdk: openjdk11
@@ -14,6 +14,15 @@ jobs:
     #    - cd back-end
     #  script:
     #    - mvn test
+    
+    # Back-end build test
+    - stage: "Build"
+      language: java
+      jdk: openjdk11
+      before_script:
+        - cd back-end
+      script:
+        - mvn package -DskipTests=true
 
     # Back-end lint test
     - stage: "Lint"
@@ -27,17 +36,7 @@ jobs:
 
     ### Front-end
 
-    # Front-end with Node.js 12 unit tests
-    - stage: "Unit"
-      language: node_js
-      node_js: 12
-      before_script:
-        - cd front-end
-      script:
-        - npm install
-        - npm run test
-
-    # Front-end with Node.js 14 unit tests
+    # Front-end unit tests
     - stage: "Unit"
       language: node_js
       node_js: 14
@@ -47,17 +46,7 @@ jobs:
         - npm install
         - npm run test
 
-    # Front-end with Node.js 12 build test
-    - stage: "Build"
-      language: node_js
-      node_js: 12
-      before_script:
-        - cd front-end
-      script:
-        - npm install
-        - npm run build
-
-    # Front-end with Node.js 14 build test
+    # Front-end build test
     - stage: "Build"
       language: node_js
       node_js: 14
@@ -67,17 +56,7 @@ jobs:
         - npm install
         - npm run build
 
-    # Front-end with Node.js 12 lint test
-    - stage: "Lint"
-      language: node_js
-      node_js: 12
-      before_script:
-        - cd front-end
-      script:
-        - npm install
-        - npm run lint
-
-    # Front-end with Node.js 14 lint test
+    # Front-end lint test
     - stage: "Lint"
       language: node_js
       node_js: 14
