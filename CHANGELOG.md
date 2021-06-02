@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - More specific error messages are shown when a workflow run / synthesis gets interrupted.
+- Change occurrences of "APE Web View" to "APE Web".
 
 ## [1.1.0] - 2021-05-28
 

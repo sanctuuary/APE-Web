@@ -73,10 +73,10 @@ function DomainsPage({ publicDomains, ownedDomains, sharedDomains, session }: ID
         <title>Home | APE</title>
       </Head>
       <div>
-        <Title>Welcome to APE Web View</Title>
+        <Title>Welcome to APE Web</Title>
         <Paragraph>&nbsp;</Paragraph>
         <Paragraph>
-          APE (Automated Pipeline Explorer) Web View is a graphical interface for the&nbsp;
+          APE (Automated Pipeline Explorer) Web is a graphical interface for the&nbsp;
           <strong>APE library</strong>&nbsp;
           (see <a href="https://github.com/sanctuuary/APE/" target="_blank" rel="noreferrer noopener">GitHub</a>),
           used for the automated exploration of possible computational pipelines
@@ -93,7 +93,7 @@ function DomainsPage({ publicDomains, ownedDomains, sharedDomains, session }: ID
           <a href="https://ape-framework.readthedocs.io/en/latest/" target="_blank" rel="noreferrer noopener">our page</a>.
         </Paragraph>
         <Paragraph>
-          APE Web View allows you to explore and automatically compose
+          APE Web allows you to explore and automatically compose
           these workflows from pre-defined domains
           (such as image manipulation domain using the ImageMagick toolset).
           In addition you are encouraged to create your own domains and share them with other users.
