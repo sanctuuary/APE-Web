@@ -26,7 +26,7 @@ function ContactPage() {
           <Title>Contact</Title>
           <Paragraph>&nbsp;</Paragraph>
           <Paragraph>
-            For any questions concerning APE and APE Web View you can get in touch with:
+            For any questions concerning APE and APE Web you can get in touch with:
           </Paragraph>
           <ul>
             <li>Vedran Kasalica (<Link href="mailto:v.kasalica@uu.nl">v.kasalica[at]uu.nl</Link>), lead developer</li>

@@ -23,12 +23,12 @@ function PrivacyPage() {
       <Row>
         <Col span={6} />
         <Col span={12}>
-          <Title>APE Web View Privacy Policy</Title>
+          <Title>APE Web Privacy Policy</Title>
           <Paragraph>
-            At APE WEb View, accessible at ape.science.uu.nl,
+            At APE Web, accessible at ape.science.uu.nl,
             one of our main priorities is the privacy of our visitors.
             This Privacy Policy document contains types of information
-            that is collected and recorded by the APE Web View website and how we use it.
+            that is collected and recorded by the APE Web website and how we use it.
           </Paragraph>
           <Paragraph>
             If you have additional questions or require more information about our Privacy Policy,
@@ -38,7 +38,7 @@ function PrivacyPage() {
           <Paragraph>
             This privacy policy applies only to our online activities and is valid for
             visitors to our website with regards to the information that they shared and/or
-            collect in APE Web View.
+            collect in APE Web.
             This policy is not applicable to any information collected offline
             or via channels other than this website.
           </Paragraph>
