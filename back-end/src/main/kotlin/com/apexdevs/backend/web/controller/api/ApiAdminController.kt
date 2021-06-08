@@ -17,6 +17,7 @@ import com.apexdevs.backend.web.controller.entity.runparameters.RunParametersDet
 import com.apexdevs.backend.web.controller.entity.runparameters.RunParametersUploadRequest
 import com.apexdevs.backend.web.controller.entity.topic.TopicUploadRequest
 import com.apexdevs.backend.web.controller.entity.user.AdminApproveRequest
+import com.apexdevs.backend.web.controller.entity.user.AdminStatusRequest
 import com.apexdevs.backend.web.controller.entity.user.PendingUserRequestInfo
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
@@ -171,6 +172,30 @@ class ApiAdminController(val userOperation: UserOperation, val topicOperation: T
             when (exc) {
                 is AccessDeniedException ->
                     throw ResponseStatusException(HttpStatus.UNAUTHORIZED, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Change the admin status of a user.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/adminstatus")
+    fun setUserAdminStatus(@AuthenticationPrincipal admin: User, @RequestBody adminStatusRequest: AdminStatusRequest) {
+        try {
+            // Check if the user is an administrator
+            if (!userOperation.userIsAdmin(admin.username))
+                throw AccessDeniedException("User: ${admin.username} is not allowed to access this route")
+
+            userOperation.setUserAdminStatus(adminStatusRequest.userId, adminStatusRequest.adminStatus)
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.UNAUTHORIZED, exc.message, exc)
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
                 else ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
             }

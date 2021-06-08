@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add component to grant or revoke administrator privileges to / from users.
+- Add endpoint for changing the administrator status of users.
+- Add (admin only) endpoint for getting a list of all users.
+
 ### Changed
 
 - More specific error messages are shown when a workflow run / synthesis gets interrupted.

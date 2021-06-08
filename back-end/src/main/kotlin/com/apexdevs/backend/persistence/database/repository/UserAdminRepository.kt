@@ -17,4 +17,5 @@ import java.util.Optional
 @Repository
 interface UserAdminRepository : MongoRepository<UserAdmin, ObjectId> {
     fun findByUserIdAndAdminStatus(userId: ObjectId, adminStatus: AdminStatus): Optional<UserAdmin>
+    fun findByUserId(userId: ObjectId): Optional<UserAdmin>
 }

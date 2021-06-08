@@ -4,11 +4,7 @@
  */
 package com.apexdevs.backend.persistence
 
-import com.apexdevs.backend.persistence.database.entity.AdminStatus
-import com.apexdevs.backend.persistence.database.entity.User
-import com.apexdevs.backend.persistence.database.entity.UserApproveRequest
-import com.apexdevs.backend.persistence.database.entity.UserRequest
-import com.apexdevs.backend.persistence.database.entity.UserStatus
+import com.apexdevs.backend.persistence.database.entity.*
 import com.apexdevs.backend.persistence.database.repository.UserAdminRepository
 import com.apexdevs.backend.persistence.database.repository.UserApproveRequestRepository
 import com.apexdevs.backend.persistence.database.repository.UserRepository
@@ -21,6 +17,7 @@ import org.springframework.dao.DuplicateKeyException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.security.InvalidParameterException
+import java.util.*
 
 /**
  * Performs managed user operations on the database
@@ -172,6 +169,49 @@ class UserOperation(
             }
 
             return pendingInfo
+        }
+    }
+
+    /**
+     * Get all approved users.
+     */
+    fun approvedUsers(): List<User> {
+        val approved = userApproveRequestRepository.findByStatus(UserRequest.Approved)
+
+        return if (approved.isEmpty())
+            emptyList()
+        else
+            approved.map { a -> userRepository.findById(a.userId).get() }
+    }
+
+    /**
+     * Set the AdminStatus of a user.
+     * @throws UserNotFoundException When no user with the given userId could be found.
+     */
+    fun setUserAdminStatus(userId: ObjectId, adminStatus: AdminStatus) {
+        // Check if the user exists
+        val user = userRepository.findById(userId)
+        if (user.isEmpty) {
+            throw UserNotFoundException(this, "User with id: $userId not found")
+        }
+
+        val existing = userAdminRepository.findByUserId(userId)
+        if (existing.isPresent) {
+            // Edit a previously revoked UserAdmin entry
+            val userAdmin = existing.get()
+            val updated = UserAdmin(
+                userAdmin.id,
+                userAdmin.userId,
+                adminStatus
+            )
+            userAdminRepository.save(updated)
+        } else {
+            // Add a new UserAdmin entry
+            val new = UserAdmin(
+                userId,
+                adminStatus
+            )
+            userAdminRepository.insert(new)
         }
     }
 }

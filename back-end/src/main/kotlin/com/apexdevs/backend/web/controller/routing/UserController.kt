@@ -76,4 +76,24 @@ class UserController(val userOperation: UserOperation) {
             }
         }
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/")
+    fun getUsers(@AuthenticationPrincipal user: User): List<UserInfo> {
+        try {
+            // Check if the user is an administrator
+            if (!userOperation.userIsAdmin(user.username))
+                throw AccessDeniedException("User: ${user.username} is not allowed to access this route")
+
+            val users = userOperation.approvedUsers()
+            return users.map { u -> UserInfo(u, userOperation.userIsAdmin(u.email), true) }
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to view this profile", exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
 }
