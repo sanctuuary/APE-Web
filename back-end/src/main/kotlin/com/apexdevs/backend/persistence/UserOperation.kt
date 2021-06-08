@@ -4,7 +4,12 @@
  */
 package com.apexdevs.backend.persistence
 
-import com.apexdevs.backend.persistence.database.entity.*
+import com.apexdevs.backend.persistence.database.entity.AdminStatus
+import com.apexdevs.backend.persistence.database.entity.User
+import com.apexdevs.backend.persistence.database.entity.UserAdmin
+import com.apexdevs.backend.persistence.database.entity.UserApproveRequest
+import com.apexdevs.backend.persistence.database.entity.UserRequest
+import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.database.repository.UserAdminRepository
 import com.apexdevs.backend.persistence.database.repository.UserApproveRequestRepository
 import com.apexdevs.backend.persistence.database.repository.UserRepository
@@ -17,7 +22,6 @@ import org.springframework.dao.DuplicateKeyException
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 import java.security.InvalidParameterException
-import java.util.*
 
 /**
  * Performs managed user operations on the database
