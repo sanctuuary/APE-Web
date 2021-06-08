@@ -84,8 +84,8 @@ class SecurityHttpConfig(val userDetailsService: UserDetailsService, val passwor
             .antMatchers(HttpMethod.GET, "/login").permitAll() // Temporary default login
             .antMatchers(HttpMethod.GET, "/domain", "/domain/**", "/workflow/**").permitAll()
             .antMatchers(HttpMethod.GET, "/topic", "/topic/**").permitAll()
-            .antMatchers(HttpMethod.GET, "/user/**").hasAnyRole("USER", "UNAPPROVED")
             .antMatchers(HttpMethod.GET, "/user/").hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, "/user/**").hasAnyRole("USER", "UNAPPROVED")
             .antMatchers(HttpMethod.GET, "/api/domain/with-user-access").hasRole("USER")
             .antMatchers(HttpMethod.GET, "/api/workflow/**").permitAll()
             .antMatchers(HttpMethod.GET, "/api/domain/download/**").permitAll()
