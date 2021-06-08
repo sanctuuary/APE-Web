@@ -4,13 +4,10 @@
  */
 package com.apexdevs.backend.web.controller.routing
 
-import com.apexdevs.backend.persistence.DomainOperation
-import com.apexdevs.backend.persistence.TopicOperation
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.User
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.database.repository.UserRepository
-import com.apexdevs.backend.persistence.filesystem.DomainFileService
 import com.apexdevs.backend.web.security.SecurityMVCTestConfig
 import com.apexdevs.backend.web.security.SecurityTestConfig
 import com.ninjasquad.springmockk.MockkBean
@@ -26,6 +23,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
@@ -36,12 +35,6 @@ import java.util.Optional
 @ContextConfiguration(classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, UserController::class])
 @WebAppConfiguration
 class UserControllerMVCTest(@Autowired val context: WebApplicationContext) {
-    @MockkBean(relaxed = true)
-    private lateinit var storageServiceDomain: DomainFileService
-    @MockkBean(relaxed = true)
-    private lateinit var domainOperation: DomainOperation
-    @MockkBean(relaxed = true)
-    private lateinit var topicOperation: TopicOperation
     @MockkBean
     private lateinit var userOperation: UserOperation
     @MockkBean
@@ -134,5 +127,29 @@ class UserControllerMVCTest(@Autowired val context: WebApplicationContext) {
         }.andExpect {
             status { isInternalServerError }
         }
+    }
+
+    @Test
+    @WithUserDetails("admin@test.test")
+    fun `Assert getUsers is accessible by admins`() {
+        val user = User(ObjectId(), "user@test.test", "test", "test", UserStatus.Approved)
+        every { userOperation.userIsAdmin(any()) } returns true
+        every { userOperation.approvedUsers() } returns listOf(user)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/user/")
+        ).andExpect(MockMvcResultMatchers.status().isOk)
+    }
+
+    @Test
+    @WithUserDetails("user@test.test")
+    fun `Assert getUsers is not accessible by regular users`() {
+        val user = User(ObjectId(), "user@test.test", "test", "test", UserStatus.Approved)
+        every { userOperation.userIsAdmin(any()) } returns false
+        every { userOperation.approvedUsers() } returns listOf(user)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("/user/")
+        ).andExpect(MockMvcResultMatchers.status().isForbidden)
     }
 }
