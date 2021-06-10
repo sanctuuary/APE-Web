@@ -62,7 +62,7 @@ class UserController(val userOperation: UserOperation) {
             val isAdmin = userOperation.userIsAdmin(userResult.get().email)
 
             // create user info as response
-            return UserInfo(userResult.get(), isAdmin)
+            return UserInfo(userResult.get(), isAdmin, true)
         } catch (exc: Exception) {
             when (exc) {
                 is HttpClientErrorException.BadRequest, is IllegalArgumentException ->
@@ -86,7 +86,7 @@ class UserController(val userOperation: UserOperation) {
                 throw AccessDeniedException("User: ${user.username} is not allowed to access this route")
 
             val users = userOperation.approvedUsers()
-            return users.map { u -> UserInfo(u, userOperation.userIsAdmin(u.email), true) }
+            return users.map { u -> UserInfo(u, userOperation.userIsAdmin(u.email), false) }
         } catch (exc: Exception) {
             when (exc) {
                 is AccessDeniedException ->

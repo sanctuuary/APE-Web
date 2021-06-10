@@ -51,7 +51,7 @@ class UsernamePasswordAPISuccessHandler(val userOperation: UserOperation) : Simp
                     val isAdmin = userOperation.userIsAdmin(principal.username)
 
                     // wrap user result into JSON object
-                    val json = JSONObject.wrap(UserInfo(userResult.get(), isAdmin))
+                    val json = JSONObject.wrap(UserInfo(userResult.get(), isAdmin, true))
                     // write JSON into response
                     response?.writer?.write(json.toString())
                 } else {

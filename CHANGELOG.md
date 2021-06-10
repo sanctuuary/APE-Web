@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change occurrences of "APE Web View" to "APE Web".
 - Moved front-end Docker container from Node.js 12 to Node.js 14.
 - Logging of back-end tests is less verbose (information about the tests themselves is not affected).
+- User's email addresses are no longer included in responses from the back-end by default (previously email addresses were also only given when necessary).
 
 ### Fixed
 
