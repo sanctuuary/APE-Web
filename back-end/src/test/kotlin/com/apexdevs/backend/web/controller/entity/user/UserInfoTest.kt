@@ -16,22 +16,22 @@ internal class UserInfoTest {
         val user = User(ObjectId(), "user@test.test", "test", "test", UserStatus.Approved)
         val userInfo = UserInfo(user, false)
         assertEquals(userInfo.userId, user.id.toString())
-        assertEquals(userInfo.email, user.email)
+        assertNull(userInfo.email)
         assertEquals(userInfo.displayName, user.displayName)
         assertEquals(userInfo.status, user.status)
         assertEquals(userInfo.isAdmin, false)
     }
 
     /**
-     * Test if the constructor with the optional "hideMail" argument works.
+     * Test if the optional "includeEmail" argument works as intended.
      */
     @Test
-    fun hideEmailConstructor() {
+    fun includeEmailConstructor() {
         val user = User(ObjectId(), "user@test.test", "test", "test", UserStatus.Approved)
         val isAdmin = true
         val userInfo = UserInfo(user, isAdmin, true)
         assertEquals(userInfo.userId, user.id.toString())
-        assertNull(userInfo.email)
+        assertEquals(userInfo.email, user.email)
         assertEquals(userInfo.displayName, user.displayName)
         assertEquals(userInfo.status, user.status)
         assertEquals(userInfo.isAdmin, isAdmin)
