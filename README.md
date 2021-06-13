@@ -6,9 +6,11 @@ This project is APE Web, the web interface for APE.
 It consists of a separate front-end and back-end, which can be found in their own respective directories.
 For details regarding the front-end and back-end specifically, please see their README files.
 
+APE Web is hosted at https://ape.science.uu.nl/ 
+
 ## Requirements
 
-To run APE web, the front-end requires [Node.js](https://nodejs.org) and the back-end requires [Java](https://www.oracle.com/java/technologies/javase-downloads.html#JDK11).
+To run APE Web, the front-end requires [Node.js](https://nodejs.org) and the back-end requires [Java](https://www.oracle.com/java/technologies/javase-downloads.html#JDK11).
 Full details can be found in their own respective README files.
 
 The full project can also be run using Docker Compose.
