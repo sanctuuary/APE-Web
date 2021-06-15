@@ -16,4 +16,5 @@ interface UserDomainAccessRepository : MongoRepository<UserDomainAccess, ObjectI
     fun findByUserIdAndDomainId(userId: ObjectId, domainId: ObjectId): Optional<UserDomainAccess>
     fun findByDomainId(domainId: ObjectId): List<UserDomainAccess>
     fun findAllByUserIdAndAccess(userId: ObjectId, access: DomainAccess): List<UserDomainAccess>
+    fun findAllByDomainIdAndAccess(domainId: ObjectId, access: DomainAccess): List<UserDomainAccess>
 }

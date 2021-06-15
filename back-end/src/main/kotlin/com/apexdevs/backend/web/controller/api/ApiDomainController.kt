@@ -20,6 +20,7 @@ import com.apexdevs.backend.persistence.filesystem.FileTypes
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
 import com.apexdevs.backend.web.controller.entity.domain.DomainWithAccessResponse
+import com.apexdevs.backend.web.controller.entity.domain.UserWithAccessResponse
 import org.bson.types.ObjectId
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
@@ -237,6 +238,62 @@ class ApiDomainController(
             }
 
             return results
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Get all users with access to a domain.
+     * @param user authenticated user principal, automatically retrieved from session
+     * @param domainId The id of the domain of which the users should have access
+     * @param accessRights The access levels the users may have
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/users-with-access/{domainId}")
+    fun getUsersWithDomainAccess(
+        @AuthenticationPrincipal user: User,
+        @PathVariable domainId: ObjectId,
+        @RequestParam accessRights: List<DomainAccess>
+    ): List<UserWithAccessResponse> {
+        try {
+            // check if the user is the owner of the domain
+            val authUser = userOperation.getByEmail(user.username)
+            val domain = domainOperation.getDomain(domainId)
+            val requestUserIsOwner = domainOperation.hasUserAccess(domain, DomainAccess.Owner, authUser.id)
+            if (!requestUserIsOwner)
+                throw AccessDeniedException("User is not the owner of the domain")
+
+            // get a list of all users who have access to the domain
+            val domainAccessList = domainOperation.getUsersByDomainAndAccess(domainId, accessRights)
+            // create a list of front-end safe objects to send back
+            val accessInfo: MutableList<UserWithAccessResponse> = mutableListOf()
+            for (domainAccess in domainAccessList) {
+                val userWithAccess = userOperation.userRepository.findById(domainAccess.userId)
+                if (userWithAccess.isEmpty) {
+                    log.warning(
+                        "Failed to find user with id ${domainAccess.userId}," +
+                            "but a user with this id does have access to the domain with id: ${domainAccess.domainId}" +
+                            " according to UserDomainAccess object with id: ${domainAccess.id}!"
+                    )
+                    continue
+                }
+
+                val info = UserWithAccessResponse(
+                    domainAccess.id.toString(),
+                    domainAccess.userId.toString(),
+                    userWithAccess.get().displayName,
+                    domainAccess.domainId.toString(),
+                    domainAccess.access
+                )
+                accessInfo.add(info)
+            }
+            return accessInfo
         } catch (exc: Exception) {
             when (exc) {
                 is AccessDeniedException ->

@@ -18,6 +18,7 @@ import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainDetails
 import com.apexdevs.backend.web.controller.entity.domain.DomainRequest
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
+import com.apexdevs.backend.web.controller.entity.domain.UserAccessUpload
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -150,6 +153,40 @@ class DomainController(val storageService: StorageService, val domainOperation: 
             log.info("Domain: ${domain.name} with id: ${domain.id} was updated by ${u.email}")
         } catch (exc: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+        }
+    }
+
+    /**
+     * Set the access a user has to a domain.
+     * @param user authenticated user principal, automatically retrieved from session
+     * @param id The domain to which the access is set
+     * @param userAccess The information to set the access (the user id and access level)
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/{id}/access")
+    fun setUserAccess(
+        @AuthenticationPrincipal user: User,
+        @PathVariable id: ObjectId,
+        @RequestBody userAccess: UserAccessUpload
+    ) {
+        try {
+            // check if the user is the owner of the domain
+            val authUser = userOperation.getByEmail(user.username)
+            val domain = domainOperation.getDomain(id)
+            val requestUserIsOwner = domainOperation.hasUserAccess(domain, DomainAccess.Owner, authUser.id)
+            if (!requestUserIsOwner)
+                throw AccessDeniedException("User is not the owner of the domain")
+
+            domainOperation.setUserAccess(id, userAccess.userId, userAccess.access)
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
         }
     }
 
