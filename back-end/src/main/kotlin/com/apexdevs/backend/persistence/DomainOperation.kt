@@ -246,4 +246,18 @@ class DomainOperation(val domainRepository: DomainRepository, val userRepository
         // Return true if user has access rights and these are better or equal to required access rights
         return userAccess.isPresent && userAccess.get().access >= requiredAccess
     }
+
+    /**
+     * Gets all users who have one of the given access levels to a certain domain.
+     * @param domainId The id of the domain to which the users should have access.
+     * @param access The access levels which the users should have.
+     * @return A list of user id's with the access level the users have to the domain.
+     */
+    fun getUsersByDomainAndAccess(domainId: ObjectId, access: List<DomainAccess>): List<UserDomainAccess> {
+        val usersByDomainAndAccess: MutableList<UserDomainAccess> = mutableListOf()
+        for (accessRight in access) {
+            usersByDomainAndAccess += userDomainAccessRepository.findAllByDomainIdAndAccess(domainId, accessRight)
+        }
+        return usersByDomainAndAccess.toList()
+    }
 }
