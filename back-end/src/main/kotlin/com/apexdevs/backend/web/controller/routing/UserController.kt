@@ -5,6 +5,8 @@
 package com.apexdevs.backend.web.controller.routing
 
 import com.apexdevs.backend.persistence.UserOperation
+import com.apexdevs.backend.persistence.database.entity.DomainAccess
+import com.apexdevs.backend.persistence.database.entity.UserDomainAccess
 import com.apexdevs.backend.persistence.exception.UserNotFoundException
 import com.apexdevs.backend.web.controller.entity.user.UserInfo
 import org.bson.types.ObjectId
@@ -77,6 +79,9 @@ class UserController(val userOperation: UserOperation) {
         }
     }
 
+    /**
+     * Get all approved users.
+     */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/")
     fun getUsers(@AuthenticationPrincipal user: User): List<UserInfo> {
