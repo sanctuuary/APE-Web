@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (Admin only) endpoint for getting a list of all users.
 - Endpoint to get all users with certain access to a domain.
 - Endpoint to set a user's access to a domain.
+- Component to manage access to a domain.
 
 ### Changed
 

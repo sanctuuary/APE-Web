@@ -8,12 +8,15 @@
 import React from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Button, Result } from 'antd';
+import { Button, Result, Typography } from 'antd';
 import DomainEdit from '@components/Domain/DomainEdit/DomainEdit';
 import Domain, { Topic } from '@models/Domain';
 import { getSession } from 'next-auth/client';
 import { fetchTopics } from '@components/Domain/Domain';
+import AccessManager from '@components/Domain/AccessManager/AccessManager';
 import styles from './[id].module.less';
+
+const { Title } = Typography;
 
 /**
  * Props for DomainEditPage
@@ -98,11 +101,14 @@ function DomainEditPage({ domain, topics, notFound, access }: IDomainEditPagePro
             <Head>
               <title>Edit {domain.title} | APE</title>
             </Head>
+            <Title level={2}>Domain</Title>
             <DomainEdit
               domain={domain}
               topics={topics}
               router={router}
             />
+            <Title level={2}>Permissions</Title>
+            <AccessManager domainId={domain.id} />
           </div>
         )
       }
