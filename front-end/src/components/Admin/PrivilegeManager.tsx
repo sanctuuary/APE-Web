@@ -7,7 +7,9 @@ import { getSession } from 'next-auth/client';
 import styles from './PrivilegeManager.module.less';
 
 interface PrivilegeManagerState {
+  /** The user of the current session. */
   currentUser: UserInfo,
+  /** The users in the table. */
   users: UserInfo[],
 }
 
