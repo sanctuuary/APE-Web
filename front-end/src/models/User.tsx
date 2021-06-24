@@ -12,7 +12,7 @@ export default interface UserInfo {
   /** The display name of the user. */
   displayName: string,
   /** The status of the user account. */
-  status: string,
+  status: UserStatus,
   /** Whether the user is an administrator. */
   isAdmin: boolean,
 }
