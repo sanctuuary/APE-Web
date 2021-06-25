@@ -8,6 +8,11 @@ For details regarding the front-end and back-end specifically, please see their 
 
 APE Web is hosted at https://ape.science.uu.nl/ 
 
+A short video that explains the platform is available at:
+<div align="left">
+  <a href="https://www.youtube.com/watch?v=_dLJeBs5iUU" target="_blank"><img src="https://user-images.githubusercontent.com/11068408/123432265-7c45ee80-d5ca-11eb-886d-06309e8ecdb8.png" alt="APE - Youtube video" width=30%></a>
+</div>
+
 ## Requirements
 
 To run APE Web, the front-end requires [Node.js](https://nodejs.org) and the back-end requires [Java](https://www.oracle.com/java/technologies/javase-downloads.html#JDK11).
