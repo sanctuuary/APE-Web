@@ -101,4 +101,23 @@ class UserController(val userOperation: UserOperation) {
             }
         }
     }
+
+    /**
+     * Find a user by their e-mail address.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/email/{email}")
+    fun findUserByEmail(@AuthenticationPrincipal user: User, @PathVariable email: String): UserInfo {
+        try {
+            val foundUser = userOperation.getByEmail(email)
+            return UserInfo(foundUser, false)
+        } catch (exc: Exception) {
+            when (exc) {
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User with given e-mail address not found", exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
 }
