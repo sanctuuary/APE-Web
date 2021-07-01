@@ -23,6 +23,7 @@ import com.apexdevs.backend.persistence.exception.UserNotFoundException
 import com.apexdevs.backend.web.controller.entity.domain.DomainDetails
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
 import org.bson.types.ObjectId
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Component
 
 /**
