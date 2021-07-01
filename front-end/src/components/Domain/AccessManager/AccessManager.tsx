@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Form, Input, message, Select, Table, Tooltip } from 'antd';
-import { Access, UserWithAccess } from '@models/Domain';
+import { Button, Form, Input, message, Modal, Progress, Select, Table, Tooltip } from 'antd';
+import Domain, { Access, UserWithAccess } from '@models/Domain';
 import UserSearch from '@components/UserSearch/UserSearch';
 import { UserAddOutlined } from '@ant-design/icons';
 import UserInfo from '@models/User';
@@ -13,8 +13,10 @@ const { Option } = Select;
  * The props for the {@link AccessManager} component.
  */
 interface AccessManagerProps {
-  /** The id of the domain who's access to manage. */
-  domainId: string,
+  /** The domain who's access to manage. */
+  domain: Domain,
+  /** Callback function when the ownership is transferred to another user. */
+  onOwnershipTransferred: (newOwner: UserInfo) => void,
 }
 
 /**
@@ -23,11 +25,12 @@ interface AccessManagerProps {
 interface AccessManagerState {
   /** The user of the current session. */
   currentUser: UserInfo,
-  currentUserIsOwner: boolean,
   /** The users which have access to the domain (except: Owner, Revoked). */
   usersWithAccess: UserWithAccess[],
   /** The currently selected access level for adding new users. */
   addUserSelectedRole: Access,
+  /** Whether the transfer ownership modal is opened. */
+  transferOwnershipModalVisible: boolean,
 }
 
 /**
@@ -37,38 +40,21 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
   /** React RefObject to refer to the UserSearch element. */
   userSearchRef: React.RefObject<Input>;
 
-  constructor(props: Readonly<AccessManagerProps>) {
+  constructor(props: AccessManagerProps) {
     super(props);
 
     this.userSearchRef = React.createRef();
     this.state = {
       currentUser: null,
-      currentUserIsOwner: false,
       usersWithAccess: [],
       addUserSelectedRole: Access.Read,
+      transferOwnershipModalVisible: false,
     };
   }
 
   async componentDidMount() {
     // Get the current user from the session
     await getSession({}).then((user: any) => this.setState({ currentUser: user.user }));
-
-    // Check if the current user is the owner of this domain
-    const { domainId } = this.props;
-    const { currentUser } = this.state;
-    const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/access/${domainId}/Owner`;
-    fetch(endpoint, {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((data: UserWithAccess[]) => {
-        data.forEach((u: UserWithAccess) => {
-          if (u.userId === currentUser.userId) {
-            this.setState({ currentUserIsOwner: true });
-          }
-        });
-      });
-
     this.getUsersWithAccess();
   }
 
@@ -76,10 +62,10 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
    * Get all users with access to the domain.
    */
   getUsersWithAccess = async () => {
-    const { domainId } = this.props;
+    const { domain } = this.props;
     const accessLevels = ['Read', 'ReadWrite'].join('/');
 
-    const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/access/${domainId}/${accessLevels}`;
+    const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/access/${domain.id}/${accessLevels}`;
     await fetch(endpoint, {
       method: 'GET',
     })
@@ -109,8 +95,8 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
    * @param value The access level.
    */
   updateAccessLevel = async (userId: string, value: Access) => {
-    const { domainId } = this.props;
-    const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/access/${domainId}`;
+    const { domain } = this.props;
+    const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/access/${domain.id}`;
     await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -130,8 +116,8 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
    * @param userId The id of the user who's access is being revoked.
    */
   onRevoke = (userId: string) => {
-    const { domainId } = this.props;
-    const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/access/${domainId}`;
+    const { domain } = this.props;
+    const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/access/${domain.id}`;
     fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -172,9 +158,7 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
    * @returns True if the user may be added, false if the user may not be added.
    */
   validateAddUser = (email: string): boolean => {
-    const { currentUser, currentUserIsOwner } = this.state;
-    // If the user is not the owner, the user may be added.
-    if (!currentUserIsOwner) { return true; }
+    const { currentUser } = this.state;
 
     /*
      * The current user is the owner, the owner may not downgrade his/her own permissions this way.
@@ -186,6 +170,43 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
       return false;
     }
     return true;
+  };
+
+  /**
+   * Callback for the transfer ownership modal, when the domain ownership should be transferred.
+   * @param newOwner The new owner of the domain.
+   */
+  onTransfer = (newOwner: UserInfo) => {
+    if (newOwner === null) {
+      message.info('Please select a user');
+      return;
+    }
+
+    const { domain, onOwnershipTransferred } = this.props;
+    const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/transfer/${domain.id}`;
+    fetch(endpoint, {
+      method: 'POST',
+      body: newOwner.userId,
+    })
+      .then((response) => response.json())
+      .then((json: any) => {
+        switch (json.outcome) {
+          case 1:
+            message.error('You are not allowed to transfer the ownership of this domain');
+            this.setState({ transferOwnershipModalVisible: false });
+            break;
+          case 2:
+            message.error('Could not find the user to transfer ownership to');
+            break;
+          default:
+            message.info('Domain ownership has been transferred');
+            this.setState({ transferOwnershipModalVisible: false });
+            onOwnershipTransferred(newOwner);
+            break;
+        }
+      })
+      // eslint-disable-next-line no-console
+      .catch((e) => console.error(e));
   };
 
   /**
@@ -266,7 +287,45 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
   ];
 
   render() {
-    const { usersWithAccess } = this.state;
+    const { domain } = this.props;
+    const { usersWithAccess, transferOwnershipModalVisible } = this.state;
+
+    /**
+     * Definition of the modal to transfer ownership.
+     */
+    const TransferOwnershipModal = () => {
+      const [newOwner, setNewOwner] = React.useState<UserInfo>(null);
+
+      return (
+        <Modal
+          visible={transferOwnershipModalVisible}
+          title="Transferring ownership"
+          width="50%"
+          okText="Transfer"
+          cancelText="Cancel"
+          onCancel={() => this.setState({ transferOwnershipModalVisible: false })}
+          onOk={() => this.onTransfer(newOwner)}
+        >
+          <p>
+            You are about to transfer ownership of the domain to a different user.
+            You will still be able to use and edit the domain after the transfer,
+            but you will not be able to manage permissions anymore.
+          </p>
+          <p>Be sure this is what you want to do!</p>
+          <Form>
+            <Form.Item label="Domain name">
+              <Input value={domain.title} contentEditable={false} />
+            </Form.Item>
+            <Form.Item label="Select new owner">
+              <UserSearch
+                onUserFound={(user) => setNewOwner(user)}
+              />
+            </Form.Item>
+          </Form>
+          <Progress percent={newOwner === null ? 50 : 100} />
+        </Modal>
+      );
+    };
 
     return (
       <div>
@@ -277,7 +336,7 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
             style={{ marginBottom: 0 }}
           >
             <Form.Item
-              style={{ display: 'inline-block', width: 'calc(25%)' }}
+              style={{ display: 'inline-block', width: '20%' }}
             >
               <Select
                 showSearch={true}
@@ -289,7 +348,7 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
               </Select>
             </Form.Item>
             <Form.Item
-              style={{ display: 'inline-block', width: 'calc(75%)' }}
+              style={{ display: 'inline-block', width: '68%' }}
             >
               <UserSearch
                 placeholder="Add user by e-mail"
@@ -299,12 +358,24 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
                 ref={this.userSearchRef}
               />
             </Form.Item>
+            <Form.Item
+              style={{ display: 'inline-block', width: '12%' }}
+            >
+              <Button
+                danger
+                onClick={() => this.setState({ transferOwnershipModalVisible: true })}
+                style={{ width: '90%', marginLeft: '10%' }}
+              >
+                Transfer ownership
+              </Button>
+            </Form.Item>
           </Form.Item>
         </Form>
         <Table
           dataSource={this.addKeys(usersWithAccess)}
           columns={this.columns()}
         />
+        <TransferOwnershipModal />
       </div>
     );
   }

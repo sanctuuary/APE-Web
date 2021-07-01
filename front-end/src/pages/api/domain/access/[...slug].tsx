@@ -7,7 +7,7 @@ import { getSession } from 'next-auth/client';
  * @param session The current session.
  * @param domainId The id of the domain to get users with access of it.
  * @param accessLevels The access levels the users may have.
- * @returns A response to the caller of this api andpoint.
+ * @returns A response to the caller of this api endpoint.
  */
 async function handleGET(res: any, session: any, domainId: string, accessLevels: any) {
   let result: UserWithAccess[] | number;
@@ -29,7 +29,7 @@ async function handleGET(res: any, session: any, domainId: string, accessLevels:
     })
     .then((data) => { result = data; });
 
-  // If an error occured, return the HTTP status code.
+  // If an error occurred, return the HTTP status code.
   if (typeof result === 'number') {
     return res.status(result).end();
   }
