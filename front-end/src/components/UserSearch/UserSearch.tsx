@@ -1,14 +1,20 @@
-import React, { Ref } from 'react';
+import React, { CSSProperties, ReactNode, Ref } from 'react';
 import { Input, message } from 'antd';
 import UserInfo from '@models/User';
-import { SearchProps } from 'antd/lib/input';
 
 const { Search } = Input;
 
 /**
  * The props for the {@link UserSearch} component.
  */
-interface UserSearchProps extends SearchProps {
+interface UserSearchProps {
+  /** Placeholder text for the search field. */
+  placeholder?: string,
+  /**
+   * Whether to show an enter button after input, or use another React node.
+   * See Ant Design's documentation on Input.Search: https://ant.design/components/input/#Input.Search.
+   */
+  enterButton?: boolean | ReactNode,
   /** Callback function when a user is found. */
   onUserFound?: (user: UserInfo) => void,
   /**
@@ -16,12 +22,14 @@ interface UserSearchProps extends SearchProps {
    * Return false if a user may not be selected, or true if a user may be selected.
    */
   userValidation?: (email: string) => boolean,
+  /** CSS styling for the internal Search component. */
+  style?: CSSProperties,
 }
 
 /**
  * Component to search users by their e-mail address.
  */
-const UserSearch = React.forwardRef((props: Readonly<UserSearchProps>, ref: Ref<Input>) => {
+const UserSearch = React.forwardRef((props: UserSearchProps, ref: Ref<Input>) => {
   /**
    * Search the user with the given e-mail address.
    * @param mail The e-mail address to search by.
@@ -49,7 +57,7 @@ const UserSearch = React.forwardRef((props: Readonly<UserSearchProps>, ref: Ref<
       });
   };
 
-  const { placeholder, enterButton } = props;
+  const { placeholder, enterButton, style } = props;
 
   return (
     <Search
@@ -58,6 +66,7 @@ const UserSearch = React.forwardRef((props: Readonly<UserSearchProps>, ref: Ref<
       enterButton={enterButton}
       onSearch={searchUser}
       ref={ref}
+      style={style}
     />
   );
 });
@@ -68,6 +77,7 @@ UserSearch.defaultProps = {
   enterButton: false,
   onUserFound: () => {},
   userValidation: () => true,
+  style: null,
 };
 
 export default UserSearch;

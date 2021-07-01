@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - (Admin only) endpoint for getting a list of all users.
 - Endpoint to get all users with certain access to a domain.
 - Endpoint to set a user's access to a domain.
+- Endpoint to transfer the ownership of a domain.
 
 ### Changed
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Test application.properties of back-end was in the wrong location.
+- The 403 result on the domain edit page now redirects to the home page instead of a non-existent page.
 
 ## [1.1.0] - 2021-05-28
 

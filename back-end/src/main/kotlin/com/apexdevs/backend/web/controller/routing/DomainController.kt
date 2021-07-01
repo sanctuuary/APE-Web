@@ -190,6 +190,54 @@ class DomainController(val storageService: StorageService, val domainOperation: 
         }
     }
 
+    /**
+     * Transfer ownership of a domain to a new user.
+     * The old owner will get ReadWrite access.
+     * @param user authenticated user principal, automatically retrieved from session.
+     * @param id the id of the domain to transfer ownership of.
+     * @param userId the user who will receive the ownership of the domain.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("{id}/transfer/{userId}")
+    fun transferOwnership(
+        @AuthenticationPrincipal user: User,
+        @PathVariable id: ObjectId,
+        @PathVariable userId: ObjectId
+    ) {
+        try {
+            // check if the user is the owner of the domain
+            val authUser = userOperation.getByEmail(user.username)
+            val domain = domainOperation.getDomain(id)
+            val requestUserIsOwner = domainOperation.hasUserAccess(domain, DomainAccess.Owner, authUser.id)
+            if (!requestUserIsOwner)
+                throw AccessDeniedException("User is not the owner of the domain")
+
+            // check if the new owner exists
+            val newOwner = userOperation.userRepository.findById(userId)
+            if (newOwner.isEmpty)
+                throw UserNotFoundException(this, "New owner with id: $userId not found")
+
+            // transfer ownership
+            domainOperation.setUserAccess(id, userId, DomainAccess.Owner)
+            domainOperation.setUserAccess(id, authUser.id, DomainAccess.ReadWrite)
+            log.info(
+                "Ownership of domain \"${domain.name}\" with id: ${domain.id} " +
+                    "transferred to user \"${newOwner.get().displayName}\" with id $userId"
+            )
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
+                is DomainNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.NOT_FOUND, exc.message, exc)
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.NOT_FOUND, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
     companion object {
         val log: Logger = Logger.getLogger("DomainController_Logger")
     }

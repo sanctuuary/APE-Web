@@ -10,7 +10,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Button, Result, Typography } from 'antd';
 import DomainEdit from '@components/Domain/DomainEdit/DomainEdit';
-import Domain, { Topic } from '@models/Domain';
+import Domain, { Topic, UserWithAccess } from '@models/Domain';
 import { getSession } from 'next-auth/client';
 import { fetchTopics } from '@components/Domain/Domain';
 import AccessManager from '@components/Domain/AccessManager/AccessManager';
@@ -22,11 +22,18 @@ const { Title } = Typography;
  * Props for DomainEditPage
  */
 interface IDomainEditPageProps {
+  /** The ID of the current user. */
+  userId: string,
   /** The ID of the domain to edit */
   domain: Domain;
+  /** The topics of the domain. */
   topics: Topic[];
+  /** Whether the domain was found. */
   notFound: boolean;
+  /** Whether the user has access to the domain. */
   access: boolean;
+  /** Whether the user is the owner of the domain. */
+  isOwner: boolean;
 }
 
 /**
@@ -61,6 +68,33 @@ async function hasAccess(user, domainID: string): Promise<boolean> {
 }
 
 /**
+ * Check whether a user is the owner of a domain.
+ * @param user The user who we check to be the owner.
+ * @param domainId The domain to check ownership of.
+ * @returns True if the user is the owner, false if the user is not the owner.
+ */
+async function checkOwnership(user, domainId: string): Promise<boolean> {
+  const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/api/domain/users-with-access/${domainId}?accessRights=Owner`;
+  return fetch(endpoint, {
+    method: 'GET',
+    headers: {
+      cookie: user.sessionid,
+    },
+  })
+    .then((response) => response.json())
+    .then((data: UserWithAccess[]) => {
+      let owner = false;
+      data.forEach((u: UserWithAccess) => {
+        if (u.userId === user.userId) {
+          owner = true;
+        }
+      });
+      return owner;
+    })
+    .catch(() => false);
+}
+
+/**
  * Fetch a domain from the back-end.
  * @param user The user information, with the sessionid.
  * @param id The ID of the domain to fetch
@@ -85,16 +119,18 @@ async function fetchDomain(user: any, id: string): Promise<Domain | null> {
 /**
  * Page for editing domains, built around the {@link DomainEdit} component.
  *
- * Includes result pages to be shown in case of erorrs.
+ * Includes result pages to be shown in case of errors.
  */
-function DomainEditPage({ domain, topics, notFound, access }: IDomainEditPageProps) {
+function DomainEditPage(props: IDomainEditPageProps) {
   const router = useRouter();
+  const { userId, domain, topics, notFound, access, isOwner: isOwnerInitial } = props;
+  const [isOwner, setIsOwner] = React.useState<boolean>(isOwnerInitial);
 
   return (
     <div className={styles.sideMargins}>
       { /*
          * Make sure DomainEdit is not rendered before data is loaded.
-         * Otherwise, Ant Desing's Form initialValues does not work.
+         * Otherwise, Ant Design's Form initialValues does not work.
          */
         domain !== null && topics !== [] && access && (
           <div>
@@ -107,8 +143,17 @@ function DomainEditPage({ domain, topics, notFound, access }: IDomainEditPagePro
               topics={topics}
               router={router}
             />
-            <Title level={2}>Permissions</Title>
-            <AccessManager domainId={domain.id} />
+            {
+              isOwner && (
+                <div>
+                  <Title level={2}>Permissions</Title>
+                  <AccessManager
+                    domain={domain}
+                    onOwnershipTransferred={(newOwner) => setIsOwner(newOwner.userId === userId)}
+                  />
+                </div>
+              )
+            }
           </div>
         )
       }
@@ -128,13 +173,13 @@ function DomainEditPage({ domain, topics, notFound, access }: IDomainEditPagePro
         )
       }
       {
-        // Show unauthorized result when the user doesn not have access
+        // Show unauthorized result when the user doesn't not have access
         !access && (
           <Result
             status="403"
             title="403"
             subTitle="Sorry, you do not have access to edit this domain."
-            extra={<Button type="primary" href="/domain">Return to my domains</Button>}
+            extra={<Button type="primary" href="/">Return to the home page</Button>}
           />
         )
       }
@@ -143,29 +188,35 @@ function DomainEditPage({ domain, topics, notFound, access }: IDomainEditPagePro
 }
 
 export async function getServerSideProps({ query, req }) {
-  // Get the domainID fromt the url parameters
+  // Get the domainID from the url parameters
   const session = await getSession({ req });
-  let access;
+  let access: boolean = false;
+  let owner: boolean = false;
   let notFound = false;
   let domain = null;
   let topics = [];
-  await hasAccess(session.user, query.id).then((acc) => { access = acc; });
-  if (access) {
-    await fetchDomain(session.user, query.id)
-      .then((d) => {
-        // Domain not found, update state
-        if (d === null) {
-          notFound = true;
-          return;
-        }
-        domain = d;
-      });
-    // Get all topics
-    await fetchTopics(session.user, true)
-      .then((t) => { topics = t; });
+
+  if (session !== null) {
+    await hasAccess(session.user, query.id).then((acc) => { access = acc; });
+    if (access) {
+      await fetchDomain(session.user, query.id)
+        .then((d) => {
+          // Domain not found, update state
+          if (d === null) {
+            notFound = true;
+            return;
+          }
+          domain = d;
+        });
+      // Get all topics
+      await fetchTopics(session.user, true)
+        .then((t) => { topics = t; });
+      await checkOwnership(session.user, query.id)
+        .then((o) => { owner = o; });
+    }
   }
   return {
-    props: { access, notFound, domain, topics },
+    props: { access, isOwner: owner, notFound, domain, topics },
   };
 }
 
