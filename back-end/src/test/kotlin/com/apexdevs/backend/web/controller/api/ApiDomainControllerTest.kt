@@ -21,6 +21,7 @@ import com.apexdevs.backend.persistence.exception.UserNotFoundException
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
 import com.apexdevs.backend.web.controller.entity.domain.DomainWithAccessResponse
+import com.apexdevs.backend.web.controller.entity.domain.UserWithAccessResponse
 import com.mongodb.MongoException
 import io.mockk.Runs
 import io.mockk.every
@@ -40,6 +41,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.User
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.server.ResponseStatusException
+import java.util.Optional
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class ApiDomainControllerTest {
@@ -365,5 +367,47 @@ internal class ApiDomainControllerTest {
 
         val exc = assertThrows<ResponseStatusException> { apiDomainController.getDomainsWithUserAccess(mockSpringUser, id, domainAccess) }
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exc.status)
+    }
+
+    @Test
+    fun `Get users with domain access`() {
+        val domainAccess = listOf(DomainAccess.Read)
+        val domain = Domain("Test", "Test", "Test", DomainVisibility.Public, "Test", "Test", listOf(), true)
+        val userDomainAccess = UserDomainAccess(mockUser.id, domain.id, DomainAccess.Read)
+
+        every { mockUser.id } returns id
+        every { mockUser.displayName } returns "testUser"
+        every { mockDomainOperation.getDomain(any()) } returns domain
+        every { mockDomainOperation.hasUserAccess(domain, DomainAccess.Owner, mockUser.id) } returns true
+        every { mockDomainOperation.getUsersByDomainAndAccess(domain.id, any()) } returns listOf(userDomainAccess)
+        every { mockUserOperation.userRepository.findById(any()) } returns Optional.of(mockUser)
+
+        val expected = listOf(
+            UserWithAccessResponse(
+                userDomainAccess.id.toHexString(),
+                userDomainAccess.userId.toHexString(),
+                mockUser.displayName,
+                userDomainAccess.domainId.toString(),
+                userDomainAccess.access
+            )
+        )
+
+        assertEquals(expected, apiDomainController.getUsersWithDomainAccess(mockSpringUser, domain.id, domainAccess))
+    }
+
+    @Test
+    fun `Get users with domain access throws access denied`() {
+        val domainAccess = listOf(DomainAccess.Read)
+        val domain = Domain("Test", "Test", "Test", DomainVisibility.Public, "Test", "Test", listOf(), true)
+
+        every { mockUser.id } returns id
+        every { mockUserOperation.getByEmail(mockSpringUser.username) } returns mockUser
+        every { mockDomainOperation.getDomain(domain.id) } returns domain
+        every { mockDomainOperation.hasUserAccess(domain, DomainAccess.Owner, mockUser.id) } returns false
+
+        val exc = assertThrows<ResponseStatusException> {
+            apiDomainController.getUsersWithDomainAccess(mockSpringUser, domain.id, domainAccess)
+        }
+        assertEquals(HttpStatus.FORBIDDEN, exc.status)
     }
 }
