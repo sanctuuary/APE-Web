@@ -29,6 +29,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.spyk
 import org.bson.types.ObjectId
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -725,6 +726,28 @@ class DomainOperationTest() {
             DomainUploadRequest(null, null, null, null, null, null, null, true)
         )
         assert(domain.strictToolsAnnotations)
+    }
+
+    @Test
+    fun `Assert get users by domain and access works`() {
+        // create domain and user
+        val domain = getTestDomain(DomainVisibility.Private)
+        val user1 = User("user1@test.test", "passTest", "user1", UserStatus.Approved)
+        val user2 = User("user2@test.test", "passTest", "user2", UserStatus.Approved)
+
+        val access1 = UserDomainAccess(user1.id, domain.id, DomainAccess.Owner)
+        val access2 = UserDomainAccess(user2.id, domain.id, DomainAccess.ReadWrite)
+
+        every { userDomainAccessRepository.findAllByDomainIdAndAccess(domain.id, DomainAccess.Owner) } returns
+            listOf(access1)
+
+        every { userDomainAccessRepository.findAllByDomainIdAndAccess(domain.id, DomainAccess.ReadWrite) } returns
+            listOf(access2)
+
+        val domainOperation = spyk(getDomainOperation())
+        val result = domainOperation.getUsersByDomainAndAccess(domain.id, listOf(DomainAccess.Owner, DomainAccess.ReadWrite))
+        assertEquals(2, result.size)
+        assert(result.containsAll(listOf(access1, access2)))
     }
 
     /**
