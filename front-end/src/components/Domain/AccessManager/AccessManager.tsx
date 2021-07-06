@@ -191,6 +191,11 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
       .then((response) => response.json())
       .then((json: any) => {
         switch (json.outcome) {
+          case 0:
+            message.info('Domain ownership has been transferred');
+            this.setState({ transferOwnershipModalVisible: false });
+            onOwnershipTransferred(newOwner);
+            break;
           case 1:
             message.error('You are not allowed to transfer the ownership of this domain');
             this.setState({ transferOwnershipModalVisible: false });
@@ -199,10 +204,8 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
             message.error('Could not find the user to transfer ownership to');
             break;
           default:
-            message.info('Domain ownership has been transferred');
-            this.setState({ transferOwnershipModalVisible: false });
-            onOwnershipTransferred(newOwner);
-            break;
+            message.error('Failed to transfer ownership due to an unexpected error');
+            throw Error('Failed to transfer ownership due to an unexpected error');
         }
       })
       // eslint-disable-next-line no-console
