@@ -28,7 +28,7 @@ export default async function handler(req: any, res: any) {
           // User is not allowed to transfer the domain ownership.
           res.status(200).json({ outcome: 1 });
           break;
-        case 404:
+        case 400:
           /*
            * User to transfer ownership to was not found, or the domain was not found
            * (but this is highly unlikely because the domain id was handled automatically).
