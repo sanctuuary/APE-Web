@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2021-07-06
+
 ### Added
 
 - Grant or revoke administrator privileges to / from users in the administrator page.
@@ -80,5 +82,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.2.0]: https://github.com/sanctuuary/APE-Web/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/sanctuuary/APE-Web/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/sanctuuary/APE-Web/releases/tag/v1.0.0
