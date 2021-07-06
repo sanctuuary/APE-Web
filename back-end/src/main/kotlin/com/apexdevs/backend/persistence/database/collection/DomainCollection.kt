@@ -38,8 +38,8 @@ class DomainCollection(val domainRepository: DomainRepository, val userDomainAcc
      */
     fun getDomainsByUserAndAccess(user: User, access: List<DomainAccess>): List<UserDomainAccess> {
         val domainsByUserAndAccess: MutableList<UserDomainAccess> = mutableListOf()
-        for (accessLevel in access) {
-            domainsByUserAndAccess += userDomainAccessRepository.findAllByUserIdAndAccess(user.id, accessLevel)
+        for (accessRight in access) {
+            domainsByUserAndAccess += userDomainAccessRepository.findAllByUserIdAndAccess(user.id, accessRight)
         }
 
         return domainsByUserAndAccess.toList()

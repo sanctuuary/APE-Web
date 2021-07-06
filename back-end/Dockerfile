@@ -6,4 +6,4 @@ COPY pom.xml /app
 RUN mvn compile
 COPY . /app
 RUN mvn package -DskipTests=true -P docker
-ENTRYPOINT ["java", "-jar", "target/backend-1.1.0.jar"]
+ENTRYPOINT ["java", "-jar", "target/backend-1.2.0.jar"]

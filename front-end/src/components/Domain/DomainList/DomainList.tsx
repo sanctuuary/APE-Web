@@ -42,7 +42,7 @@ interface IState {
  * The different variations are set via the `edit`, `showVisibility`, and `showAccess` props.
  */
 class DomainList extends React.Component<IProps, IState> {
-  /** React RefObject to ref to refer to the domain name search input */
+  /** React RefObject to refer to the domain name search input */
   titleSearchRef: React.RefObject<Input>;
 
   /**
@@ -107,7 +107,7 @@ class DomainList extends React.Component<IProps, IState> {
     ),
     // Filter rule
     onFilter: (val, record) => record.title.toString().toLowerCase().includes(val.toLowerCase()),
-    // Select the search input after the search dropdown has openend
+    // Select the search input after the search dropdown has opened
     onFilterDropdownVisibleChange: (visible: boolean) => {
       if (visible) {
         setTimeout(() => this.titleSearchRef.current.select(), 100);

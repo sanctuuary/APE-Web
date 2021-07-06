@@ -61,3 +61,30 @@ export enum Access {
   ReadWrite = 'ReadWrite',
   Revoked = 'Revoked'
 }
+
+/**
+ * An object received from the back-end when asked for all users with access to a domain.
+ * The relevant endpoint: `/api/domain/users-with-access/{id}`.
+ */
+export interface UserWithAccess {
+  /** The id of the UserDomainAccess object */
+  id: string,
+  /** The id of the user who has access. */
+  userId: string,
+  /** The display name of the user who has access. */
+  userDisplayName: string,
+  /** The id of the domain the user has access to. */
+  domainId: string,
+  /** The access level the user has to the domain. */
+  accessRight: Access,
+}
+
+/**
+ * Object to send user access to domain updates.
+ */
+export interface UserAccessUpload {
+  /** The id of the user who gains access. */
+  userId: string,
+  /** The access level the user will get to the domain. */
+  access: Access,
+}

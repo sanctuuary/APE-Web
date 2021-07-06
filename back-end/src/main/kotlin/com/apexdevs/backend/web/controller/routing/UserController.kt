@@ -62,7 +62,7 @@ class UserController(val userOperation: UserOperation) {
             val isAdmin = userOperation.userIsAdmin(userResult.get().email)
 
             // create user info as response
-            return UserInfo(userResult.get(), isAdmin)
+            return UserInfo(userResult.get(), isAdmin, true)
         } catch (exc: Exception) {
             when (exc) {
                 is HttpClientErrorException.BadRequest, is IllegalArgumentException ->
@@ -71,6 +71,48 @@ class UserController(val userOperation: UserOperation) {
                     throw ResponseStatusException(HttpStatus.NOT_FOUND, exc.message, exc) // safe message contents
                 is AccessDeniedException ->
                     throw ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to view this profile", exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Get all approved users.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/")
+    fun getUsers(@AuthenticationPrincipal user: User): List<UserInfo> {
+        try {
+            // Check if the user is an administrator
+            if (!userOperation.userIsAdmin(user.username))
+                throw AccessDeniedException("User: ${user.username} is not allowed to access this route")
+
+            val users = userOperation.approvedUsers()
+            return users.map { u -> UserInfo(u, userOperation.userIsAdmin(u.email), false) }
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, "User not authorized to view this profile", exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Find a user by their e-mail address.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/email/{email}")
+    fun findUserByEmail(@AuthenticationPrincipal user: User, @PathVariable email: String): UserInfo {
+        try {
+            val foundUser = userOperation.getByEmail(email)
+            return UserInfo(foundUser, false)
+        } catch (exc: Exception) {
+            when (exc) {
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User with given e-mail address not found", exc)
                 else ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
             }

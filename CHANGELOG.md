@@ -6,6 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2021-07-06
+
+### Added
+
+- Grant or revoke administrator privileges to / from users in the administrator page.
+- Manage access to a domain in the domain edit page.
+- Endpoint for changing the administrator status of users.
+- (Admin only) endpoint for getting a list of all users.
+- Endpoint to get all users with certain access to a domain.
+- Endpoint to set a user's access to a domain.
+- Endpoint to transfer the ownership of a domain.
+
+### Changed
+
+- More specific error messages are shown when a workflow run / synthesis gets interrupted.
+- Change occurrences of "APE Web View" to "APE Web".
+- Moved front-end Docker container from Node.js 12 to Node.js 14.
+- Logging of back-end tests is less verbose (information about the tests themselves is not affected).
+- User's email addresses are no longer included in responses from the back-end by default (previously email addresses were also only given when necessary).
+
+### Fixed
+
+- Test application.properties of back-end was in the wrong location.
+- The 403 result on the domain edit page now redirects to the home page instead of a non-existent page.
+
 ## [1.1.0] - 2021-05-28
 
 ### Added
@@ -57,5 +82,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.2.0]: https://github.com/sanctuuary/APE-Web/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/sanctuuary/APE-Web/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/sanctuuary/APE-Web/releases/tag/v1.0.0

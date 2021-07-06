@@ -14,6 +14,7 @@ import { getSession, signIn } from 'next-auth/client';
 import TopicCreate from '@components/Admin/TopicCreate';
 import RunParametersConfig from '@components/Admin/RunParametersConfig';
 import { RunOptions } from '@models/workflow/Workflow';
+import PrivilegeManager from '@components/Admin/PrivilegeManager';
 import styles from './Admin.module.less';
 
 const { Title } = Typography;
@@ -58,7 +59,7 @@ class AdminPage extends React.Component<IProps, IState> {
     motivation: value.motivation,
   }));
 
-  constructor(props) {
+  constructor(props: IProps) {
     super(props);
 
     // Initial state of the component: empty list
@@ -145,6 +146,10 @@ class AdminPage extends React.Component<IProps, IState> {
             <div className={styles.section}>
               <Title level={2}>Run parameters configuration</Title>
               <RunParametersConfig runParameters={runParameters} />
+            </div>
+            <div className={styles.section}>
+              <Title level={2}>Admin privilege management</Title>
+              <PrivilegeManager />
             </div>
           </div>
         );

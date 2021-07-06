@@ -14,12 +14,14 @@ import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
 import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
+import com.apexdevs.backend.persistence.exception.SynthesisFlagException
 import guru.nidi.graphviz.attribute.Rank
 import nl.uu.cs.ape.sat.APE
 import nl.uu.cs.ape.sat.core.implSAT.SATsolutionsList
 import nl.uu.cs.ape.sat.core.solutionStructure.CWLCreator
 import nl.uu.cs.ape.sat.core.solutionStructure.ModuleNode
 import nl.uu.cs.ape.sat.core.solutionStructure.TypeNode
+import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
 import nl.uu.cs.ape.sat.models.logic.constructs.TaxonomyPredicate
 import java.io.ByteArrayOutputStream
 import java.nio.file.Path
@@ -52,6 +54,7 @@ class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: AP
      * Runs APE with the current config, then parses it to a suitable FE format
      * @param: The amount of workflows wanted
      * @throws RunParametersExceedLimitsException When the given config exceeds the configured run parameters limits
+     * @throws SynthesisFlagException When the run is interrupted
      * @return: A list of resulting workflows
      */
     fun getWorkflows(runConfig: RunConfig): MutableList<WorkflowOutput> {
@@ -67,6 +70,11 @@ class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: AP
 
         runWithConfig(runConfig)
         val resultingWorkflows = mutableListOf<WorkflowOutput>()
+
+        // check if the run was interrupted
+        if (solutions.flag != SynthesisFlag.NONE) {
+            throw SynthesisFlagException(this, solutions.flag)
+        }
 
         for (i in 0 until solutions.numberOfSolutions) {
 

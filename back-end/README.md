@@ -66,3 +66,18 @@ You can now build the back-end using:
 ````shell
 $ mvn package -DskipTests=true
 ````
+
+## Documentation
+
+The documentation of the back-end is generated using [Orchid](https://orchid.run/).
+To generate and view the documentation, use:
+```shell
+mvn orchid:serve
+```
+You can now view the documentation when you go to http://localhost:8080 in your browser.
+
+If you wish to only build the documentation, run:
+```shell
+mvn orchid:build
+```
+The documentation is placed in `target/docs`.
