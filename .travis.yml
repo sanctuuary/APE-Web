@@ -2,12 +2,19 @@ stages:
   - "Unit"
   - "Build"
   - "Lint"
+
+# Only build every commit on the master branch (pull requests on other branches are still built)
+branches:
+  only:
+    - master
+
 jobs:
   include:
     ### Back-end
 
     # Back-end unit tests
     #- stage: "Unit"
+    #  name: "Unit test back-end"
     #  language: java
     #  jdk: openjdk11
     #  before_script:
@@ -17,6 +24,7 @@ jobs:
     
     # Back-end build test
     - stage: "Build"
+      name: "Build back-end"
       language: java
       jdk: openjdk11
       before_script:
@@ -26,6 +34,7 @@ jobs:
 
     # Back-end lint test
     - stage: "Lint"
+      name: "Lint back-end"
       language: java
       jdk: openjdk11
       before_script:
@@ -38,6 +47,7 @@ jobs:
 
     # Front-end unit tests
     - stage: "Unit"
+      name: "Unit test front-end"
       language: node_js
       node_js: 14
       before_script:
@@ -48,6 +58,7 @@ jobs:
 
     # Front-end build test
     - stage: "Build"
+      name: "Build front-end"
       language: node_js
       node_js: 14
       before_script:
@@ -58,6 +69,7 @@ jobs:
 
     # Front-end lint test
     - stage: "Lint"
+      name: "Lint front-end"
       language: node_js
       node_js: 14
       before_script:
