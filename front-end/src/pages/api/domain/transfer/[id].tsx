@@ -10,7 +10,7 @@ export default async function handler(req: any, res: any) {
   const { id } = req.query;
   const { body } = req;
 
-  const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/${id}/transfer/${body}`;
+  const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/api/domain/${id}/transfer/${body}`;
   await fetch(endpoint, {
     method: 'POST',
     headers: {
