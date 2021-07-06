@@ -46,7 +46,7 @@ async function handleGET(res: any, session: any, domainId: string, accessLevels:
 async function handlePOST(res: any, session: any, domainId: string, userAccess: UserAccessUpload) {
   let result: number;
 
-  const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/${domainId}/access`;
+  const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/api/domain/${domainId}/access`;
   await fetch(endpoint, {
     method: 'POST',
     headers: {

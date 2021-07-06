@@ -20,7 +20,9 @@ import com.apexdevs.backend.persistence.filesystem.FileTypes
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
 import com.apexdevs.backend.web.controller.entity.domain.DomainWithAccessResponse
+import com.apexdevs.backend.web.controller.entity.domain.UserAccessUpload
 import com.apexdevs.backend.web.controller.entity.domain.UserWithAccessResponse
+import com.apexdevs.backend.web.controller.routing.DomainController
 import org.bson.types.ObjectId
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
@@ -298,6 +301,88 @@ class ApiDomainController(
             when (exc) {
                 is AccessDeniedException ->
                     throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Set the access a user has to a domain.
+     * @param user authenticated user principal, automatically retrieved from session
+     * @param id The domain to which the access is set
+     * @param userAccess The information to set the access (the user id and access level)
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/{id}/access")
+    fun setUserAccess(
+        @AuthenticationPrincipal user: User,
+        @PathVariable id: ObjectId,
+        @RequestBody userAccess: UserAccessUpload
+    ) {
+        try {
+            // check if the user is the owner of the domain
+            val authUser = userOperation.getByEmail(user.username)
+            val domain = domainOperation.getDomain(id)
+            val requestUserIsOwner = domainOperation.hasUserAccess(domain, DomainAccess.Owner, authUser.id)
+            if (!requestUserIsOwner)
+                throw AccessDeniedException("User is not the owner of the domain")
+
+            domainOperation.setUserAccess(id, userAccess.userId, userAccess.access)
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Transfer ownership of a domain to a new user.
+     * The old owner will get ReadWrite access.
+     * @param user authenticated user principal, automatically retrieved from session.
+     * @param id the id of the domain to transfer ownership of.
+     * @param userId the user who will receive the ownership of the domain.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("{id}/transfer/{userId}")
+    fun transferOwnership(
+        @AuthenticationPrincipal user: User,
+        @PathVariable id: ObjectId,
+        @PathVariable userId: ObjectId
+    ) {
+        try {
+            // check if the user is the owner of the domain
+            val authUser = userOperation.getByEmail(user.username)
+            val domain = domainOperation.getDomain(id)
+            val requestUserIsOwner = domainOperation.hasUserAccess(domain, DomainAccess.Owner, authUser.id)
+            if (!requestUserIsOwner)
+                throw AccessDeniedException("User is not the owner of the domain")
+
+            // check if the new owner exists
+            val newOwner = userOperation.userRepository.findById(userId)
+            if (newOwner.isEmpty)
+                throw UserNotFoundException(this, "New owner with id: $userId not found")
+
+            // transfer ownership
+            domainOperation.setUserAccess(id, userId, DomainAccess.Owner)
+            domainOperation.setUserAccess(id, authUser.id, DomainAccess.ReadWrite)
+            DomainController.log.info(
+                "Ownership of domain \"${domain.name}\" with id: ${domain.id} " +
+                    "transferred to user \"${newOwner.get().displayName}\" with id $userId"
+            )
+        } catch (exc: Exception) {
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
+                is DomainNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.NOT_FOUND, exc.message, exc)
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.NOT_FOUND, exc.message, exc)
                 else ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
             }
