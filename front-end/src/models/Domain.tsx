@@ -30,6 +30,26 @@ export default interface Domain {
 }
 
 /**
+ * Basic information about a domain.
+ */
+export interface DomainInfo {
+  /** The ID of the domain. */
+  id: string,
+  /** The name of the domain. */
+  title: string,
+  /** The description of the domain. */
+  description: string,
+  /** The topics related to the domain. */
+  topics: string[],
+  /** Optional display name of the owner of the domain. */
+  ownerName?: string,
+  /** Optional visibility level of the domain. */
+  visibility?: Visibility,
+  /** Optional access level for the current user. */
+  access?: Access,
+}
+
+/**
  * The possible options for a {@link Domain}'s visibility level.
  */
 export enum Visibility {

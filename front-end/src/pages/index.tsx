@@ -9,7 +9,7 @@ import React from 'react';
 import Head from 'next/head';
 import { Button, Typography } from 'antd';
 import DomainList from '@components/Domain/DomainList/DomainList';
-import Domain from '@models/Domain';
+import { DomainInfo } from '@models/Domain';
 import { getSession } from 'next-auth/client';
 import styles from './index.module.less';
 
@@ -20,11 +20,11 @@ const { Title, Paragraph } = Typography;
  */
 interface IDomainsPageProps {
   /** Public domains available to all users. */
-  publicDomains: Domain[],
+  publicDomains: DomainInfo[],
   /** Domains owned by the current user (when user is logged in). */
-  ownedDomains: Domain[],
+  ownedDomains: DomainInfo[],
   /** Domains shared with the current user (when user is logged in). */
-  sharedDomains: Domain[],
+  sharedDomains: DomainInfo[],
   /** Current user's session. */
   session: any,
 }
@@ -106,7 +106,7 @@ function DomainsPage({ publicDomains, ownedDomains, sharedDomains, session }: ID
         </Paragraph>
       </div>
       <Title>Public domains</Title>
-      <DomainList domains={publicDomains} edit={false} />
+      <DomainList domains={publicDomains} edit={false} showOwner />
       {renderUserDomains()}
       {renderSharedDomains()}
     </div>
@@ -116,7 +116,7 @@ function DomainsPage({ publicDomains, ownedDomains, sharedDomains, session }: ID
 export async function getServerSideProps({ req }) {
   // Get all domains related to the current user
   const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/`;
-  let publicDomains: Domain[] = [];
+  let publicDomains: DomainInfo[] = [];
   // Fetch all publicly available domains
   await fetch(endpoint, {
     method: 'GET',
@@ -127,8 +127,8 @@ export async function getServerSideProps({ req }) {
       publicDomains = data;
     });
 
-  let ownedDomains: Domain[] = [];
-  let sharedDomains: Domain[] = [];
+  let ownedDomains: DomainInfo[] = [];
+  let sharedDomains: DomainInfo[] = [];
   const session: any = await getSession({ req });
   if (session && session.user) {
     const { user } = session;
