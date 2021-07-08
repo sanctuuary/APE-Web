@@ -26,7 +26,7 @@ export default interface Domain {
   /** All possible data types in the tools taxonomy */
   dataDimensionsTaxonomyRoots: string[],
   /** Optional access level for current user */
-  access?: string
+  access?: Access
 }
 
 /**
