@@ -230,7 +230,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
     @Test
     fun `Public domains are retrieved correctly`() {
         val domain = Domain(t, t, t, DomainVisibility.Public, t, t, listOf(t), true)
-        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t)
+        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, t)
 
         every { domainCollection.getPublicDomains() } returns listOf(domain)
         every { domainOperation.getTopics(any()) } returns listOf(Topic(t))

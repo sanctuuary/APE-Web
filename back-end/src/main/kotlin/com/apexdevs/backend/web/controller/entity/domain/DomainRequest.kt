@@ -10,5 +10,12 @@ package com.apexdevs.backend.web.controller.entity.domain
  * @param title name of the domain
  * @param topics list of the topics the domain belongs to
  * @param description the description of the domain
+ * @param ownerName the display name of the owner of the domain
  */
-data class DomainRequest(val id: String, val title: String, val topics: List<String>, val description: String)
+data class DomainRequest(
+    val id: String,
+    val title: String,
+    val topics: List<String>,
+    val description: String,
+    val ownerName: String
+)

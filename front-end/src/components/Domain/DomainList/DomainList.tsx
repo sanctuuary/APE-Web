@@ -10,7 +10,7 @@ import { Button, Input, Space, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { ColumnFilterItem } from 'antd/lib/table/interface';
 import { SearchOutlined } from '@ant-design/icons';
-import Domain, { Access } from '@models/Domain';
+import Domain, { Access, DomainInfo } from '@models/Domain';
 import styles from './DomainList.module.less';
 
 /**
@@ -18,13 +18,15 @@ import styles from './DomainList.module.less';
  */
 interface IProps {
   /** The domains to display */
-  domains: Domain[],
+  domains: DomainInfo[],
   /** Boolean to show edit button */
   edit: boolean,
   /** Boolean to show if visibility column should be shown or not */
   showVisibility?: boolean,
   /** Boolean to show access level */
   showAccess?: boolean,
+  /** Whether to show a column with the owners. */
+  showOwner?: boolean,
 }
 
 /**
@@ -120,7 +122,7 @@ class DomainList extends React.Component<IProps, IState> {
    * @param a entry 1 to compare
    * @param b entry 2 to compare
    */
-  alphabeticSort = (a, b) => {
+  alphabeticSort = (a: string, b: string) => {
     // Sort alphabetically
     const aLower = a.toLowerCase();
     const bLower = b.toLowerCase();
@@ -142,7 +144,7 @@ class DomainList extends React.Component<IProps, IState> {
    * and we would get an "Property is used before its initialization" error.
    */
   // eslint-disable-next-line react/sort-comp
-  columns: ColumnsType<Domain> = [
+  columns: ColumnsType<DomainInfo> = [
     {
       title: 'Name',
       dataIndex: 'title',
@@ -222,7 +224,7 @@ class DomainList extends React.Component<IProps, IState> {
    * @param domains The domains to serialize
    * @returns The domains in Ant Design's Table dataSource format
    */
-  serializeDomains = (domains: Domain[]) => {
+  serializeDomains = (domains: DomainInfo[]) => {
     const result = [];
     domains.forEach((domain, index) => {
       result.push({
@@ -240,9 +242,9 @@ class DomainList extends React.Component<IProps, IState> {
    * @param domains The domains who's topics should be added to the filter options
    * @returns The topics in Ant Design's column filter format
    */
-  setTopicsFilters = (domains: Domain[]) => {
+  setTopicsFilters = (domains: DomainInfo[]) => {
     const filters: Set<ColumnFilterItem> = new Set();
-    domains.forEach((domain: Domain) => {
+    domains.forEach((domain: DomainInfo) => {
       domain.topics.forEach((tag: string) => {
         filters.add({ text: tag, value: tag });
       });
@@ -267,7 +269,8 @@ class DomainList extends React.Component<IProps, IState> {
    * and then adds them accordingly
    */
   showOptionalColumns = () => {
-    const { showVisibility, showAccess } = this.props;
+    const { showVisibility, showAccess, showOwner } = this.props;
+
     if (showVisibility && !this.columns.some((elem) => elem.title === 'Visibility')) {
       this.columns.push({
         title: 'Visibility',
@@ -286,6 +289,14 @@ class DomainList extends React.Component<IProps, IState> {
         render: (access) => access,
         sorter: (a, b) => this.alphabeticSort(a.access, b.access),
         defaultSortOrder: 'ascend',
+      });
+    }
+    if (showOwner && !this.columns.some((elem) => elem.title === 'Owner')) {
+      this.columns.push({
+        title: 'Owner',
+        dataIndex: 'ownerName',
+        width: 300,
+        render: (ownerName) => ownerName,
       });
     }
   };

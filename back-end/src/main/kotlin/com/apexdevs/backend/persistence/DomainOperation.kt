@@ -24,6 +24,7 @@ import com.apexdevs.backend.web.controller.entity.domain.DomainDetails
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Component
+import java.util.logging.Logger
 
 /**
  * Performs domain operations on the database
@@ -259,5 +260,27 @@ class DomainOperation(val domainRepository: DomainRepository, val userRepository
             usersByDomainAndAccess += userDomainAccessRepository.findAllByDomainIdAndAccess(domainId, accessRight)
         }
         return usersByDomainAndAccess.toList()
+    }
+
+    /**
+     * Gets the owner of a domain.
+     * @param domainId The id of the domain to get the owner of.
+     * @throws UserNotFoundException When the owner user could not be found (if this happens there something seriously wrong, as each domain should have exactly one owner)
+     */
+    @Throws(UserNotFoundException::class)
+    fun getOwner(domainId: ObjectId): User {
+        // Get all owners
+        val owners = userDomainAccessRepository.findAllByDomainIdAndAccess(domainId, DomainAccess.Owner)
+        val owner = owners[0] // There is only one owner per domain, so get the first and only owner
+        val user = userRepository.findById(owner.userId)
+        if (user.isEmpty) {
+            log.severe("Failed to find owner of domain with ID: $domainId!")
+            throw UserNotFoundException(this, "Failed to find the owner of the domain")
+        }
+        return user.get()
+    }
+
+    companion object {
+        val log: Logger = Logger.getLogger("DomainOperation_Logger")
     }
 }
