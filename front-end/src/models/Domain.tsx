@@ -41,6 +41,8 @@ export interface DomainInfo {
   description: string,
   /** The topics related to the domain. */
   topics: string[],
+  /** Whether this is an official domain. */
+  official?: boolean,
   /** Optional display name of the owner of the domain. */
   ownerName?: string,
   /** Optional visibility level of the domain. */

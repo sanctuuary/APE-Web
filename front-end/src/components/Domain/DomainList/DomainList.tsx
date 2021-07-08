@@ -170,12 +170,15 @@ class DomainList extends React.Component<IProps, IState> {
     },
     {
       title: 'Topics',
-      dataIndex: 'topics',
       key: 'topics',
-      render: (tags: string[]) => (
+      render: (domain: DomainInfo) => (
         <>
+          {/* Add tag to official domains */}
+          {domain.official && (
+            <Tag color="gold" key="Official">OFFICIAL</Tag>
+          )}
           {/* Add each topic tag */}
-          {tags.map((tag: string) => (
+          {domain.topics.map((tag: string) => (
             <Tag color="green" key={tag}>
               {tag.toUpperCase()}
             </Tag>
@@ -186,7 +189,7 @@ class DomainList extends React.Component<IProps, IState> {
        * Filter will show rows which have ANY of the selected tags (OR-based filter)
        * This should most likely become an AND-based filter in the future
        */
-      onFilter: (_value: string, record) => {
+      onFilter: (_value: string, record: DomainInfo) => {
         const { topicFilters: filters } = this.state;
 
         /*
@@ -204,11 +207,18 @@ class DomainList extends React.Component<IProps, IState> {
         filters.forEach((filter, index) => {
           // Check if the tag we are currently checking is present in the domain
           let containsCurrent = false;
-          record.topics.forEach((tag) => {
-            if (tag === filter) {
-              containsCurrent = true;
-            }
-          });
+
+          // Filter for official domains
+          if (filter === 'Official' && record.official) {
+            containsCurrent = true;
+          } else {
+            // Filter other tags
+            record.topics.forEach((tag) => {
+              if (tag === filter) {
+                containsCurrent = true;
+              }
+            });
+          }
           // Store whether we found the current tag
           contains[index] = containsCurrent;
         });
@@ -243,13 +253,17 @@ class DomainList extends React.Component<IProps, IState> {
    * @returns The topics in Ant Design's column filter format
    */
   setTopicsFilters = (domains: DomainInfo[]) => {
-    const filters: Set<ColumnFilterItem> = new Set();
+    const filters: ColumnFilterItem[] = [];
+    filters.push({ text: 'Official', value: 'Official' });
+
     domains.forEach((domain: DomainInfo) => {
       domain.topics.forEach((tag: string) => {
-        filters.add({ text: tag, value: tag });
+        if (!filters.some((f) => f.text === tag)) {
+          filters.push({ text: tag, value: tag });
+        }
       });
     });
-    this.columns[1].filters = Array.from(filters);
+    this.columns[1].filters = filters;
   };
 
   /**
