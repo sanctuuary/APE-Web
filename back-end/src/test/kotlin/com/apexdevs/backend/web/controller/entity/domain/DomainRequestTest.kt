@@ -13,7 +13,7 @@ internal class DomainRequestTest {
     private val test = "Test"
     private val topicList = listOf(test)
     private val ownerName = "TestUser"
-    private val domainRequest = DomainRequest(ObjectId.get().toHexString(), test, topicList, test, ownerName)
+    private val domainRequest = DomainRequest(ObjectId.get().toHexString(), test, topicList, test, false, ownerName)
 
     @Test
     fun getTitle() {

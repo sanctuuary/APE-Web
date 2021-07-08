@@ -25,7 +25,6 @@ import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.mockk
 import org.bson.types.ObjectId
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -226,14 +225,42 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
         }
     }
 
-    @Disabled
     @Test
     fun `Public domains are retrieved correctly`() {
         val domain = Domain(t, t, t, DomainVisibility.Public, t, t, listOf(t), true)
-        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, t)
+        val user = User("user@test.test", "test", "TestUser", UserStatus.Approved)
+
+        every { domain.id.toHexString() } returns "testId"
+
+        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, false, user.displayName)
 
         every { domainCollection.getPublicDomains() } returns listOf(domain)
         every { domainOperation.getTopics(any()) } returns listOf(Topic(t))
+        every { domainOperation.getOwner(domain.id) } returns user
+        every { userOperation.userIsAdmin(user.email) } returns false
+
+        val expected = ow.writeValueAsString(listOf(domainRequest))
+        mockMvc.get("/domain/") {
+            contentType = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk }
+            content { json(expected) }
+        }
+    }
+
+    @Test
+    fun `Public domains are flagged as official correctly`() {
+        val domain = Domain(t, t, t, DomainVisibility.Public, t, t, listOf(t), true)
+        val user = User("user@test.test", "test", "TestUser", UserStatus.Approved)
+
+        every { domain.id.toHexString() } returns "testId"
+
+        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, true, user.displayName)
+
+        every { domainCollection.getPublicDomains() } returns listOf(domain)
+        every { domainOperation.getTopics(any()) } returns listOf(Topic(t))
+        every { domainOperation.getOwner(domain.id) } returns user
+        every { userOperation.userIsAdmin(user.email) } returns true
 
         val expected = ow.writeValueAsString(listOf(domainRequest))
         mockMvc.get("/domain/") {

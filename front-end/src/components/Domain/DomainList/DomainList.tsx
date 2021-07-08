@@ -170,12 +170,15 @@ class DomainList extends React.Component<IProps, IState> {
     },
     {
       title: 'Topics',
-      dataIndex: 'topics',
       key: 'topics',
-      render: (tags: string[]) => (
+      render: (domain: DomainInfo) => (
         <>
+          {/* Add tag to official domains */}
+          {domain.official && (
+            <Tag color="gold" key="Official">OFFICIAL</Tag>
+          )}
           {/* Add each topic tag */}
-          {tags.map((tag: string) => (
+          {domain.topics.map((tag: string) => (
             <Tag color="green" key={tag}>
               {tag.toUpperCase()}
             </Tag>
@@ -245,6 +248,8 @@ class DomainList extends React.Component<IProps, IState> {
   setTopicsFilters = (domains: DomainInfo[]) => {
     const filters: Set<ColumnFilterItem> = new Set();
     domains.forEach((domain: DomainInfo) => {
+      filters.add({ text: 'Official', value: 'Official' });
+
       domain.topics.forEach((tag: string) => {
         filters.add({ text: tag, value: tag });
       });

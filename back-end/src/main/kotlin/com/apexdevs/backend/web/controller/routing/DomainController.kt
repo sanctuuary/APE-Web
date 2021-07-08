@@ -60,7 +60,16 @@ class DomainController(val storageService: StorageService, val domainOperation: 
                 val topicStrings: MutableList<String> = mutableListOf()
                 domainOperation.getTopics(domain).map { topic: Topic -> topicStrings.add(topic.name) }
                 val owner = domainOperation.getOwner(domain.id)
-                safeDomains.add(DomainRequest(domain.id.toHexString(), domain.name, topicStrings, domain.description, owner.displayName))
+                val isAdmin = userOperation.userIsAdmin(owner.email)
+                safeDomains.add(
+                    DomainRequest(
+                        domain.id.toHexString(),
+                        domain.name, topicStrings,
+                        domain.description,
+                        isAdmin,
+                        owner.displayName
+                    )
+                )
             }
 
             return safeDomains
