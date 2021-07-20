@@ -51,14 +51,14 @@ function dataElement(tool: WorkflowTool, order: number, parentY: number = 0, ext
 }
 
 /**
- * Make a flowelement of the input or output type of a tool.
+ * Make a flow element of the input or output type of a tool.
  * @param name Name of the workflow tool we're making the type element for
  * @param data Input or output for the workflow tool
  * @param level tree depth level
  * @param parentPos the pos of this type's input node.
  * when we have the same tool multiple times
  */
-function typeElement(ioType: WorkflowIO, order: number, parentPos) {
+function typeElement(ioType: WorkflowIO, order: number, parentPos: { x: number; y: number; }) {
   return {
     id: ioType.id,
     type: 'dataTypeNode',
@@ -81,7 +81,7 @@ function IONode(
   parentId: string,
   type: WorkflowIO,
   order: number,
-  parentPos,
+  parentPos: { x: number; y: number; },
 ) {
   if (type.label !== '') {
     return [
@@ -149,7 +149,6 @@ export default function WorkflowParser(
   const { extra } = difference;
 
   const graph: Elements = [];
-  let inDefined = false;
 
   // The workflow input node
   const inputNode = {
@@ -161,15 +160,12 @@ export default function WorkflowParser(
       y: 0,
     },
   };
+  graph.push(inputNode);
 
   /*
    * Build the input type nodes and connect them to the workflow input.
    */
   inputTypeStates.forEach((type, i) => {
-    if (!inDefined) {
-      graph.push(inputNode);
-      inDefined = true;
-    }
     graph.push(...IONode(inputNode.id, type, i + 1, inputNode.position));
   });
 
@@ -180,10 +176,10 @@ export default function WorkflowParser(
   let outputY = 0;
   let order = 1;
   const extraCopy = extra;
-  tools.forEach((tool) => {
+  tools.forEach((tool: WorkflowTool) => {
     let y = levelYDistance;
     /*
-     * Foreach tool's inputtype, check their y position in the current graph
+     * Foreach tool's input type, check their y position in the current graph
      * and generate the tool node at the correct y-position.
      */
     tool.inputTypes.forEach((type) => {
@@ -210,7 +206,6 @@ export default function WorkflowParser(
   });
 
   // The workflow output node.
-  let outDefined = false;
   const outputNode = {
     id: 'output',
     type: 'outputNode',
@@ -220,13 +215,10 @@ export default function WorkflowParser(
       y: 3 * levelYDistance + outputY,
     },
   };
+  graph.push(outputNode);
 
   // Connect all output types with the workflow output
   outputTypeStates.forEach((type, i) => {
-    if (!outDefined) {
-      graph.push(outputNode);
-      outDefined = true;
-    }
     graph.push(WorkflowEdge(
       `e_${type.id}-${outputNode.id}`,
       (i + 1).toString(),

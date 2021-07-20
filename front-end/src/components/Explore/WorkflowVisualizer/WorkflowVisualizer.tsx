@@ -13,11 +13,11 @@ import ReactFlow, { Elements, OnLoadParams, ReactFlowProvider, Controls } from '
 import WorkflowDifference from '@models/workflow/WorkflowDifference';
 import WorkflowData, { WorkflowTool } from '@models/workflow/WorkflowVisualizerData';
 import InputNode from './Nodes/InputNode';
-import WorkflowParser from './WorkflowParser';
 import OutputNode from './Nodes/OutputNode';
 import ToolNode from './Nodes/ToolNode';
 import DataTypeNode from './Nodes/DataTypeNode';
 import styles from './Workflow.module.less';
+import WorkflowSerializer from './WorkflowSerializer';
 
 /**
  * Custom node types.
@@ -42,7 +42,7 @@ interface WorkflowVisualizerProps {
   /** The reference workflow */
   referenceWorkflow: WorkflowData,
   /** Function to set this workflow as reference */
-  setReference: (WorkflowData) => void,
+  setReference: (workflowData: WorkflowData) => void,
 }
 
 /**
@@ -56,7 +56,7 @@ interface WorkflowVisualizerState {
  * The component for visualizing APE workflows.
  *
  * When WorkflowVisualizer is initiated, it passes the elements to {@link WorkflowParser}.
- * WorkflowParser restructeres the data from APE to
+ * WorkflowParser restructures the data from APE to
  * a structure which the React Flow library uses to render graphs.
  *
  * Custom node and edge types are used to define the look of the graphs.
@@ -84,7 +84,7 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
   /**
    * Handles the 'make reference' button click.
    */
-  onCLick = () => {
+  onClick = () => {
     const { data, setReference, isReference } = this.props;
     if (isReference) {
       setReference(undefined);
@@ -171,7 +171,7 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
 
   /**
    * Handle the click on a download button: download the file.
-   * @param e The clickevent
+   * @param e The click event
    */
   handleDownloadClick = async (e) => {
     const { name, data } = this.props;
@@ -233,7 +233,9 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
   render() {
     const { name, isReference, data, referenceWorkflow } = this.props;
     const { hovering } = this.state;
-    this.elements = WorkflowParser(data, this.getToolDiff());
+    // A this.elements = WorkflowParser(data, this.getToolDiff());
+    const ser = new WorkflowSerializer(data).getReactFlowData();
+    this.elements = ser;
 
     let cardTitle = name;
     let cardClass = styles.workflow;
@@ -260,7 +262,7 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
               </Dropdown>
               <Button
                 type={buttonType}
-                onClick={this.onCLick}
+                onClick={this.onClick}
               >{buttonText}
               </Button>
             </Space>

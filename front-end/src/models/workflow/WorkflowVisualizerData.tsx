@@ -41,12 +41,15 @@ export interface WorkflowTool {
  * Workflow input/output type
  */
 export interface WorkflowIO {
-  /**
-   * Unique identifier of the input/output
-   */
+  /** Unique identifier of the input/output */
   id: string,
-  /**
-   * Name of the input/output
-   */
+  /** Name of the input/output */
   label: string,
 }
+
+export type NodeID = string;
+/**
+ * A map from one node's ID to other node IDs.
+ * For example, from a node to its children.
+ */
+export type EdgeMap = Record<NodeID, NodeID[]>;
