@@ -1,5 +1,6 @@
-import WorkflowData, { EdgeMap, NodeID, WorkflowIO, WorkflowTool } from '@models/workflow/WorkflowVisualizerData';
 import { Elements } from 'react-flow-renderer';
+import WorkflowData, { EdgeMap, NodeID, WorkflowIO, WorkflowTool } from '@models/workflow/WorkflowVisualizerData';
+import WorkflowDifference from '@models/workflow/WorkflowDifference';
 import WorkflowEdge from './Edges/WorkflowEdge';
 import TopologicalSort from './TopologicalSort';
 
@@ -181,10 +182,13 @@ export default class WorkflowSerializer {
 
   /**
    * Generate the data for React Flow to render the workflow.
-   * @returns The to-be-rendered React Flow data.
+   * @param difference The difference between this workflow and the reference workflow.
+   * @returns The workflow data as React Flow data which can be rendered.
    */
-  getReactFlowData() {
+  getReactFlowData(difference: WorkflowDifference) {
     const graph: Elements = [];
+    const { extra } = difference;
+    const extraCopy = extra;
 
     // Add the workflow output node
     graph.push({
@@ -196,6 +200,7 @@ export default class WorkflowSerializer {
         y: this.positions[outputNodeID].y,
       },
     });
+    // Add edges to the output type nodes
     this.workflowData.outputTypeStates.forEach((output, i) => {
       graph.push(
         WorkflowEdge(
@@ -243,11 +248,19 @@ export default class WorkflowSerializer {
       } else {
         typeName = 'dataTypeNode';
       }
+
+      // If this node does not exist in the reference workflow, flag it as "extra"
+      let isExtra = false;
+      if (extraCopy[data.label]) {
+        isExtra = true;
+        extraCopy[data.label] -= 1;
+      }
+
       // Add the node to be rendered
       graph.push({
         id: data.id,
         type: typeName,
-        data: { label: data.label },
+        data: { label: data.label, extra: isExtra },
         position: {
           x: this.positions[data.id].x,
           y: this.positions[data.id].y,
@@ -303,6 +316,7 @@ export default class WorkflowSerializer {
         y: this.positions[inputNodeID].y,
       },
     });
+    // Add edges to the input type nodes
     this.workflowData.inputTypeStates.forEach((input, i) => {
       graph.push(
         WorkflowEdge(

@@ -16,8 +16,8 @@ import InputNode from './Nodes/InputNode';
 import OutputNode from './Nodes/OutputNode';
 import ToolNode from './Nodes/ToolNode';
 import DataTypeNode from './Nodes/DataTypeNode';
-import styles from './Workflow.module.less';
 import WorkflowSerializer from './WorkflowSerializer';
+import styles from './Workflow.module.less';
 
 /**
  * Custom node types.
@@ -65,6 +65,8 @@ interface WorkflowVisualizerState {
 class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, WorkflowVisualizerState> {
   elements: Elements;
 
+  serializer: WorkflowSerializer;
+
   /**
    * Constructor
    * @param props The props for the Workflow component.
@@ -74,6 +76,9 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
     this.state = {
       hovering: false,
     };
+
+    const { data } = props;
+    this.serializer = new WorkflowSerializer(data);
   }
 
   /**
@@ -231,11 +236,9 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
   );
 
   render() {
-    const { name, isReference, data, referenceWorkflow } = this.props;
+    const { name, isReference, referenceWorkflow } = this.props;
     const { hovering } = this.state;
-    // A this.elements = WorkflowParser(data, this.getToolDiff());
-    const ser = new WorkflowSerializer(data).getReactFlowData();
-    this.elements = ser;
+    this.elements = this.serializer.getReactFlowData(this.getToolDiff());
 
     let cardTitle = name;
     let cardClass = styles.workflow;
