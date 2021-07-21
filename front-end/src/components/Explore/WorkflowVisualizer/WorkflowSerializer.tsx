@@ -123,23 +123,37 @@ export default class WorkflowSerializer {
      * @param yPos The Y-position of the given node.
      */
     const placeParents = (node: NodeID, yPos: number) => {
+      const parents: NodeID[] = this.parentsMap[node];
       const { x } = positions[node];
+
       // If the node has more than one parent, place them spaced apart
-      if (this.parentsMap[node].length > 1) {
+      if (parents.length > 1) {
         let width = 0;
         // Calculate the nodes that should be placed side-by-side above this node
-        this.parentsMap[node].forEach((parent) => {
+        parents.forEach((parent) => {
           width += this.widthMap[parent];
         });
-        let xParent = -(Math.floor(width / 2) * xDistance);
         // Position the parents
-        this.parentsMap[node].forEach((parent) => {
-          positions[parent] = { x: xParent, y: yPos - yDistance };
+        let xParent = -(Math.floor(width / 2) * xDistance);
+        let yOffset = 0.1 * yDistance * width;
+        parents.forEach((parent, i) => {
+          /*
+           * Offset the nodes a bit from each other to make their edges not overlap.
+           * Only offset the middle nodes.
+           */
+          if (i !== 0 && i !== parents.length - 1) {
+            yOffset -= 0.1 * yDistance;
+            positions[parent] = { x: xParent, y: yPos - yDistance - yOffset };
+          } else {
+            // Don't offset the leftmost and rightmost nodes
+            positions[parent] = { x: xParent, y: yPos - yDistance };
+          }
+
           xParent += this.widthMap[parent] * xDistance;
         });
       } else {
         // There is only one parent, place it right above the current node
-        const parent = this.parentsMap[node][0];
+        const parent = parents[0];
         positions[parent] = {
           x,
           y: yPos - yDistance,
@@ -166,7 +180,7 @@ export default class WorkflowSerializer {
         }
       });
       // Determine Y-position
-      const yPos = child.y - yDistance;
+      const yPos = positions[node].y;
       if (yPos < highestY) {
         highestY = yPos;
       }
