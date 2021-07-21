@@ -365,6 +365,8 @@ export default class WorkflowSerializer {
         // Don't include dead ends
         if (childMap[input.id] === undefined && nodes.includes(tool.id)) {
           childMap[input.id] = [tool.id];
+        } else if (nodes.includes(tool.id)) {
+          childMap[input.id].push(tool.id);
         }
       });
     });

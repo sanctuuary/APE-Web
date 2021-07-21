@@ -19,7 +19,7 @@ export default class TopologicalSort {
    * @param edges A map of nodes to their direct child nodes.
    */
   constructor(nodes: NodeID[], edges: EdgeMap) {
-    this.unmarked = nodes.reverse();
+    this.unmarked = nodes.slice().reverse();
     this.edges = edges;
 
     this.sortedElements = [];
