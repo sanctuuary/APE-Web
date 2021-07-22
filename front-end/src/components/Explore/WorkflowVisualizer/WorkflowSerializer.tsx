@@ -170,7 +170,10 @@ export default class WorkflowSerializer {
     sorted.pop(); // Remove the workflow output node, it has already been added to the graph
     sorted.reverse(); // Order from bottom to top
 
-    // Add the tool nodes (in order from bottom to top)
+    /*
+     * Add the tool nodes (in order from bottom to top).
+     * The workflow input node is filtered out, because it is already positioned.
+     */
     sorted.filter((n) => n !== inputNodeID).forEach((node: NodeID) => {
       // Get the node below this one to determine the Y-position
       let child: any;

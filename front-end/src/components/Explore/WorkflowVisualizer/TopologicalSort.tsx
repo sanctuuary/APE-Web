@@ -38,6 +38,10 @@ export default class TopologicalSort {
     return this.sortedElements.reverse();
   }
 
+  /**
+   * Visit/Explore a node.
+   * @param node The node to visit.
+   */
   private visit(node: NodeID) {
     // Check if node is already visited
     if (this.sortedElements.some((e) => e === node)) {
