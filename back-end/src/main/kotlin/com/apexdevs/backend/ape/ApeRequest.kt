@@ -17,9 +17,9 @@ import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsExcep
 import com.apexdevs.backend.persistence.exception.SynthesisFlagException
 import guru.nidi.graphviz.attribute.Rank
 import nl.uu.cs.ape.sat.APE
-import nl.uu.cs.ape.sat.core.implSAT.SATsolutionsList
 import nl.uu.cs.ape.sat.core.solutionStructure.CWLCreator
 import nl.uu.cs.ape.sat.core.solutionStructure.ModuleNode
+import nl.uu.cs.ape.sat.core.solutionStructure.SolutionsList
 import nl.uu.cs.ape.sat.core.solutionStructure.TypeNode
 import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
 import nl.uu.cs.ape.sat.models.logic.constructs.TaxonomyPredicate
@@ -34,7 +34,7 @@ import javax.imageio.ImageIO
  * @param ape APE instantiated with the correct CoreConfig
  */
 class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: APE, val runParametersOperation: RunParametersOperation) {
-    private lateinit var solutions: SATsolutionsList
+    private lateinit var solutions: SolutionsList
     /**
      * Takes a RunConfig object and adds two local paths and converts it to a JSON object to run the synthesis
      * @param runConfig The config provided that is used by APE to run it's synthesis
