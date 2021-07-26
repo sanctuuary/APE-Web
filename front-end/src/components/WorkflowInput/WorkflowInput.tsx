@@ -106,7 +106,7 @@ interface WorkflowInputState {
 /**
  * This component connects the {@link InOutBox}, {@link ConstraintBox},
  * and {@link WorkflowRun} components.
- * Together, they allow for configuring APE and geting the generated workflows from APE.
+ * Together, they allow for configuring APE and getting the generated workflows from APE.
  */
 class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputState> {
   formRef = React.createRef<FormInstance>();

@@ -21,9 +21,9 @@ import io.mockk.mockk
 import nl.uu.cs.ape.sat.APE
 import nl.uu.cs.ape.sat.constraints.ConstraintTemplate
 import nl.uu.cs.ape.sat.constraints.ConstraintTemplateParameter
-import nl.uu.cs.ape.sat.core.implSAT.SATsolutionsList
 import nl.uu.cs.ape.sat.core.solutionStructure.ModuleNode
 import nl.uu.cs.ape.sat.core.solutionStructure.SolutionWorkflow
+import nl.uu.cs.ape.sat.core.solutionStructure.SolutionsList
 import nl.uu.cs.ape.sat.core.solutionStructure.TypeNode
 import nl.uu.cs.ape.sat.models.AllModules
 import nl.uu.cs.ape.sat.models.AllTypes
@@ -59,7 +59,7 @@ internal class ApeRequestTest {
 
     @Test
     fun getWorkflows() {
-        val mockSolutionList = mockk<SATsolutionsList>()
+        val mockSolutionList = mockk<SolutionsList>()
         val mockSolutionWorkflow = mockk<SolutionWorkflow>()
         val mockTypeNode = mockk<TypeNode>()
         val mockModuleNode = mockk<ModuleNode>()
@@ -98,7 +98,7 @@ internal class ApeRequestTest {
 
     @Test
     fun `error when solutions not found`() {
-        val mockSolutionList = mockk<SATsolutionsList>()
+        val mockSolutionList = mockk<SolutionsList>()
         val mockSolutionWorkflow = mockk<SolutionWorkflow>()
         val mockConfig = mockk<RunConfig>()
         val mockJSON = mockk<JSONObject>()
