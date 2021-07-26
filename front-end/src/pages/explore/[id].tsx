@@ -232,14 +232,15 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       .then((response) => {
         if (response.status === 500) {
           // There is no run config for this domain
-          return Promise.reject(new Error('no use case in this domain'));
+          return Promise.reject(new Error('No use case available in this domain.'));
         }
         return response.json();
       })
       .then((json) => {
         useCaseConfig = json;
       })
-      .catch((error) => console.error('Use case fetch error', error));
+      // eslint-disable-next-line no-console
+      .catch((error: Error) => console.log(error.message));
     await fetch(`${base}/useCaseConstraints`, {
       method: 'GET',
       credentials: 'include',
@@ -247,14 +248,15 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       .then((response) => {
         if (response.status === 500) {
           // There is no run config for this domain
-          return Promise.reject(new Error('no use case constraints in this domain'));
+          return Promise.reject(new Error('No use case constraints available in this domain.'));
         }
         return response.json();
       })
       .then((json) => {
         useCaseConstraints = json;
       })
-      .catch((error) => console.error('Use case constraints fetch error', error));
+      // eslint-disable-next-line no-console
+      .catch((error: Error) => console.log(error.message));
 
     return {
       dataOntology,
