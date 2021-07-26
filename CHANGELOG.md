@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Column to public domains list which shows the owner of the domain.
 - Official domains are shown with an "official" topic.
 
+## Changed
+
+- Update APE dependency to 1.1.8.
+
 ### Fixed
 
 - Filtering domains based on their topics.

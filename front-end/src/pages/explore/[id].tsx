@@ -131,7 +131,7 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
     super(props);
 
     /*
-     * Eventhough we initiate the values of the data in initAPE, we have
+     * Even though we initiate the values of the data in initAPE, we have
      * to assign a value, because to order of calls is:
      * constructor -> render -> componentDidMount -> render
      * And otherwise the first render will fail
@@ -174,7 +174,6 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       method: 'GET',
       credentials: 'include',
     })
-      .then(() => console.log('APE instantiated'))
       .catch((error) => console.error('APE instantiate error', error));
 
     // The base URL for the data, tool, and constraint fetch
@@ -197,8 +196,11 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       credentials: 'include',
     })
       .then((response) => response.json())
-      .then((json) => {
-        dataOntology = json;
+      .then((json: Ontology) => {
+        // APE label is part of a future feature. Ignore it for now.
+        const noApeLabel = json;
+        noApeLabel.roots = noApeLabel.roots.filter((r) => r.id !== 'APE_label');
+        dataOntology = noApeLabel;
       })
       .catch((error) => console.error('Data fetch error', error));
 
