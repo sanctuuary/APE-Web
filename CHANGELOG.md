@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Filtering domains based on their topics.
+- Less console errors when a domain has no use case.
 
 ## [1.2.0] - 2021-07-06
 
