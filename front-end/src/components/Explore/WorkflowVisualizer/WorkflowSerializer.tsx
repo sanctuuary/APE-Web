@@ -137,6 +137,11 @@ export default class WorkflowSerializer {
         let xParent = -(Math.floor(width / 2) * xDistance);
         let yOffset = 0.1 * yDistance * width;
         parents.forEach((parent, i) => {
+          // The parent node was already placed at a higher position, skip it
+          if (positions[parent] !== undefined && positions[parent].y <= yPos - yDistance) {
+            return;
+          }
+
           /*
            * Offset the nodes a bit from each other to make their edges not overlap.
            * Only offset the middle nodes.
@@ -154,6 +159,11 @@ export default class WorkflowSerializer {
       } else {
         // There is only one parent, place it right above the current node
         const parent = parents[0];
+        // The parent node was already placed at a higher position, skip it
+        if (positions[parent] !== undefined && positions[parent].y <= yPos - yDistance) {
+          return;
+        }
+
         positions[parent] = {
           x,
           y: yPos - yDistance,
