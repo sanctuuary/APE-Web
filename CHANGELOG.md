@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update APE dependency to 1.1.8.
+- Rewrote workflow visualization code to fix overlapping nodes.
 
 ### Fixed
 
