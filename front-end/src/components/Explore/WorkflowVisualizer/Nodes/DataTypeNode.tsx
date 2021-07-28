@@ -19,14 +19,14 @@ function DataTypeNode({ data }: any) {
     >
       <Handle
         // Single input handle at the top of the node
-        className={styles.Edge}
+        className={styles.Handle}
         id="in"
         type="target"
         position={Position.Top}
         isConnectable={false}
       />
       <Handle
-        className={styles.Edge}
+        className={styles.Handle}
         // Single output handle at the bottom of the node
         id="out"
         type="source"

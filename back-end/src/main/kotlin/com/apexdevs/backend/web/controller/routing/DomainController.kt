@@ -44,7 +44,6 @@ import java.util.logging.Logger
 class DomainController(val storageService: StorageService, val domainOperation: DomainOperation, val userOperation: UserOperation, val domainCollection: DomainCollection, val topicOperation: TopicOperation) {
     /**
      * Returns all public domains
-     * @param user optional user credentials
      * @return list of all public domains
      */
     @ResponseStatus(HttpStatus.OK)
@@ -60,7 +59,17 @@ class DomainController(val storageService: StorageService, val domainOperation: 
                 // get all topics of domain and convert it all to a type safe to send
                 val topicStrings: MutableList<String> = mutableListOf()
                 domainOperation.getTopics(domain).map { topic: Topic -> topicStrings.add(topic.name) }
-                safeDomains.add(DomainRequest(domain.id.toHexString(), domain.name, topicStrings, domain.description))
+                val owner = domainOperation.getOwner(domain.id)
+                val isAdmin = userOperation.userIsAdmin(owner.email)
+                safeDomains.add(
+                    DomainRequest(
+                        domain.id.toHexString(),
+                        domain.name, topicStrings,
+                        domain.description,
+                        isAdmin,
+                        owner.displayName
+                    )
+                )
             }
 
             return safeDomains

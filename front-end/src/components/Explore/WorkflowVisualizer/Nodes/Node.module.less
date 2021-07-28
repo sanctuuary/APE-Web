@@ -7,41 +7,50 @@
 
 @import '../../../../styles/globals.less';
 
-.Extra {
-  background-color: @extra-tool-color;
-  border: none;
-  border-radius: 5px;
-  padding: 10px;
+/* Base node style */
+.node {
+  border: solid;
+  border-width: 1px;
+  border-color: white;
 }
 
+/* Regular tool node */
 .Regular {
   background-color: @regular-tool-color;
-  border: none;
   border-radius: 5px;
   padding: 10px;
+  .node();
 }
 
-.Edge {
-  background-color: @regular-tool-color !important;
+/* Highlighted extra tool node when comparing workflows */
+.Extra {
+  background-color: @extra-tool-color;
+  border-radius: 5px;
+  padding: 10px;
+  .node();
 }
 
 .InputNode {
   background-color: @regular-tool-color;
-  border: none;
   border-radius: 5px;
   padding: 10px;
+  .node();
 }
 
 .OutputNode {
   background-color: @regular-tool-color;
-  border: none;
   border-radius: 15px;
   padding: 10px;
+  .node();
 }
 
 .DataType {
   background-color: @datatype-node-color;
-  border: none;
   border-radius: 25px;
   padding: 5px;
+  .node();
+}
+
+.Handle {
+  background-color: @regular-tool-color !important;
 }

@@ -131,7 +131,7 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
     super(props);
 
     /*
-     * Eventhough we initiate the values of the data in initAPE, we have
+     * Even though we initiate the values of the data in initAPE, we have
      * to assign a value, because to order of calls is:
      * constructor -> render -> componentDidMount -> render
      * And otherwise the first render will fail
@@ -174,7 +174,6 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       method: 'GET',
       credentials: 'include',
     })
-      .then(() => console.log('APE instantiated'))
       .catch((error) => console.error('APE instantiate error', error));
 
     // The base URL for the data, tool, and constraint fetch
@@ -197,8 +196,11 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       credentials: 'include',
     })
       .then((response) => response.json())
-      .then((json) => {
-        dataOntology = json;
+      .then((json: Ontology) => {
+        // APE label is part of a future feature. Ignore it for now.
+        const noApeLabel = json;
+        noApeLabel.roots = noApeLabel.roots.filter((r) => r.id !== 'APE_label');
+        dataOntology = noApeLabel;
       })
       .catch((error) => console.error('Data fetch error', error));
 
@@ -232,14 +234,15 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       .then((response) => {
         if (response.status === 500) {
           // There is no run config for this domain
-          return Promise.reject(new Error('no use case in this domain'));
+          return Promise.reject(new Error('No use case available in this domain.'));
         }
         return response.json();
       })
       .then((json) => {
         useCaseConfig = json;
       })
-      .catch((error) => console.error('Use case fetch error', error));
+      // eslint-disable-next-line no-console
+      .catch((error: Error) => console.log(error.message));
     await fetch(`${base}/useCaseConstraints`, {
       method: 'GET',
       credentials: 'include',
@@ -247,14 +250,15 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       .then((response) => {
         if (response.status === 500) {
           // There is no run config for this domain
-          return Promise.reject(new Error('no use case constraints in this domain'));
+          return Promise.reject(new Error('No use case constraints available in this domain.'));
         }
         return response.json();
       })
       .then((json) => {
         useCaseConstraints = json;
       })
-      .catch((error) => console.error('Use case constraints fetch error', error));
+      // eslint-disable-next-line no-console
+      .catch((error: Error) => console.log(error.message));
 
     return {
       dataOntology,

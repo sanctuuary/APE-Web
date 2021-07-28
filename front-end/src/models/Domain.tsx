@@ -26,7 +26,29 @@ export default interface Domain {
   /** All possible data types in the tools taxonomy */
   dataDimensionsTaxonomyRoots: string[],
   /** Optional access level for current user */
-  access?: string
+  access?: Access
+}
+
+/**
+ * Basic information about a domain.
+ */
+export interface DomainInfo {
+  /** The ID of the domain. */
+  id: string,
+  /** The name of the domain. */
+  title: string,
+  /** The description of the domain. */
+  description: string,
+  /** The topics related to the domain. */
+  topics: string[],
+  /** Whether this is an official domain. */
+  official?: boolean,
+  /** Optional display name of the owner of the domain. */
+  ownerName?: string,
+  /** Optional visibility level of the domain. */
+  visibility?: Visibility,
+  /** Optional access level for the current user. */
+  access?: Access,
 }
 
 /**

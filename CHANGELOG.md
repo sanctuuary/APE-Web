@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2021-07-28
+
+### Added
+
+- Column to public domains list which shows the owner of the domain.
+- Official domains are shown with an "official" topic.
+
+### Changed
+
+- Update APE dependency to 1.1.8.
+- Rewrote workflow visualization code to fix overlapping nodes.
+
+### Fixed
+
+- Filtering domains based on their topics.
+- Less console errors when a domain has no use case.
+
 ## [1.2.0] - 2021-07-06
 
 ### Added
@@ -82,6 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.3.0]: https://github.com/sanctuuary/APE-Web/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/sanctuuary/APE-Web/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/sanctuuary/APE-Web/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/sanctuuary/APE-Web/releases/tag/v1.0.0

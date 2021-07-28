@@ -20,7 +20,7 @@ function InputNode({ data }: any) {
     >
       <Handle
         // Single output handle at the bottom of the node
-        className={styles.Edge}
+        className={styles.Handle}
         id="out"
         type="source"
         position={Position.Bottom}
