@@ -38,7 +38,7 @@ interface IState {
   appliedTopics: string[],
   /** Whether the topics have been changed and should be sent to the back-end */
   topicsChanged: boolean,
-  /** Onyology file to upload */
+  /** Ontology file to upload */
   owlFiles: UploadFile<any>[],
   /** Tools annotations file to upload */
   toolsAnnotationsFiles: UploadFile<any>[],
@@ -100,7 +100,7 @@ class DomainEdit extends React.Component<IProps, IState> {
 
   /**
    * Handle changes to the owl file upload.
-   * @param info Upload changes information
+   * @param info Upload changes information.
    */
   onOwlChange = (info) => {
     const updatedList = onFileChange(info);
@@ -109,16 +109,29 @@ class DomainEdit extends React.Component<IProps, IState> {
 
   /**
    * Handle changes to the tools taxonomy file upload.
-   * @param info Upload changes information
+   * @param info Upload changes information.
    */
   onToolsAnnotationsChange = (info) => {
     const updatedList = onFileChange(info);
     this.setState({ toolsAnnotationsFiles: updatedList });
   };
 
+  /**
+   * Handle changes to the use case run configuration file upload.
+   * @param info Upload changes information.
+   */
   onRunConfigChange = (info) => {
     const updatedList = onFileChange(info);
     this.setState({ runConfigFiles: updatedList });
+  };
+
+  /**
+   * Handle changes to the use case constraints file upload.
+   * @param info Upload changes information.
+   */
+  onRunConfigConstraintsChange = (info) => {
+    const updatedList = onFileChange(info);
+    this.setState({ constraintsFiles: updatedList });
   };
 
   /**
@@ -270,7 +283,7 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={onFileChange}
+                  onChange={this.onRunConfigChange}
                   fileList={runConfigFiles}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -283,7 +296,7 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={onFileChange}
+                  onChange={this.onRunConfigConstraintsChange}
                   fileList={constraintsFiles}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
