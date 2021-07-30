@@ -29,6 +29,7 @@ import ConstraintSketcher, { Sketch } from '@components/WorkflowInput/Constraint
 import { translateSketch } from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Config } from '@models/Configuration/Config';
 import { FormInstance } from 'antd/lib/form';
+import { clamp } from '@helpers/Math';
 import styles from './WorkflowInput.module.less';
 
 /** The props for the {@link WorkflowInput} component */
@@ -736,15 +737,12 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
     const runOptionsCopy = runOptions;
     try {
       const { minLength, maxLength, maxDuration, solutions } = runParametersLimits;
-      const clamp = (num: number, lower: number, upper: number): number => (
-        Math.max(Math.min(num, upper), lower)
-      );
 
       // Set the run options, with their limits
-      runOptions.minLength = clamp(json.solution_length.min, 0, minLength);
-      runOptions.maxLength = clamp(json.solution_length.max, 0, maxLength);
-      runOptions.maxDuration = clamp(+json.timeout_sec, 0, maxDuration);
-      runOptions.solutions = clamp(+json.max_solutions, 0, solutions);
+      runOptions.minLength = clamp(json.solution_length.min || runOptions.minLength, 0, minLength);
+      runOptions.maxLength = clamp(json.solution_length.max || runOptions.maxLength, 0, maxLength);
+      runOptions.maxDuration = clamp(+json.timeout_sec || runOptions.maxDuration, 0, maxDuration);
+      runOptions.solutions = clamp(+json.max_solutions || runOptions.solutions, 0, solutions);
     } catch (exc) {
       runOptions = runOptionsCopy;
       message.error('Something went wrong while importing run parameters. Please check the run parameters in your config.json and try again.');
