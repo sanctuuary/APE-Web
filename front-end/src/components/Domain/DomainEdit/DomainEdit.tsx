@@ -99,42 +99,6 @@ class DomainEdit extends React.Component<IProps, IState> {
   };
 
   /**
-   * Handle changes to the owl file upload.
-   * @param info Upload changes information.
-   */
-  onOwlChange = (info) => {
-    const updatedList = onFileChange(info);
-    this.setState({ owlFiles: updatedList });
-  };
-
-  /**
-   * Handle changes to the tools taxonomy file upload.
-   * @param info Upload changes information.
-   */
-  onToolsAnnotationsChange = (info) => {
-    const updatedList = onFileChange(info);
-    this.setState({ toolsAnnotationsFiles: updatedList });
-  };
-
-  /**
-   * Handle changes to the use case run configuration file upload.
-   * @param info Upload changes information.
-   */
-  onRunConfigChange = (info) => {
-    const updatedList = onFileChange(info);
-    this.setState({ runConfigFiles: updatedList });
-  };
-
-  /**
-   * Handle changes to the use case constraints file upload.
-   * @param info Upload changes information.
-   */
-  onRunConfigConstraintsChange = (info) => {
-    const updatedList = onFileChange(info);
-    this.setState({ constraintsFiles: updatedList });
-  };
-
-  /**
    * Gather and send the changes to the back-end.
    * @param values The current form values
    */
@@ -283,7 +247,11 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={this.onRunConfigChange}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ runConfigFiles: list }))
+                    )
+                  }
                   fileList={runConfigFiles}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -296,7 +264,11 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={this.onRunConfigConstraintsChange}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ constraintsFiles: list }))
+                    )
+                  }
                   fileList={constraintsFiles}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -337,7 +309,11 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateOWL}
-                  onChange={this.onOwlChange}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ owlFiles: list }))
+                    )
+                  }
                   fileList={owlFiles}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -351,7 +327,11 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={this.onToolsAnnotationsChange}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ toolsAnnotationsFiles: list }))
+                    )
+                  }
                   fileList={toolsAnnotationsFiles}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>

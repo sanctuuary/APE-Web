@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Uploading use case run configuration and constraints file on the create domain page.
 - Uploading new a use case run configuration or constraints file on the domain edit page.
 - NaN value in run paramters when a use case run configuration does not contain a value for the parameter.
 - HTML "text" tag error on the explore page.

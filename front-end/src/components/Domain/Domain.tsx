@@ -12,6 +12,8 @@
  */
 import { Topic } from '@models/Domain';
 import { message } from 'antd';
+import { UploadChangeParam } from 'antd/lib/upload';
+import { UploadFile } from 'antd/lib/upload/interface';
 /**
  * Validate a file to be an .owl file.
  * @param file The file to validate
@@ -25,17 +27,24 @@ const validateOWL = (file: File): boolean => {
 };
 
 /**
- * Handle changes to the file upload.
+ * Handle changes when uploading a file.
+ *
+ * This function is mostly used to limit the number of files
+ * in an Ant Design Upload component to one.
  * @param info Upload changes information
+ * @param callback The function to call with the changed file. For example, to update a state.
  */
-const onFileChange = (info) => {
+const onFileChange = (
+  info: UploadChangeParam<UploadFile<any>>,
+  callback: (updatedList: any[]) => void,
+) => {
   // Remove wrong uploads: file.status is empty when beforeUpload returns false
   let updatedList = info.fileList.filter((file) => !!file.status);
   // Make sure only one file is uploaded
   if (updatedList.length > 1) {
     updatedList = [updatedList.pop()];
   }
-  return updatedList;
+  callback(updatedList);
 };
 
 /**

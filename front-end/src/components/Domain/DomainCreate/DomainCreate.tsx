@@ -125,7 +125,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
       files.push({
         id: 'useCaseConstraints',
         fileName: values.useCaseConstraints.file.name,
-        originFileObj: values.useCaseConstraints.originFileObj,
+        originFileObj: values.useCaseConstraints.file.originFileObj,
       });
     }
 
@@ -222,7 +222,11 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={onFileChange}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ runConfig: list }))
+                    )
+                  }
                   fileList={runConfig}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -235,7 +239,11 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={onFileChange}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ constraints: list }))
+                    )
+                  }
                   fileList={constraints}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -269,7 +277,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               <Form.Item
                 name="strictToolsAnnotations"
                 label="Use strict tools annotations: "
-                rules={[{ required: true, message: 'Strict tools annotions is required' }]}
+                rules={[{ required: true, message: 'Strict tools annotations is required' }]}
               >
                 <Select
                   dropdownMatchSelectWidth={false}
@@ -285,7 +293,11 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={onFileChange}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ toolsAnnotations: list }))
+                    )
+                  }
                   fileList={toolsAnnotations}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -298,7 +310,11 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateOWL}
-                  onChange={onFileChange}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ ontology: list }))
+                    )
+                  }
                   fileList={ontology}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
