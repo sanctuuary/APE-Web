@@ -17,6 +17,7 @@ import fetchWithRedirect from '@helpers/FetchWithRedirect';
 import styles from '@pages/app.module.less';
 import { Config } from '@models/Configuration/Config';
 import { ConstraintsConfig } from '@models/Configuration/ConstraintsConfig';
+import { getSession } from 'next-auth/client';
 
 /**
  * Props for {@link ExplorePage}
@@ -127,7 +128,7 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
   /** Ref to the region where workflows are shown */
   workflowViewRef: React.RefObject<HTMLDivElement> = React.createRef();
 
-  constructor(props: Readonly<IExplorePageProps>) {
+  constructor(props: IExplorePageProps) {
     super(props);
 
     /*
@@ -364,16 +365,27 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
   }
 }
 
-export async function getServerSideProps({ query }) {
+export async function getServerSideProps({ req, query }) {
+  const session: any = await getSession({ req });
+
   // Get the current domain
   const domainEndpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/${query.id}/`;
-  let domain: Domain;
+  let domain: any = {};
   await fetch(domainEndpoint, {
     method: 'GET',
+    credentials: 'include',
+    headers: {
+      cookie: session.user.sessionid,
+    },
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error(`Failed to GET domain: ${response.statusText}`);
+      }
+      return response.json();
+    })
     .then((data) => { domain = data; })
-    .catch(() => { domain = query.id; });
+    .catch(() => { domain.id = query.id; });
 
   // Get the run parameters limits
   let runParametersLimits: RunOptions;
