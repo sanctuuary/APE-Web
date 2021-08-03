@@ -215,6 +215,17 @@ class DomainEdit extends React.Component<IProps, IState> {
               <Form.Item
                 label="Visibility"
                 name="visibility"
+                tooltip={{
+                  title: (
+                    <div>
+                      <div>Who can use the domain?</div>
+                      <ul>
+                        <li>Private: only you and people you give access.</li>
+                        <li>Public: everyone, even those without an account.</li>
+                      </ul>
+                    </div>
+                  ),
+                }}
               >
                 <Select data-testid="visibility-select">
                   {
@@ -296,13 +307,13 @@ class DomainEdit extends React.Component<IProps, IState> {
                 name="dataDimensionsTaxonomyRoots"
                 label="Data taxonomy roots:"
                 rules={[{ required: true, message: 'A data taxonomy root is required' }]}
-                tooltip={{ title: 'Comma separated, with optional spaces' }}
+                tooltip={{ title: 'Press space to start typing the next one' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
               </Form.Item>
 
               <Form.Item
-                label="OWL file"
+                label="Ontology file"
                 name="ontology"
               >
                 <Upload

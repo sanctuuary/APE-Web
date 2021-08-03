@@ -176,7 +176,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
             <Col span={12}>
               <Form.Item
                 name="title"
-                label="Domain name:"
+                label="Title:"
                 rules={[{ required: true, message: 'A name is required' }]}
               >
                 <Input />
@@ -192,6 +192,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="visibility"
                 label="Visibility:"
                 rules={[{ required: true, message: 'Visibility is required' }]}
+                tooltip={{
+                  title: (
+                    <div>
+                      <div>Who can use the domain?</div>
+                      <ul>
+                        <li>Private: only you and people you give access.</li>
+                        <li>Public: everyone, even those without an account.</li>
+                      </ul>
+                    </div>
+                  ),
+                }}
               >
                 <Select
                   data-testid="visibility-select"
@@ -270,7 +281,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="dataDimensionsTaxonomyRoots"
                 label="Data taxonomy roots:"
                 rules={[{ required: true, message: 'A data taxonomy root is required' }]}
-                tooltip={{ title: 'Comma separated, with optional spaces' }}
+                tooltip={{ title: 'Press space to start typing the next one' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
               </Form.Item>
@@ -287,23 +298,6 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 </Select>
               </Form.Item>
               <Form.Item
-                name="toolsAnnotations"
-                label="Tool annotations:"
-                rules={[{ required: true, message: 'A tool annotation is required' }]}
-              >
-                <Upload
-                  beforeUpload={validateJSON}
-                  onChange={
-                    (info) => (
-                      onFileChange(info, (list) => this.setState({ toolsAnnotations: list }))
-                    )
-                  }
-                  fileList={toolsAnnotations}
-                >
-                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                </Upload>
-              </Form.Item>
-              <Form.Item
                 name="ontology"
                 label="Ontology file:"
                 rules={[{ required: true, message: 'An ontology is required' }]}
@@ -316,6 +310,23 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                     )
                   }
                   fileList={ontology}
+                >
+                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                </Upload>
+              </Form.Item>
+              <Form.Item
+                name="toolsAnnotations"
+                label="Tool annotations file:"
+                rules={[{ required: true, message: 'A tool annotation is required' }]}
+              >
+                <Upload
+                  beforeUpload={validateJSON}
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ toolsAnnotations: list }))
+                    )
+                  }
+                  fileList={toolsAnnotations}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
                 </Upload>
