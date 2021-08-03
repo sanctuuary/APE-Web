@@ -97,6 +97,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
    * Handle submit
    */
   handleSubmit = (values) => {
+    const { router } = this.props;
     const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/upload`;
 
     const files: RMFCInput[] = [];
@@ -144,6 +145,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
         // Print response
         .then((response) => {
           if (response.ok) {
+            router.push('/');
             return Promise.resolve(message.success('Domain successfully created'));
           }
           return Promise.reject(message.error('Something went wrong'));

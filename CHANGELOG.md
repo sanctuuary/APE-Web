@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Visibility and "use strict tool annotations" fields on create domain page now have default values.
 - File uploads when creating and editing domains now filter accepted file types in the file dialog.
+- User is now redirected to the home page after successfully creating a domain.
 
 ### Fixed
 
