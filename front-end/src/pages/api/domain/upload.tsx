@@ -8,7 +8,7 @@
 import { getSession } from 'next-auth/client';
 import FormData from 'formdata-node';
 import Blob from 'fetch-blob';
-import { FileContent } from '@helpers/ReadFileContent';
+import { FileContent } from '@helpers/Files';
 
 /**
  * Proxy endpoint for uploading domains

@@ -9,12 +9,12 @@
 import React from 'react';
 import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm } from 'antd';
 import { Visibility } from '@models/Domain';
-import { validateJSON, validateOWL, fetchTopics, onFileChange } from '@components/Domain/Domain';
+import { fetchTopics } from '@components/Domain/Domain';
+import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import { useSession } from 'next-auth/client';
 import { UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { useRouter } from 'next/router';
-import { ReadMultipleFileContents, RMFCInput } from '@helpers/ReadFileContent';
 import styles from './DomainCreate.module.less';
 
 const { Option } = Select;

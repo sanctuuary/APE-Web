@@ -12,7 +12,7 @@ import WorkflowRun from '@components/WorkflowInput/WorkflowRun';
 import InOutBox from '@components/Explore/InOutBox/InOutBox';
 import ConstraintBox from '@components/Explore/ConstraintBox/ConstraintBox';
 import { ConstraintsConfig } from '@models/Configuration/ConstraintsConfig';
-import DownloadFile from '@helpers/DownloadFile';
+import { downloadFile } from '@helpers/Files';
 
 import {
   Constraint,
@@ -612,7 +612,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       body: JSON.stringify(body),
     }).then((response:Response) => {
       response.blob()
-        .then((blob) => { DownloadFile(blob, 'config.zip'); });
+        .then((blob) => { downloadFile(blob, 'config.zip'); });
     })
       .catch((error) => console.error('Error downloading the configuration files :(.', error));
   };

@@ -10,8 +10,7 @@ import { NextRouter } from 'next/router';
 import { Button, Col, Form, Input, message, Popconfirm, Row, Select, Space, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { validateJSON, validateOWL, onFileChange } from '@components/Domain/Domain';
-import { ReadMultipleFileContents, RMFCInput } from '@helpers/ReadFileContent';
+import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import Domain, { Topic, Visibility } from '@models/Domain';
 import styles from './DomainEdit.module.less';
 
@@ -305,7 +304,6 @@ class DomainEdit extends React.Component<IProps, IState> {
               <Form.Item
                 label="OWL file"
                 name="ontology"
-                valuePropName="ontology"
               >
                 <Upload
                   beforeUpload={validateOWL}
@@ -323,7 +321,6 @@ class DomainEdit extends React.Component<IProps, IState> {
               <Form.Item
                 label="Tools annotations file"
                 name="toolsAnnotations"
-                valuePropName="toolsAnnotations"
               >
                 <Upload
                   beforeUpload={validateJSON}
