@@ -236,6 +236,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
+                  accept=".json"
                   onChange={
                     (info) => (
                       onFileChange(info, (list) => this.setState({ runConfig: list }))
@@ -253,6 +254,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
+                  accept=".json"
                   onChange={
                     (info) => (
                       onFileChange(info, (list) => this.setState({ constraints: list }))
@@ -307,6 +309,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateOWL}
+                  accept=".owl,.xml"
                   onChange={
                     (info) => (
                       onFileChange(info, (list) => this.setState({ ontology: list }))
@@ -324,6 +327,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
+                  accept=".json"
                   onChange={
                     (info) => (
                       onFileChange(info, (list) => this.setState({ toolsAnnotations: list }))

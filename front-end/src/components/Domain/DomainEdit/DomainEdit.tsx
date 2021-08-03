@@ -257,6 +257,7 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
+                  accept=".json"
                   onChange={
                     (info) => (
                       onFileChange(info, (list) => this.setState({ runConfigFiles: list }))
@@ -274,6 +275,7 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
+                  accept=".json"
                   onChange={
                     (info) => (
                       onFileChange(info, (list) => this.setState({ constraintsFiles: list }))
@@ -318,6 +320,7 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateOWL}
+                  accept=".owl,.xml"
                   onChange={
                     (info) => (
                       onFileChange(info, (list) => this.setState({ owlFiles: list }))
@@ -335,6 +338,7 @@ class DomainEdit extends React.Component<IProps, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
+                  accept=".json"
                   onChange={
                     (info) => (
                       onFileChange(info, (list) => this.setState({ toolsAnnotationsFiles: list }))
