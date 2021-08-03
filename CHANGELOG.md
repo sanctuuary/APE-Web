@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Visibility and "use strict tool annotations" fields on create domain page now have default values.
+
 ### Fixed
 
 - Uploading use case run configuration and constraints file on the create domain page.

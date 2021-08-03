@@ -167,7 +167,10 @@ class DomainCreate extends React.Component<{router, session}, IState> {
         <Form
           onFinish={this.handleSubmit}
           className={styles['Domain-create']}
-          initialValues={this.state}
+          initialValues={{
+            visibility: Visibility.Public,
+            strictToolsAnnotations: 'False',
+          }}
           encType="multipart/form-data"
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 14 }}
