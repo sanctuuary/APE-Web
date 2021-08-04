@@ -149,8 +149,9 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
               id="submit"
               loading={loading}
               block
+              className={Styles.RunButton}
             >
-              <text className={Styles.RunButton}>Run</text>
+              Run
             </Button>
           </Form>
         </Card>

@@ -78,7 +78,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
         // prepare test data
         val id = ObjectId()
         val domain = mockk<Domain>()
-        val details = DomainDetails(id.toHexString(), t, t, DomainVisibility.Public, listOf(t), t, t, listOf(t))
+        val details = DomainDetails(id.toHexString(), t, t, DomainVisibility.Public, listOf(t), t, t, listOf(t), false)
 
         // set mock returns
         every { domainOperation.getDomain(id) } returns domain
@@ -278,7 +278,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
             val id = d.first
             val visibility = d.second
 
-            every { domainOperation.getDomainDetails(domain) } answers { DomainDetails(id.toHexString(), t, t, visibility, listOf(t), t, t, listOf(t)) }
+            every { domainOperation.getDomainDetails(domain) } answers { DomainDetails(id.toHexString(), t, t, visibility, listOf(t), t, t, listOf(t), false) }
             every { domainOperation.getDomain(id) } answers { domain }
             every { domain.visibility } answers { visibility }
         }

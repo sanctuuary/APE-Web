@@ -9,12 +9,12 @@
 import React from 'react';
 import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm } from 'antd';
 import { Visibility } from '@models/Domain';
-import { validateJSON, validateOWL, fetchTopics, onFileChange } from '@components/Domain/Domain';
+import { fetchTopics } from '@components/Domain/Domain';
+import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import { useSession } from 'next-auth/client';
 import { UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { useRouter } from 'next/router';
-import { ReadMultipleFileContents, RMFCInput } from '@helpers/ReadFileContent';
 import styles from './DomainCreate.module.less';
 
 const { Option } = Select;
@@ -97,6 +97,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
    * Handle submit
    */
   handleSubmit = (values) => {
+    const { router } = this.props;
     const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/upload`;
 
     const files: RMFCInput[] = [];
@@ -125,7 +126,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
       files.push({
         id: 'useCaseConstraints',
         fileName: values.useCaseConstraints.file.name,
-        originFileObj: values.useCaseConstraints.originFileObj,
+        originFileObj: values.useCaseConstraints.file.originFileObj,
       });
     }
 
@@ -144,6 +145,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
         // Print response
         .then((response) => {
           if (response.ok) {
+            router.push('/');
             return Promise.resolve(message.success('Domain successfully created'));
           }
           return Promise.reject(message.error('Something went wrong'));
@@ -167,7 +169,10 @@ class DomainCreate extends React.Component<{router, session}, IState> {
         <Form
           onFinish={this.handleSubmit}
           className={styles['Domain-create']}
-          initialValues={this.state}
+          initialValues={{
+            visibility: Visibility.Public,
+            strictToolsAnnotations: 'False',
+          }}
           encType="multipart/form-data"
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 14 }}
@@ -176,7 +181,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
             <Col span={12}>
               <Form.Item
                 name="title"
-                label="Domain name:"
+                label="Title:"
                 rules={[{ required: true, message: 'A name is required' }]}
               >
                 <Input />
@@ -192,6 +197,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="visibility"
                 label="Visibility:"
                 rules={[{ required: true, message: 'Visibility is required' }]}
+                tooltip={{
+                  title: (
+                    <div>
+                      <div>Who can use the domain?</div>
+                      <ul>
+                        <li>Private: only you and people you give access.</li>
+                        <li>Public: everyone, even those without an account.</li>
+                      </ul>
+                    </div>
+                  ),
+                }}
               >
                 <Select
                   data-testid="visibility-select"
@@ -222,7 +238,12 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={onFileChange}
+                  accept=".json"
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ runConfig: list }))
+                    )
+                  }
                   fileList={runConfig}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -235,7 +256,12 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               >
                 <Upload
                   beforeUpload={validateJSON}
-                  onChange={onFileChange}
+                  accept=".json"
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ constraints: list }))
+                    )
+                  }
                   fileList={constraints}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -262,14 +288,14 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="dataDimensionsTaxonomyRoots"
                 label="Data taxonomy roots:"
                 rules={[{ required: true, message: 'A data taxonomy root is required' }]}
-                tooltip={{ title: 'Comma separated, with optional spaces' }}
+                tooltip={{ title: 'Press space to start typing the next one' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
               </Form.Item>
               <Form.Item
                 name="strictToolsAnnotations"
                 label="Use strict tools annotations: "
-                rules={[{ required: true, message: 'Strict tools annotions is required' }]}
+                rules={[{ required: true, message: 'Strict tools annotations is required' }]}
               >
                 <Select
                   dropdownMatchSelectWidth={false}
@@ -279,27 +305,37 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 </Select>
               </Form.Item>
               <Form.Item
-                name="toolsAnnotations"
-                label="Tool annotations:"
-                rules={[{ required: true, message: 'A tool annotation is required' }]}
-              >
-                <Upload
-                  beforeUpload={validateJSON}
-                  onChange={onFileChange}
-                  fileList={toolsAnnotations}
-                >
-                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                </Upload>
-              </Form.Item>
-              <Form.Item
                 name="ontology"
                 label="Ontology file:"
                 rules={[{ required: true, message: 'An ontology is required' }]}
               >
                 <Upload
                   beforeUpload={validateOWL}
-                  onChange={onFileChange}
+                  accept=".owl,.xml"
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ ontology: list }))
+                    )
+                  }
                   fileList={ontology}
+                >
+                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                </Upload>
+              </Form.Item>
+              <Form.Item
+                name="toolsAnnotations"
+                label="Tool annotations file:"
+                rules={[{ required: true, message: 'A tool annotation is required' }]}
+              >
+                <Upload
+                  beforeUpload={validateJSON}
+                  accept=".json"
+                  onChange={
+                    (info) => (
+                      onFileChange(info, (list) => this.setState({ toolsAnnotations: list }))
+                    )
+                  }
+                  fileList={toolsAnnotations}
                 >
                   <Button icon={<UploadOutlined />}>Click to Upload</Button>
                 </Upload>

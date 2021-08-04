@@ -8,10 +8,9 @@
 import React from 'react';
 import { NextRouter } from 'next/router';
 import { Button, Col, Form, Input, message, Popconfirm, Row, Select, Space, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { validateJSON, validateOWL, onFileChange } from '@components/Domain/Domain';
-import { ReadMultipleFileContents, RMFCInput } from '@helpers/ReadFileContent';
+import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import Domain, { Topic, Visibility } from '@models/Domain';
 import styles from './DomainEdit.module.less';
 
@@ -33,12 +32,16 @@ interface IProps {
  * State of DomainEdit component
  */
 interface IState {
-  topicList: any[]
+  topicList: any[],
   /** The topics that are selected to use for this domain */
   appliedTopics: string[],
   /** Whether the topics have been changed and should be sent to the back-end */
   topicsChanged: boolean,
-  /** Onyology file to upload */
+  /** Whether the domain already has a use case config file. */
+  useCaseConfigExists: boolean,
+  /** Whether the domain already has a use case constraints file. */
+  useCaseConstraintsExists: boolean,
+  /** Ontology file to upload */
   owlFiles: UploadFile<any>[],
   /** Tools annotations file to upload */
   toolsAnnotationsFiles: UploadFile<any>[],
@@ -71,12 +74,46 @@ class DomainEdit extends React.Component<IProps, IState> {
        */
       appliedTopics: topics.filter((t) => domain.topics.includes(t.name)).map((t) => t.id),
       topicsChanged: false,
+      useCaseConfigExists: false,
+      useCaseConstraintsExists: false,
       owlFiles: [],
       toolsAnnotationsFiles: [],
       runConfigFiles: [],
       constraintsFiles: [],
     };
   }
+
+  async componentDidMount() {
+    await this.checkUseCaseFiles();
+  }
+
+  /**
+   * Checks if the use case config and use case constraints files exist in this domain.
+   */
+  checkUseCaseFiles = async () => {
+    const { domain } = this.props;
+
+    const endpointBase = `${process.env.NEXT_PUBLIC_BASE_URL}/api/domain/download`;
+    await fetch(`${endpointBase}/usecase-config/${domain.id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((response) => {
+        if (response.ok) {
+          this.setState({ useCaseConfigExists: true });
+        }
+      });
+
+    await fetch(`${endpointBase}/usecase-constraints/${domain.id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((response) => {
+        if (response.ok) {
+          this.setState({ useCaseConstraintsExists: true });
+        }
+      });
+  };
 
   /**
    * Handle the moving of available and selected topics in the topics transfer component.
@@ -99,26 +136,51 @@ class DomainEdit extends React.Component<IProps, IState> {
   };
 
   /**
-   * Handle changes to the owl file upload.
-   * @param info Upload changes information
+   * Download the current ontology file from the back-end.
    */
-  onOwlChange = (info) => {
-    const updatedList = onFileChange(info);
-    this.setState({ owlFiles: updatedList });
+  downloadOntologyFile = async () => {
+    const { domain } = this.props;
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/domain/download/ontology/${domain.id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((response:Response) => window.open(response.url));
   };
 
   /**
-   * Handle changes to the tools taxonomy file upload.
-   * @param info Upload changes information
+   * Download the current tool annotations file from the back-end.
    */
-  onToolsAnnotationsChange = (info) => {
-    const updatedList = onFileChange(info);
-    this.setState({ toolsAnnotationsFiles: updatedList });
+  downloadToolsAnnotationsFile = async () => {
+    const { domain } = this.props;
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/domain/download/tools-annotations/${domain.id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((response:Response) => window.open(response.url));
   };
 
-  onRunConfigChange = (info) => {
-    const updatedList = onFileChange(info);
-    this.setState({ runConfigFiles: updatedList });
+  /**
+   * Download the current use case config file from the back-end.
+   */
+  downloadUseCaseConfigFile = async () => {
+    const { domain } = this.props;
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/domain/download/usecase-config/${domain.id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((response:Response) => window.open(response.url));
+  };
+
+  /**
+   * Download the current use case constraints file from the back-end.
+   */
+  downloadUseCaseConstraintsFile = async () => {
+    const { domain } = this.props;
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/domain/download/usecase-constraints/${domain.id}`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((response:Response) => window.open(response.url));
   };
 
   /**
@@ -206,15 +268,26 @@ class DomainEdit extends React.Component<IProps, IState> {
 
   render() {
     const { domain } = this.props;
-    const { appliedTopics, owlFiles, toolsAnnotationsFiles, topicList,
-      runConfigFiles, constraintsFiles } = this.state;
+    const {
+      appliedTopics,
+      useCaseConfigExists,
+      useCaseConstraintsExists,
+      owlFiles,
+      toolsAnnotationsFiles,
+      topicList,
+      runConfigFiles,
+      constraintsFiles,
+    } = this.state;
 
     return (
       <div>
         <Form
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 14 }}
-          initialValues={domain}
+          initialValues={{
+            ...domain,
+            strictToolsAnnotations: domain.strictToolsAnnotations.toString(),
+          }}
           onFinish={this.handleSubmit}
           className={styles['Domain-edit']}
         >
@@ -239,6 +312,17 @@ class DomainEdit extends React.Component<IProps, IState> {
               <Form.Item
                 label="Visibility"
                 name="visibility"
+                tooltip={{
+                  title: (
+                    <div>
+                      <div>Who can use the domain?</div>
+                      <ul>
+                        <li>Private: only you and people you give access.</li>
+                        <li>Public: everyone, even those without an account.</li>
+                      </ul>
+                    </div>
+                  ),
+                }}
               >
                 <Select data-testid="visibility-select">
                   {
@@ -268,26 +352,58 @@ class DomainEdit extends React.Component<IProps, IState> {
                 label="Run configuration:"
                 tooltip={{ title: 'Configuration used for a demo run' }}
               >
-                <Upload
-                  beforeUpload={validateJSON}
-                  onChange={onFileChange}
-                  fileList={runConfigFiles}
-                >
-                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                </Upload>
+                <Space>
+                  <Upload
+                    beforeUpload={validateJSON}
+                    accept=".json"
+                    onChange={
+                      (info) => (
+                        onFileChange(info, (list) => this.setState({ runConfigFiles: list }))
+                      )
+                    }
+                    fileList={runConfigFiles}
+                  >
+                    <Button icon={<UploadOutlined />}>Upload new file</Button>
+                  </Upload>
+
+                  <Button
+                    type="text"
+                    icon={<DownloadOutlined />}
+                    onClick={this.downloadUseCaseConfigFile}
+                    disabled={!useCaseConfigExists}
+                  >
+                    Download current file
+                  </Button>
+                </Space>
               </Form.Item>
               <Form.Item
                 name="useCaseConstraints"
                 label="Constraints:"
                 tooltip={{ title: 'Constraints used for a demo run' }}
               >
-                <Upload
-                  beforeUpload={validateJSON}
-                  onChange={onFileChange}
-                  fileList={constraintsFiles}
-                >
-                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                </Upload>
+                <Space>
+                  <Upload
+                    beforeUpload={validateJSON}
+                    accept=".json"
+                    onChange={
+                      (info) => (
+                        onFileChange(info, (list) => this.setState({ constraintsFiles: list }))
+                      )
+                    }
+                    fileList={constraintsFiles}
+                  >
+                    <Button icon={<UploadOutlined />}>Upload new file</Button>
+                  </Upload>
+
+                  <Button
+                    type="text"
+                    icon={<DownloadOutlined />}
+                    onClick={this.downloadUseCaseConstraintsFile}
+                    disabled={!useCaseConstraintsExists}
+                  >
+                    Download current file
+                  </Button>
+                </Space>
               </Form.Item>
             </Col>
 
@@ -312,37 +428,78 @@ class DomainEdit extends React.Component<IProps, IState> {
                 name="dataDimensionsTaxonomyRoots"
                 label="Data taxonomy roots:"
                 rules={[{ required: true, message: 'A data taxonomy root is required' }]}
-                tooltip={{ title: 'Comma separated, with optional spaces' }}
+                tooltip={{ title: 'Press space to start typing the next one' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
               </Form.Item>
 
               <Form.Item
-                label="OWL file"
-                name="ontology"
-                valuePropName="ontology"
+                name="strictToolsAnnotations"
+                label="Use strict tools annotations: "
+                rules={[{ required: true, message: 'Strict tools annotations is required' }]}
               >
-                <Upload
-                  beforeUpload={validateOWL}
-                  onChange={this.onOwlChange}
-                  fileList={owlFiles}
+                <Select
+                  dropdownMatchSelectWidth={false}
                 >
-                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                </Upload>
+                  <Option value="false">False</Option>
+                  <Option value="true">True</Option>
+                </Select>
+              </Form.Item>
+
+              <Form.Item
+                label="Ontology file"
+                name="ontology"
+              >
+                <Space>
+                  <Upload
+                    beforeUpload={validateOWL}
+                    accept=".owl,.xml"
+                    onChange={
+                      (info) => (
+                        onFileChange(info, (list) => this.setState({ owlFiles: list }))
+                      )
+                    }
+                    fileList={owlFiles}
+                  >
+                    <Button icon={<UploadOutlined />}>Upload new file</Button>
+                  </Upload>
+
+                  <Button
+                    type="text"
+                    icon={<DownloadOutlined />}
+                    onClick={this.downloadOntologyFile}
+                  >
+                    Download current file
+                  </Button>
+                </Space>
               </Form.Item>
 
               <Form.Item
                 label="Tools annotations file"
                 name="toolsAnnotations"
-                valuePropName="toolsAnnotations"
               >
-                <Upload
-                  beforeUpload={validateJSON}
-                  onChange={this.onToolsAnnotationsChange}
-                  fileList={toolsAnnotationsFiles}
-                >
-                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                </Upload>
+                <Space>
+                  <Upload
+                    beforeUpload={validateJSON}
+                    accept=".json"
+                    onChange={
+                      (info) => (
+                        onFileChange(info, (list) => this.setState({ toolsAnnotationsFiles: list }))
+                      )
+                    }
+                    fileList={toolsAnnotationsFiles}
+                  >
+                    <Button icon={<UploadOutlined />}>Upload new file</Button>
+                  </Upload>
+
+                  <Button
+                    type="text"
+                    icon={<DownloadOutlined />}
+                    onClick={this.downloadToolsAnnotationsFile}
+                  >
+                    Download current file
+                  </Button>
+                </Space>
               </Form.Item>
             </Col>
           </Row>
