@@ -138,7 +138,7 @@ class ApiDomainController(
      * Downloads the toolsAnnotations file for the specified domain
      * @param user if the user needs to be authenticated for the domain
      * @param domainId the id of the domain
-     * @return an response entity containing the Response entity with the resource
+     * @return a response entity containing the Response entity with the resource
      */
     @GetMapping("/download/tools-annotations/{domainId}")
     fun downloadToolsAnnotations(@AuthenticationPrincipal user: User?, @PathVariable domainId: ObjectId): ResponseEntity<Resource> {
@@ -160,7 +160,7 @@ class ApiDomainController(
      * Downloads the ontology file for the specified domain
      * @param user if the user needs to be authenticated for the domain
      * @param domainId the id of the domain
-     * @return an response entity containing the Response entity with the resource
+     * @return a response entity containing the Response entity with the resource
      */
     @GetMapping("/download/ontology/{domainId}")
     fun downloadOntology(@AuthenticationPrincipal user: User?, @PathVariable domainId: ObjectId): ResponseEntity<Resource> {
@@ -179,10 +179,54 @@ class ApiDomainController(
     }
 
     /**
-     * Downloads the ontology file for the specified domain
+     * Downloads the use case config file for the specified domain
      * @param user if the user needs to be authenticated for the domain
      * @param domainId the id of the domain
-     * @return an response entity containing the Response entity with the resource
+     * @return a response entity containing the Response entity with the resource
+     */
+    @GetMapping("/download/usecase-config/{domainId}")
+    fun downloadUseCaseRunConfig(@AuthenticationPrincipal user: User?, @PathVariable domainId: ObjectId): ResponseEntity<Resource> {
+        try {
+            val userResult = user?.let { userOperation.getByEmail(it.username) }
+
+            return storageService.loadFileAsResponse(domainId, FileTypes.UseCaseRunConfig, userResult)
+        } catch (exc: Exception) {
+            when (exc) {
+                is UserAccessException, is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.UNAUTHORIZED, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Downloads the use case constraints file for the specified domain
+     * @param user if the user needs to be authenticated for the domain
+     * @param domainId the id of the domain
+     * @return a response entity containing the Response entity with the resource
+     */
+    @GetMapping("/download/usecase-constraints/{domainId}")
+    fun downloadUseCaseConstraints(@AuthenticationPrincipal user: User?, @PathVariable domainId: ObjectId): ResponseEntity<Resource> {
+        try {
+            val userResult = user?.let { userOperation.getByEmail(it.username) }
+
+            return storageService.loadFileAsResponse(domainId, FileTypes.UseCaseConstraints, userResult)
+        } catch (exc: Exception) {
+            when (exc) {
+                is UserAccessException, is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.UNAUTHORIZED, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Downloads the full configuration of the specified domain
+     * @param user if the user needs to be authenticated for the domain
+     * @param domainId the id of the domain
+     * @return a response entity containing the Response entity with the resource
      */
     @GetMapping("/download/config/{domainId}")
     fun downloadConfig(@AuthenticationPrincipal user: User?, @PathVariable domainId: ObjectId): ResponseEntity<Resource> {

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The current ontology, tools annotations, use case config, and use case constraints files of a domain can now be downloaded on the domain edit page.
+
 ### Changed
 
 - Visibility and "use strict tool annotations" fields on create domain page now have default values.
@@ -16,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Uploading use case run configuration and constraints file on the create domain page.
 - Uploading new a use case run configuration or constraints file on the domain edit page.
-- NaN value in run paramters when a use case run configuration does not contain a value for the parameter.
+- NaN value in run parameters when a use case run configuration does not contain a value for the parameter.
 - HTML "text" tag error on the explore page.
 - Incorrect unauthorized response when exploring private domains.
 
