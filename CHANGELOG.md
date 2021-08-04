@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NaN value in run parameters when a use case run configuration does not contain a value for the parameter.
 - HTML "text" tag error on the explore page.
 - Incorrect unauthorized response when exploring private domains.
+- Add missing "use strict tools annotations" field to the domain edit page.
 
 ## [1.3.0] - 2021-07-28
 

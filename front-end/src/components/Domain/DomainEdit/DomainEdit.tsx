@@ -284,7 +284,10 @@ class DomainEdit extends React.Component<IProps, IState> {
         <Form
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 14 }}
-          initialValues={domain}
+          initialValues={{
+            ...domain,
+            strictToolsAnnotations: domain.strictToolsAnnotations.toString(),
+          }}
           onFinish={this.handleSubmit}
           className={styles['Domain-edit']}
         >
@@ -428,6 +431,19 @@ class DomainEdit extends React.Component<IProps, IState> {
                 tooltip={{ title: 'Press space to start typing the next one' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
+              </Form.Item>
+
+              <Form.Item
+                name="strictToolsAnnotations"
+                label="Use strict tools annotations: "
+                rules={[{ required: true, message: 'Strict tools annotations is required' }]}
+              >
+                <Select
+                  dropdownMatchSelectWidth={false}
+                >
+                  <Option value="false">False</Option>
+                  <Option value="true">True</Option>
+                </Select>
               </Form.Item>
 
               <Form.Item

@@ -25,6 +25,8 @@ export default interface Domain {
   toolsTaxonomyRoot: string,
   /** All possible data types in the tools taxonomy */
   dataDimensionsTaxonomyRoots: string[],
+  /** Whether the domain uses strict tool annotations. */
+  strictToolsAnnotations: boolean,
   /** Optional access level for current user */
   access?: Access
 }
