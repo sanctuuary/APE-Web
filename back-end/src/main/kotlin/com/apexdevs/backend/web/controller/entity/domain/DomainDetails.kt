@@ -17,5 +17,6 @@ data class DomainDetails(
     val topics: List<String>,
     val ontologyPrefixIRI: String,
     val toolsTaxonomyRoot: String,
-    val dataDimensionsTaxonomyRoots: List<String>
+    val dataDimensionsTaxonomyRoots: List<String>,
+    val strictToolsAnnotations: Boolean
 )

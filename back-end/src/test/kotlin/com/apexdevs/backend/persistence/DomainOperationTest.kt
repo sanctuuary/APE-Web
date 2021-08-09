@@ -68,7 +68,8 @@ class DomainOperationTest() {
             listOf("test1"),
             domain.ontologyPrefixIRI,
             domain.toolsTaxonomyRoot,
-            domain.dataDimensionsTaxonomyRoots
+            domain.dataDimensionsTaxonomyRoots,
+            domain.strictToolsAnnotations
         )
 
         // check result with expectation

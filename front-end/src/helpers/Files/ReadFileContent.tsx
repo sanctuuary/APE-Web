@@ -27,7 +27,7 @@ export default function ReadFileContent(file, callback: ReadFileContentCallback)
 }
 
 /**
- * ReadMultipleFileConents input type declaration
+ * ReadMultipleFileContents input type declaration
  */
 export interface RMFCInput {
   /**

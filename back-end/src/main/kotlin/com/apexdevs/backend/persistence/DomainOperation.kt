@@ -226,7 +226,17 @@ class DomainOperation(val domainRepository: DomainRepository, val userRepository
      */
     fun getDomainDetails(domain: Domain): DomainDetails {
         val topics = getTopics(domain).map { it.name }
-        return DomainDetails(domain.id.toHexString(), domain.name, domain.description, domain.visibility, topics, domain.ontologyPrefixIRI, domain.toolsTaxonomyRoot, domain.dataDimensionsTaxonomyRoots)
+        return DomainDetails(
+            domain.id.toHexString(),
+            domain.name,
+            domain.description,
+            domain.visibility,
+            topics,
+            domain.ontologyPrefixIRI,
+            domain.toolsTaxonomyRoot,
+            domain.dataDimensionsTaxonomyRoots,
+            domain.strictToolsAnnotations
+        )
     }
 
     /**

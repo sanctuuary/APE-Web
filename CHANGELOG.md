@@ -6,6 +6,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2021-08-09
+
+### Added
+
+- The current ontology, tools annotations, use case config, and use case constraints files of a domain can now be downloaded on the domain edit page.
+
+### Changed
+
+- Visibility and "use strict tool annotations" fields on create domain page now have default values.
+- File uploads when creating and editing domains now filter accepted file types in the file dialog.
+- User is now redirected to the home page after successfully creating a domain.
+
+### Fixed
+
+- Uploading use case run configuration and constraints file on the create domain page.
+- Uploading new a use case run configuration or constraints file on the domain edit page.
+- NaN value in run parameters when a use case run configuration does not contain a value for the parameter.
+- HTML "text" tag error on the explore page.
+- Incorrect unauthorized response when exploring private domains.
+- Add missing "use strict tools annotations" field to the domain edit page.
+
 ## [1.3.0] - 2021-07-28
 
 ### Added
@@ -99,6 +120,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.3.1]: https://github.com/sanctuuary/APE-Web/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/sanctuuary/APE-Web/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/sanctuuary/APE-Web/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/sanctuuary/APE-Web/compare/v1.0.0...v1.1.0
