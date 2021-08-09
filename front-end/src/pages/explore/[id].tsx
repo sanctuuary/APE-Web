@@ -371,13 +371,17 @@ export async function getServerSideProps({ req, query }) {
   // Get the current domain
   const domainEndpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/${query.id}/`;
   let domain: any = {};
-  await fetch(domainEndpoint, {
+  const init: RequestInit = {
     method: 'GET',
     credentials: 'include',
-    headers: {
+  };
+  // Only include cookie if a user is logged in
+  if (session !== null) {
+    init.headers = {
       cookie: session.user.sessionid,
-    },
-  })
+    };
+  }
+  await fetch(domainEndpoint, init)
     .then((response) => {
       if (response.status !== 200) {
         throw new Error(`Failed to GET domain: ${response.statusText}`);
