@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Public domains can be explored again without logging in.
+- Add missing "no access" result page when trying to explore a domain a user does not have access to.
+
 ## [1.3.1] - 2021-08-09
 
 ### Added
