@@ -428,7 +428,7 @@ class DomainEdit extends React.Component<IProps, IState> {
                 name="dataDimensionsTaxonomyRoots"
                 label="Data taxonomy roots:"
                 rules={[{ required: true, message: 'A data taxonomy root is required' }]}
-                tooltip={{ title: 'Press space to start typing the next one' }}
+                tooltip={{ title: 'Press space, comma, or ";" to start typing the next one' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
               </Form.Item>
