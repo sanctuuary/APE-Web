@@ -7,7 +7,7 @@
 
 import React from 'react';
 import Head from 'next/head';
-import { Layout } from 'antd';
+import { Button, Layout, Result } from 'antd';
 import Explore from '@components/Explore/Explore';
 import { Ontology, ConstraintType, DataType, OntologyNode, RunOptions } from '@models/workflow/Workflow';
 import WorkflowData from '@models/workflow/WorkflowVisualizerData';
@@ -24,7 +24,7 @@ import { getSession } from 'next-auth/client';
  */
 interface IExplorePageProps {
   /** The domain to explore */
-  domain: Domain,
+  domain: Domain | null,
   /** The run parameters limits from the back-end */
   runParametersLimits: RunOptions,
 }
@@ -155,7 +155,9 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
 
   async componentDidMount() {
     const { domain } = this.props;
-    await this.initAPE(domain.id).then((data) => this.setState({ data }));
+    if (domain !== null) {
+      await this.initAPE(domain.id).then((data) => this.setState({ data }));
+    }
   }
 
   /**
@@ -330,6 +332,23 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
       useCaseConstraints,
     } = data;
 
+    // Show a "no denied" result when the user does not have access to this domain
+    if (domain === null) {
+      return (
+        <div>
+          <Head>
+            <title>No access to this domain | APE</title>
+          </Head>
+          <Result
+            status="403"
+            title="No domain access"
+            subTitle="You do not have access to this domain."
+            extra={<Button type="primary" href="/">Go to the home page</Button>}
+          />
+        </div>
+      );
+    }
+
     return (
       <div data-testid="explore">
         <Head>
@@ -389,7 +408,7 @@ export async function getServerSideProps({ req, query }) {
       return response.json();
     })
     .then((data) => { domain = data; })
-    .catch(() => { domain.id = query.id; });
+    .catch(() => { domain = null; });
 
   // Get the run parameters limits
   let runParametersLimits: RunOptions;
