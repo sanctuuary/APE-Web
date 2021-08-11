@@ -364,7 +364,7 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
             constraintOptions={constraintOptions}
             useCaseConfig={useCaseConfig}
             useCaseConstraints={useCaseConstraints}
-            domain={domain.id}
+            domain={domain}
             runParametersLimits={runParametersLimits}
           />
         </Layout>

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The domain name is now shown on the domain explore page.
+
 ## [1.3.2] - 2021-08-09
 
 ### Fixed
