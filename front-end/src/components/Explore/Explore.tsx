@@ -6,10 +6,11 @@
  */
 
 import React from 'react';
-import { Space, Layout } from 'antd';
+import { Space, Layout, notification } from 'antd';
 import Sidebar from '@components/Explore/Sidebar/Sidebar';
 import WorkflowVisualizer from '@components/Explore/WorkflowVisualizer/WorkflowVisualizer';
 import WorkflowData from '@models/workflow/WorkflowVisualizerData';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import styles from '@pages/app.module.less';
 
 /**
@@ -17,7 +18,7 @@ import styles from '@pages/app.module.less';
  */
 interface ExploreProps {
   /**
-   * List of workflowdata retrieved from ape.
+   * List of workflow data retrieved from APE.
    */
   workflows: WorkflowData[];
 }
@@ -34,6 +35,8 @@ interface ExploreState {
    * The workflow currently stated as reference
    */
   referenceWorkflow: WorkflowData,
+  /** The number of times the scroll notification has been shown. */
+  scrollNotificationShown: number,
 }
 
 /**
@@ -49,7 +52,9 @@ class Explore extends React.Component<ExploreProps, ExploreState> {
     this.state = {
       selected: [],
       referenceWorkflow: undefined,
+      scrollNotificationShown: 0,
     };
+    notification.close('scrollNotification');
   }
 
   /**
@@ -109,8 +114,46 @@ class Explore extends React.Component<ExploreProps, ExploreState> {
    * @param selected A list with the indices of the selected workflows
    */
   onSelect = (selected) => {
+    const { scrollNotificationShown } = this.state;
+
     this.setState({ selected });
     this.resetReference();
+
+    /*
+     * Don't show the scroll notification on the first workflows selection
+     * (this is an automatic selection).
+     */
+    if (scrollNotificationShown === 0) {
+      this.setState({ scrollNotificationShown: 1 });
+    } else if (scrollNotificationShown === 1) {
+      /*
+       * Show the scroll notification on the second selection
+       * (this is the fist selection made by the user).
+       */
+      notification.info({
+        key: 'scrollNotification',
+        message: 'More workflows',
+        icon: <ArrowRightOutlined />,
+        description: (
+          <p>
+            More workflows are shown to the right.
+            Use the <strong>scrollbar below</strong>,
+            or <strong>shift+scroll wheel</strong> below the workflows to navigate to them.
+          </p>
+        ),
+        placement: 'bottomRight',
+        duration: 0,
+      });
+      this.setState({ scrollNotificationShown: 2 });
+    }
+  };
+
+  /**
+   * Called when the user scrolls through the workflow results.
+   */
+  onWorkflowsScroll = () => {
+    // Close the notification giving instructions on navigating the workflows.
+    notification.close('scrollNotification');
   };
 
   render() {
@@ -124,6 +167,7 @@ class Explore extends React.Component<ExploreProps, ExploreState> {
             margin: '0 30px',
             overflowX: 'auto',
           }}
+          onScroll={this.onWorkflowsScroll}
         >
           <Space
             size={20}

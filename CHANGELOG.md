@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - The domain name is now shown on the domain explore page.
+- Notification explaining how to navigate the workflows on the explore page appears when the user selects more workflows for the first time.
 
 ## [1.3.2] - 2021-08-09
 
