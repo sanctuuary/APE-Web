@@ -18,7 +18,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import kotlin.random.Random
 
 @ExtendWith(SpringExtension::class)
 @DataMongoTest
@@ -34,10 +33,7 @@ class DomainTest(@Autowired val domainRepository: DomainRepository) {
             domainRepository.insert(
                 Domain(
                     domainId, "TestDomain $n", "TestDescription", "domain/$domainId/",
-                    if (Random.nextInt(2) < 1)
-                        DomainVisibility.Public
-                    else
-                        DomainVisibility.Private,
+                    DomainVisibility.Public,
                     "Test", "Test", listOf("Test"), true
                 )
             )
