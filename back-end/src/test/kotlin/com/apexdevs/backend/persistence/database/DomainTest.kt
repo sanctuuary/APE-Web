@@ -7,6 +7,7 @@ package com.apexdevs.backend.persistence.database
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.DomainVisibility
 import com.apexdevs.backend.persistence.database.repository.DomainRepository
+import io.mockk.spyk
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -56,8 +57,18 @@ class DomainTest(@Autowired val domainRepository: DomainRepository) {
 
     @Test
     fun `Domain path is id test`() {
-        val domain = Domain("title", "description", DomainVisibility.Public, "Test", "Test", listOf("Test"), true)
+        val domain = spyk(
+            Domain(
+                "title",
+                "description",
+                DomainVisibility.Public,
+                "Test",
+                "Test",
+                listOf("Test"),
+                true
+            )
+        )
 
-        assert(domain.localPath == "domain/${domain.id}/")
+        assertEquals("domain/${domain.id}/", domain.localPath)
     }
 }
