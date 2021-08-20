@@ -11,14 +11,14 @@ jobs:
     ### Back-end
 
     # Back-end unit tests
-    #- stage: "Unit"
-    #  name: "Unit test back-end"
-    #  language: java
-    #  jdk: openjdk11
-    #  before_script:
-    #    - cd back-end
-    #  script:
-    #    - mvn test
+    - stage: "Unit"
+      name: "Unit test back-end"
+      language: java
+      jdk: openjdk11
+      before_script:
+        - cd back-end
+      script:
+        - mvn test
     
     # Back-end build test
     - stage: "Build"
