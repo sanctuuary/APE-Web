@@ -125,7 +125,7 @@ class Explore extends React.Component<ExploreProps, ExploreState> {
      */
     if (scrollNotificationShown === 0) {
       this.setState({ scrollNotificationShown: 1 });
-    } else if (scrollNotificationShown === 1) {
+    } else if (scrollNotificationShown === 1 && selected.length > 2) {
       /*
        * Show the scroll notification on the second selection
        * (this is the fist selection made by the user).
@@ -137,8 +137,7 @@ class Explore extends React.Component<ExploreProps, ExploreState> {
         description: (
           <p>
             More workflows are shown to the right.
-            Use the <strong>scrollbar below</strong>,
-            or <strong>shift+scroll wheel</strong> below the workflows to navigate to them.
+            Use the <strong>scrollbar below</strong> to navigate to them.
           </p>
         ),
         placement: 'bottomRight',
