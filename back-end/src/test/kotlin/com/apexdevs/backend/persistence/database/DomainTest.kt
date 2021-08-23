@@ -7,6 +7,7 @@ package com.apexdevs.backend.persistence.database
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.DomainVisibility
 import com.apexdevs.backend.persistence.database.repository.DomainRepository
+import io.mockk.spyk
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -18,7 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import kotlin.random.Random
 
 @ExtendWith(SpringExtension::class)
 @DataMongoTest
@@ -34,10 +34,7 @@ class DomainTest(@Autowired val domainRepository: DomainRepository) {
             domainRepository.insert(
                 Domain(
                     domainId, "TestDomain $n", "TestDescription", "domain/$domainId/",
-                    if (Random.nextInt(2) < 1)
-                        DomainVisibility.Public
-                    else
-                        DomainVisibility.Private,
+                    DomainVisibility.Public,
                     "Test", "Test", listOf("Test"), true
                 )
             )
@@ -60,8 +57,18 @@ class DomainTest(@Autowired val domainRepository: DomainRepository) {
 
     @Test
     fun `Domain path is id test`() {
-        val domain = Domain("title", "description", DomainVisibility.Public, "Test", "Test", listOf("Test"), true)
+        val domain = spyk(
+            Domain(
+                "title",
+                "description",
+                DomainVisibility.Public,
+                "Test",
+                "Test",
+                listOf("Test"),
+                true
+            )
+        )
 
-        assert(domain.localPath == "domain/${domain.id}/")
+        assertEquals("domain/${domain.id}/", domain.localPath)
     }
 }

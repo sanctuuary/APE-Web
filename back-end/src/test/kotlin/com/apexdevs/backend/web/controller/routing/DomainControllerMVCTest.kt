@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -227,7 +228,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
     @Test
     fun `Public domains are retrieved correctly`() {
-        val domain = Domain(t, t, t, DomainVisibility.Public, t, t, listOf(t), true)
+        val domain = spyk(Domain(t, t, t, DomainVisibility.Public, t, t, listOf(t), true))
         val user = User("user@test.test", "test", "TestUser", UserStatus.Approved)
 
         every { domain.id.toHexString() } returns "testId"
@@ -250,7 +251,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
     @Test
     fun `Public domains are flagged as official correctly`() {
-        val domain = Domain(t, t, t, DomainVisibility.Public, t, t, listOf(t), true)
+        val domain = spyk(Domain(t, t, t, DomainVisibility.Public, t, t, listOf(t), true))
         val user = User("user@test.test", "test", "TestUser", UserStatus.Approved)
 
         every { domain.id.toHexString() } returns "testId"

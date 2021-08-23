@@ -11,6 +11,7 @@ import com.apexdevs.backend.persistence.database.entity.Topic
 import com.apexdevs.backend.persistence.database.entity.User
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.database.repository.DomainTopicRepository
+import io.mockk.spyk
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -39,7 +40,17 @@ class TopicOperationIntegrationTest(
     }
 
     private fun provideTestDomain(ownerId: ObjectId): Domain {
-        val domain = Domain("MyTestDomain", "My test domain description", DomainVisibility.Private, "Test", "Test", listOf("Test"), true)
+        val domain = spyk(
+            Domain(
+                "MyTestDomain",
+                "My test domain description",
+                DomainVisibility.Private,
+                "Test",
+                "Test",
+                listOf("Test"),
+                true
+            )
+        )
         domainOperation.createDomain(domain, ownerId)
 
         return domain

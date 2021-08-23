@@ -52,7 +52,8 @@ class DomainOperationTest() {
     @Test
     fun `Assert DomainDetails are returned correctly`() {
         // prepare test data
-        val domain = getTestDomain()
+        val domain = spyk(getTestDomain())
+        every { domain.id.toHexString() } returns "testId"
 
         val spyDomainOperation = spyk(getDomainOperation())
 
