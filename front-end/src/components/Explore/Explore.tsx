@@ -137,8 +137,7 @@ class Explore extends React.Component<ExploreProps, ExploreState> {
         description: (
           <p>
             More workflows are shown to the right.
-            Use the <strong>scrollbar below</strong>,
-            or <strong>shift+scroll wheel</strong> below the workflows to navigate to them.
+            Use the <strong>scrollbar below</strong> to navigate to them.
           </p>
         ),
         placement: 'bottomRight',
