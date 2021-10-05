@@ -101,7 +101,7 @@ function SketchTranslation(props: SketchTranslationProps) {
       const tool = constraint.parameters[0] as Tool;
 
       uses.push(
-        <p id={styles.Constraint}>
+        <p id={styles.Constraint} key={constraint.constraintType.id}>
           <span id={styles.ConstraintPart} className={styles.Use}>use</span>
           <span id={styles.ConstraintPart} className={styles.Value}>{tool.label}</span>
         </p>,
@@ -111,7 +111,7 @@ function SketchTranslation(props: SketchTranslationProps) {
       const tool2 = constraint.parameters[1] as Tool;
 
       orders.push(
-        <p id={styles.Constraint}>
+        <p id={styles.Constraint} key={constraint.constraintType.id}>
           <span id={styles.ConstraintPart} className={styles.Use}>use</span>
           <span id={styles.ConstraintPart} className={styles.Value}>{tool2.label}</span><br />
           <span id={styles.ConstraintPart} className={styles.Use}>after</span>

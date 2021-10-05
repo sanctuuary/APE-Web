@@ -112,7 +112,7 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
    */
   const findPath = () => {
     /*
-     * For the inital path: find the node in the tree with that corresponds
+     * For the initial path: find the node in the tree with that corresponds
      * to the label. If the tree has duplicates, return the first one it finds.
      */
     let result: string = null;
