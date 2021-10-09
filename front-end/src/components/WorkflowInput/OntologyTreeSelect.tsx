@@ -12,11 +12,11 @@ import { OntologyNode } from '@models/workflow/Workflow';
 const { TreeNode } = TreeSelect;
 
 /**
- * The seperator character, used to make the unique keys in {@link collapse}.
+ * The separator character, used to make the unique keys in {@link collapse}.
  * Warning: this string needs to be unique and can't be included in any node
  * label, otherwise a lookup will fail.
  */
-const seperator: string = '\n';
+const separator: string = '\n';
 
 /**
  * Props interface for {@link OntologyTreeSelect}
@@ -43,7 +43,7 @@ function collapse(node: OntologyNode, query: string = '', parents: string[] = []
   // Concat the node to the parents in a new copy
   const route = parents.concat([node.label]);
   // Make it into a string
-  const joinedString = route.join(seperator);
+  const joinedString = route.join(separator);
 
   // List of children nodes, only assign if node.children isn't null
   let childrenNodes;
@@ -69,7 +69,7 @@ function collapse(node: OntologyNode, query: string = '', parents: string[] = []
 /**
  * Search recursively in the tree for a node with the given label. Stack the labels
  * of the parents, and when the node is found return a string the labels joined by
- * {@link seperator}. If the label is not in the tree, return null.
+ * {@link separator}. If the label is not in the tree, return null.
  * @param label - The label we are looking for.
  * @param node - The current node that is being searched. Set this to the root
  * to search in the entire tree.
@@ -80,7 +80,7 @@ function searchInTree(label: string, node: OntologyNode, parents: string[] = [])
   const path = parents.concat([node.label]);
 
   if (node.label === label) {
-    return path.join(seperator);
+    return path.join(separator);
   }
 
   let output: string = null;
@@ -159,8 +159,8 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
     } else {
       // Walk through the tree and go to the node given by splitting the key
 
-      // Split the key up by its seperator
-      const parts: string[] = key.split(seperator);
+      // Split the key up by its separator
+      const parts: string[] = key.split(separator);
 
       // Start at the top of the tree
       let node: OntologyNode = ontology;
