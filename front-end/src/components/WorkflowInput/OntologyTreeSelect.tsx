@@ -206,6 +206,7 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
       onChange={onChange}
       onSearch={onSearch}
       treeDefaultExpandedKeys={[ontology.label]}
+      dropdownMatchSelectWidth={400}
     >
       { tree }
     </TreeSelect>
