@@ -544,7 +544,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
     const input = this.refactorInOut(inputs);
     const expectedOutput = this.refactorInOut(outputs);
     const allConstraints = this.refactorConstraints(
-      constraints.concat(sketches.flatMap(translateSketch)),
+      constraints.concat(sketches.flatMap((s: Sketch) => translateSketch(s))),
     );
     const body = { input, expectedOutput, constraints: allConstraints, ...runOptions };
     const base = process.env.NEXT_PUBLIC_BASE_URL;

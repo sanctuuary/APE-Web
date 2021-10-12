@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Notification explaining how to navigate the workflows on the explore page appears when the user selects more workflows for the first time.
 - Add .cff and .bib citation files.
 
+### Fixed
+
+- OntologyTreeSelect's dropdown is now wider to fit all items.
+- OntologyTreeSelect now better handles items with the same name.
+- Several errors surrounding the constraint sketcher.
+
 ## [1.3.2] - 2021-08-09
 
 ### Fixed
