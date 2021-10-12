@@ -12,9 +12,10 @@ import styles from './ConstraintSketcher.module.less';
 
 /**
  * Convert the sketch into an array of constraints.
- * @param sketch - the sketch to convert
+ * @param sketch The sketch to convert
+ * @param uniqueIds Whether to use unique ids for the constraints
  */
-export function translateSketch(sketch: Sketch): Constraint[] {
+export function translateSketch(sketch: Sketch, uniqueIds: boolean = false): Constraint[] {
   const constraints: Constraint[] = [];
 
   /**
@@ -24,7 +25,7 @@ export function translateSketch(sketch: Sketch): Constraint[] {
   const use = (tool: Tool): void => {
     constraints.push({
       constraintType: {
-        id: 'use_m',
+        id: uniqueIds ? `use_m${constraints.length}` : 'use_m',
         description: 'Use module parameter_1 in the solution.',
         parameterTypes: [ParameterType.Tool],
       },
@@ -40,7 +41,7 @@ export function translateSketch(sketch: Sketch): Constraint[] {
   const order = (tool1: Tool, tool2: Tool): void => {
     constraints.push({
       constraintType: {
-        id: 'ite_m',
+        id: uniqueIds ? `ite_m${constraints.length}` : 'ite_m',
         description: 'If we use module parameter_1, then use parameter_2 subsequently.',
         parameterTypes: [ParameterType.Tool, ParameterType.Tool],
       },
@@ -85,7 +86,7 @@ function SketchTranslation(props: SketchTranslationProps) {
   }
 
   // Translate the sketch to a list of constraints
-  const translation: Constraint[] = translateSketch(sketch);
+  const translation: Constraint[] = translateSketch(sketch, true);
 
   // If the translation is empty, return null
   if (translation.length === 0) {
@@ -97,7 +98,7 @@ function SketchTranslation(props: SketchTranslationProps) {
 
   // Sort the translation by uses and orders
   translation.forEach((constraint) => {
-    if (constraint.constraintType.id === 'use_m') {
+    if (constraint.constraintType.id.startsWith('use_m')) {
       const tool = constraint.parameters[0] as Tool;
 
       uses.push(
@@ -106,7 +107,7 @@ function SketchTranslation(props: SketchTranslationProps) {
           <span id={styles.ConstraintPart} className={styles.Value}>{tool.label}</span>
         </p>,
       );
-    } else if (constraint.constraintType.id === 'ite_m') {
+    } else if (constraint.constraintType.id.startsWith('ite_m')) {
       const tool1 = constraint.parameters[0] as Tool;
       const tool2 = constraint.parameters[1] as Tool;
 
