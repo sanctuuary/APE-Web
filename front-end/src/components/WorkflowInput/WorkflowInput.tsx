@@ -579,7 +579,11 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       .catch((error) => {
         // Await error parsing
         error.then((data: any) => {
-          message.error(data.message, 5);
+          if (data.message.includes('unknown')) {
+            message.error(data.message, 5);
+          } else {
+            message.warn(data.message, 5);
+          }
         });
       });
   };

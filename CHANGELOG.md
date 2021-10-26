@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OntologyTreeSelect's dropdown is now wider to fit all items.
 - OntologyTreeSelect now better handles items with the same name.
 - Several errors surrounding the constraint sketcher.
+- APE synthesis flag messages sometimes being empty.
 
 ## [1.3.2] - 2021-08-09
 
