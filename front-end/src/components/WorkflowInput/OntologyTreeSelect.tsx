@@ -12,7 +12,7 @@ import { OntologyNode } from '@models/workflow/Workflow';
 const { TreeNode } = TreeSelect;
 
 /**
- * The separator character, used to make the unique keys in {@link collapse}.
+ * The separator character, used to make the unique keys.
  * Warning: this string needs to be unique and can't be included in any node
  * label, otherwise a lookup will fail.
  */
@@ -33,18 +33,18 @@ interface OntologyTreeSelectProps {
 }
 
 /**
- * Collapse the ontology node into TreeNode options for a TreeSelect.
+ * Convert the ontology nodes into TreeNode options for a TreeSelect.
  * @param node The node to collapse.
  * @param parents The parent nodes, to form a unique key.
  * @return A TreeNode of the node and all children as child components.
  */
-function collapse(node: OntologyNode, parents: OntologyNode[] = []) {
+function serializeOntology(node: OntologyNode, parents: OntologyNode[] = []) {
   const route = parents.concat(node);
 
   // List of children nodes, only assign if node.children isn't null
   let childrenNodes: any[] = null;
   if (node.children !== null) {
-    childrenNodes = node.children.map((child: OntologyNode) => collapse(child, route));
+    childrenNodes = node.children.map((child: OntologyNode) => serializeOntology(child, route));
   }
 
   const key = parents.map((p) => p.id).concat(node.id).join(separator);
@@ -198,7 +198,7 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
       dropdownMatchSelectWidth={400}
       filterTreeNode={filterTreeNode}
     >
-      { collapse(ontology) }
+      { serializeOntology(ontology) }
     </TreeSelect>
   );
 }
