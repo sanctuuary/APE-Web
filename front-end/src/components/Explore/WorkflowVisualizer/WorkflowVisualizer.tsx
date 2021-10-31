@@ -191,7 +191,7 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
         extension = 'sh';
         break;
       case 'cwl':
-        endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/cwl/${data.id}`;
+        endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/cwl/abstract/${data.id}`;
         extension = 'cwl';
         break;
       case 'png':
@@ -230,7 +230,7 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
   downloadMenu = () => (
     <Menu onClick={this.handleDownloadClick}>
       <Menu.Item key="bash" icon={<DownloadOutlined />}>Bash</Menu.Item>
-      <Menu.Item key="cwl" icon={<DownloadOutlined />}>CWL (beta)</Menu.Item>
+      <Menu.Item key="cwl" icon={<DownloadOutlined />}>Abstract CWL</Menu.Item>
       <Menu.Item key="png" icon={<DownloadOutlined />}>PNG</Menu.Item>
     </Menu>
   );
