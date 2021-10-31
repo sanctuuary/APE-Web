@@ -12,7 +12,7 @@ import { OntologyNode } from '@models/workflow/Workflow';
 const { TreeNode } = TreeSelect;
 
 /**
- * The separator character, used to make the unique keys in {@link collapse}.
+ * The separator character, used to make the unique keys.
  * Warning: this string needs to be unique and can't be included in any node
  * label, otherwise a lookup will fail.
  */
@@ -33,39 +33,29 @@ interface OntologyTreeSelectProps {
 }
 
 /**
- * Collapse the ontology node into TreeNode options for a TreeSelect
- * @param node - the node to collapse
- * @param parents - the parent nodes, to form a unique key
- * @param query - the query that should be filtered on
- * @return - A TreeNode of the node and all children as child components
+ * Convert the ontology nodes into TreeNode options for a TreeSelect.
+ * @param node The node to collapse.
+ * @param parents The parent nodes, to form a unique key.
+ * @return A TreeNode of the node and all children as child components.
  */
-function collapse(node: OntologyNode, query: string = '', parents: OntologyNode[] = []) {
+function serializeOntology(node: OntologyNode, parents: OntologyNode[] = []) {
   const route = parents.concat(node);
 
-  // Concat the node to the parents in a new copy
-  const joinedString = parents.map((p) => p.label).concat([node.label]).join(separator);
-
   // List of children nodes, only assign if node.children isn't null
-  let childrenNodes;
+  let childrenNodes: any[] = null;
   if (node.children !== null) {
-    childrenNodes = node.children.map((child: OntologyNode) => collapse(child, query, route));
+    childrenNodes = node.children.map((child: OntologyNode) => serializeOntology(child, route));
   }
 
   const key = parents.map((p) => p.id).concat(node.id).join(separator);
 
-  /*
-   * Check if the childrenNodes aren't null or if the current node has the query in its path.
-   * Look in the path, so if a parent node has the query, the children get included as well.
-   * If so: return a TreeNode of this node with its children.
-   * If not: return null, meaning that this node shouldn't be in the list of options.
-   */
-  return childrenNodes || joinedString.toLowerCase().includes(query) ? (
+  return (
     <TreeNode value={key} key={key} title={node.label}>
       {
         childrenNodes
       }
     </TreeNode>
-  ) : null;
+  );
 }
 
 /**
@@ -181,15 +171,15 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
     }
   };
 
-  // Hooks for the data in the TreeSelect. Initial value is the unfiltered tree.
-  const [tree, setTree] = useState(collapse(ontology));
-
   /**
-   * On search function. Filter the ontology tree on a query. Set the
-   * data for the TreeSelect accordingly.
-   * @param query - the string to filter on.
+   * Filter the tree based on the search input value.
+   * @param inputValue The search input value.
+   * @param treeNode The tree to filter.
+   * @returns Whether a tree contains the input value and should show up in the search results.
    */
-  const onSearch = (query: string) => setTree(collapse(ontology, query.toLowerCase()));
+  const filterTreeNode = (inputValue: string, treeNode: any): boolean => (
+    treeNode.title.toLowerCase().includes(inputValue.toLowerCase())
+  );
 
   /*
    * The values of the tree have to be unique, so they are joined strings
@@ -204,11 +194,11 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
       placeholder={placeholder}
       allowClear
       onChange={onChange}
-      onSearch={onSearch}
-      treeDefaultExpandedKeys={[ontology.label]}
+      treeDefaultExpandedKeys={[ontology.id]}
       dropdownMatchSelectWidth={400}
+      filterTreeNode={filterTreeNode}
     >
-      { tree }
+      { serializeOntology(ontology) }
     </TreeSelect>
   );
 }
