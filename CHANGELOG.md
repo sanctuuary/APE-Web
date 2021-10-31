@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - OntologyTreeSelect now better handles items with the same name.
 - Several errors surrounding the constraint sketcher.
 - APE synthesis flag messages sometimes being empty.
+- OntologyTreeSelect search function.
+- First tree node in OntologyTreeSelect not expanding by default.
 
 ## [1.3.2] - 2021-08-09
 
