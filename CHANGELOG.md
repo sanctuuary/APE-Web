@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update APE dependency to 1.1.9.
 - Change "CWL (beta)" download to "Abstract CWL" download.
 - Make it possible to configure the size limit of file uploads in the .env files (default: 10MB).
+- Run parameter field "Max duration (s)" is now "Max duration (seconds)".
 
 ### Fixed
 
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - APE synthesis flag messages sometimes being empty.
 - OntologyTreeSelect search function.
 - First tree node in OntologyTreeSelect not expanding by default.
+- Run parameter fields are now required.
 
 ## [1.3.2] - 2021-08-09
 
