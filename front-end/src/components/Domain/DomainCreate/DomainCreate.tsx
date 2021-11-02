@@ -148,12 +148,15 @@ class DomainCreate extends React.Component<{router, session}, IState> {
             router.push('/');
             return Promise.resolve(message.success('Domain successfully created'));
           }
-          return Promise.reject(message.error('Something went wrong'));
+          if (response.status === 413) {
+            const limit = process.env.NEXT_PUBLIC_FILE_SIZE_LIMIT;
+            return Promise.reject(new Error(`Some files were too large. The maximum file size is ${limit}MB.`));
+          }
+          return Promise.reject(new Error('Error while trying to create domain'));
         })
         // Catch and print any errors
-        .catch((error) => {
-          message.error('Error while trying to create domain');
-          console.error(error);
+        .catch((error: Error) => {
+          message.error(error.message, 5);
         });
     });
   };
