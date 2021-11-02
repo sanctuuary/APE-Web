@@ -137,7 +137,7 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
 
             <Form.Item
               name="maxDuration"
-              label="Max duration (s)"
+              label="Max duration (seconds)"
               className={Styles.Label}
               rules={[{ required: true, message: 'The maximum duration is required' }]}
             >
