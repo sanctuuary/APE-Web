@@ -6,13 +6,13 @@
  */
 
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
-import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm } from 'antd';
+import React, { ReactNode } from 'react';
+import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm, Modal } from 'antd';
 import { Visibility } from '@models/Domain';
 import { fetchTopics } from '@components/Domain/Domain';
 import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import { useSession } from 'next-auth/client';
-import { UploadOutlined } from '@ant-design/icons';
+import { InfoOutlined, UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { useRouter } from 'next/router';
 import styles from './DomainCreate.module.less';
@@ -33,6 +33,7 @@ interface IState {
   runConfig: UploadFile<any>[];
   /** The constraints JSON file */
   constraints: UploadFile<any>[];
+  visibleModals: { [name: string]: boolean };
 }
 
 /**
@@ -76,6 +77,12 @@ class DomainCreate extends React.Component<{router, session}, IState> {
       toolsAnnotations: [],
       runConfig: [],
       constraints: [],
+      visibleModals: {
+        ontology: false,
+        tool_annotations: false,
+        run_config: false,
+        constraints: false,
+      },
     };
   }
 
@@ -162,10 +169,40 @@ class DomainCreate extends React.Component<{router, session}, IState> {
   };
 
   /**
+   * Change the visibility of a modal by its name.
+   * @param name The name of the modal to change the visibility of.
+   * @param visible Whether the modal should be visible or not.
+   */
+  updateModalVisibility = (name: string, visible: boolean) => {
+    const { visibleModals: modals } = this.state;
+    modals[name] = visible;
+    this.setState({ visibleModals: modals });
+  };
+
+  tooltipModal = (title: string, name: string, visible: boolean, content: ReactNode) => (
+    <Modal
+      title={title}
+      visible={visible}
+      footer={false}
+      onCancel={() => this.updateModalVisibility(name, false)}
+      width={1000}
+    >
+      {content}
+    </Modal>
+  );
+
+  /**
    * Render form
    */
   render() {
-    const { ontology, toolsAnnotations, topics, runConfig, constraints } = this.state;
+    const {
+      ontology,
+      toolsAnnotations,
+      topics,
+      runConfig,
+      constraints,
+      visibleModals,
+    } = this.state;
     const { router } = this.props;
     return (
       <div>
@@ -237,8 +274,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               </Form.Item>
               <Form.Item
                 name="useCaseRunConfig"
-                label="Run configuration:"
-                tooltip={{ title: 'Configuration used for a demo run', color: 'black' }}
+                label={(
+                  <div>
+                    Run configuration
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('run_config', true)}
+                    />
+                  </div>
+                )}
               >
                 <Upload
                   beforeUpload={validateJSON}
@@ -255,8 +301,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               </Form.Item>
               <Form.Item
                 name="useCaseConstraints"
-                label="Constraints:"
-                tooltip={{ title: 'Constraints used for a demo run', color: 'black' }}
+                label={(
+                  <div>
+                    Constraints
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('constraints', true)}
+                    />
+                  </div>
+                )}
               >
                 <Upload
                   beforeUpload={validateJSON}
@@ -312,7 +367,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               </Form.Item>
               <Form.Item
                 name="ontology"
-                label="Ontology file:"
+                label={(
+                  <div>
+                    Ontology file
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('ontology', true)}
+                    />
+                  </div>
+                )}
                 rules={[{ required: true, message: 'An ontology is required' }]}
               >
                 <Upload
@@ -330,7 +395,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               </Form.Item>
               <Form.Item
                 name="toolsAnnotations"
-                label="Tool annotations file:"
+                label={(
+                  <div>
+                    Tool annotations file
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('tool_annotations', true)}
+                    />
+                  </div>
+                )}
                 rules={[{ required: true, message: 'A tool annotation is required' }]}
               >
                 <Upload
@@ -368,6 +443,30 @@ class DomainCreate extends React.Component<{router, session}, IState> {
             </Col>
           </Row>
         </Form>
+
+        { // Ontology file pop-up
+          this.tooltipModal('Ontology file', 'ontology', visibleModals.ontology, (
+            <p>Information about ontology files.</p>
+          ))
+        }
+
+        { // Tools annotations file pop-up
+          this.tooltipModal('Tool annotations file', 'tool_annotations', visibleModals.tool_annotations, (
+            <p>Information about tool annotations.</p>
+          ))
+        }
+
+        { // Run configuration file pop-up
+          this.tooltipModal('Run configuration file', 'run_config', visibleModals.run_config, (
+            <p>Information about the run configuration.</p>
+          ))
+        }
+
+        { // Constraints file pop-up
+          this.tooltipModal('Constraints file', 'constraints', visibleModals.constraints, (
+            <p>Information about the constraints file.</p>
+          ))
+        }
       </div>
     );
   }
