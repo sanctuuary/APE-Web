@@ -210,6 +210,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                       </ul>
                     </div>
                   ),
+                  color: 'black',
                 }}
               >
                 <Select
@@ -237,7 +238,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               <Form.Item
                 name="useCaseRunConfig"
                 label="Run configuration:"
-                tooltip={{ title: 'Configuration used for a demo run' }}
+                tooltip={{ title: 'Configuration used for a demo run', color: 'black' }}
               >
                 <Upload
                   beforeUpload={validateJSON}
@@ -255,7 +256,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               <Form.Item
                 name="useCaseConstraints"
                 label="Constraints:"
-                tooltip={{ title: 'Constraints used for a demo run' }}
+                tooltip={{ title: 'Constraints used for a demo run', color: 'black' }}
               >
                 <Upload
                   beforeUpload={validateJSON}
@@ -277,6 +278,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="ontologyPrefix"
                 label="Ontology prefix:"
                 rules={[{ required: true, message: 'An ontology prefix is required' }]}
+                tooltip={{ title: 'Prefix of the ontology classes that will be used when full IRI is not provided.', color: 'black' }}
               >
                 <Input />
               </Form.Item>
@@ -284,6 +286,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="toolsTaxonomyRoot"
                 label="Tools taxonomy root:"
                 rules={[{ required: true, message: 'A tools taxonomy is required' }]}
+                tooltip={{ title: 'Ontology class (full IRI or class label) that corresponds to the tool taxonomy root.', color: 'black' }}
               >
                 <Input />
               </Form.Item>
@@ -291,7 +294,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="dataDimensionsTaxonomyRoots"
                 label="Data taxonomy roots:"
                 rules={[{ required: true, message: 'A data taxonomy root is required' }]}
-                tooltip={{ title: 'Press space, comma, or ";" to start typing the next one' }}
+                tooltip={{ title: 'Ontology classes (full IRI or class label) that correspond to the data taxonomy roots, separated by "tab", "space", "comma" or ";".', color: 'black' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
               </Form.Item>
