@@ -33,6 +33,7 @@ interface IState {
   runConfig: UploadFile<any>[];
   /** The constraints JSON file */
   constraints: UploadFile<any>[];
+  /** Whether each of the tooltip modals are visible. */
   visibleModals: { [name: string]: boolean };
 }
 
@@ -432,19 +433,19 @@ class DomainCreate extends React.Component<{router, session}, IState> {
           </Row>
         </Form>
 
-        { // Ontology file pop-up
+        { // Ontology file modal
           ontologyModal(visibleModals.ontology, () => this.updateModalVisibility('ontology', false))
         }
 
-        { // Tools annotations file pop-up
+        { // Tools annotations file modal
           toolAnnotationsModal(visibleModals.tool_annotations, () => this.updateModalVisibility('tool_annotations', false))
         }
 
-        { // Run configuration file pop-up
+        { // Run configuration file modal
           runConfigModal(visibleModals.run_config, () => this.updateModalVisibility('run_config', false))
         }
 
-        { // Constraints file pop-up
+        { // Constraints file modal
           constraintsModal(visibleModals.constraints, () => this.updateModalVisibility('constraints', false))
         }
       </div>

@@ -8,10 +8,11 @@
 import React from 'react';
 import { NextRouter } from 'next/router';
 import { Button, Col, Form, Input, message, Popconfirm, Row, Select, Space, Upload } from 'antd';
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, InfoOutlined, UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import Domain, { Topic, Visibility } from '@models/Domain';
+import { constraintsModal, ontologyModal, runConfigModal, toolAnnotationsModal } from '@components/Domain/Domain';
 import styles from './DomainEdit.module.less';
 
 const { Option } = Select;
@@ -49,6 +50,8 @@ interface IState {
   runConfigFiles: UploadFile<any>[],
   /** Constraint file to upload */
   constraintsFiles: UploadFile<any>[],
+  /** Whether each of the tooltip modals are visible. */
+  visibleModals: { [name: string]: boolean };
 }
 
 /**
@@ -80,6 +83,12 @@ class DomainEdit extends React.Component<IProps, IState> {
       toolsAnnotationsFiles: [],
       runConfigFiles: [],
       constraintsFiles: [],
+      visibleModals: {
+        ontology: false,
+        tool_annotations: false,
+        run_config: false,
+        constraints: false,
+      },
     };
   }
 
@@ -266,6 +275,17 @@ class DomainEdit extends React.Component<IProps, IState> {
     router.push('/');
   };
 
+  /**
+   * Change the visibility of a modal by its name.
+   * @param name The name of the modal to change the visibility of.
+   * @param visible Whether the modal should be visible or not.
+   */
+  updateModalVisibility = (name: string, visible: boolean) => {
+    const { visibleModals: modals } = this.state;
+    modals[name] = visible;
+    this.setState({ visibleModals: modals });
+  };
+
   render() {
     const { domain } = this.props;
     const {
@@ -277,6 +297,7 @@ class DomainEdit extends React.Component<IProps, IState> {
       topicList,
       runConfigFiles,
       constraintsFiles,
+      visibleModals,
     } = this.state;
 
     return (
@@ -350,8 +371,17 @@ class DomainEdit extends React.Component<IProps, IState> {
               </Form.Item>
               <Form.Item
                 name="useCaseRunConfig"
-                label="Run configuration:"
-                tooltip={{ title: 'Configuration used for a demo run', color: 'black' }}
+                label={(
+                  <div>
+                    Run configuration
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('run_config', true)}
+                    />
+                  </div>
+                )}
               >
                 <Space>
                   <Upload
@@ -379,8 +409,17 @@ class DomainEdit extends React.Component<IProps, IState> {
               </Form.Item>
               <Form.Item
                 name="useCaseConstraints"
-                label="Constraints:"
-                tooltip={{ title: 'Constraints used for a demo run', color: 'black' }}
+                label={(
+                  <div>
+                    Constraints
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('constraints', true)}
+                    />
+                  </div>
+                )}
               >
                 <Space>
                   <Upload
@@ -450,7 +489,17 @@ class DomainEdit extends React.Component<IProps, IState> {
               </Form.Item>
 
               <Form.Item
-                label="Ontology file"
+                label={(
+                  <div>
+                    Ontology file
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('ontology', true)}
+                    />
+                  </div>
+                )}
                 name="ontology"
               >
                 <Space>
@@ -478,7 +527,17 @@ class DomainEdit extends React.Component<IProps, IState> {
               </Form.Item>
 
               <Form.Item
-                label="Tools annotations file"
+                label={(
+                  <div>
+                    Tool annotations file
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('tool_annotations', true)}
+                    />
+                  </div>
+                )}
                 name="toolsAnnotations"
               >
                 <Space>
@@ -526,6 +585,22 @@ class DomainEdit extends React.Component<IProps, IState> {
             </Col>
           </Row>
         </Form>
+
+        { // Ontology file modal
+          ontologyModal(visibleModals.ontology, () => this.updateModalVisibility('ontology', false))
+        }
+
+        { // Tools annotations file modal
+          toolAnnotationsModal(visibleModals.tool_annotations, () => this.updateModalVisibility('tool_annotations', false))
+        }
+
+        { // Run configuration file modal
+          runConfigModal(visibleModals.run_config, () => this.updateModalVisibility('run_config', false))
+        }
+
+        { // Constraints file modal
+          constraintsModal(visibleModals.constraints, () => this.updateModalVisibility('constraints', false))
+        }
       </div>
     );
   }
