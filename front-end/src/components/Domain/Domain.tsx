@@ -11,6 +11,8 @@
  *
  * @packageDocumentation
  */
+import React, { ReactNode } from 'react';
+import { Modal } from 'antd';
 import { Topic } from '@models/Domain';
 
 /**
@@ -31,4 +33,79 @@ export async function fetchTopics(user: any, serverside: boolean = false): Promi
     headers: { cookie: user.sessionid },
   });
   return response.json();
+}
+
+/**
+ * Create modal for advanced tooltip information.
+ * @param title The title of the modal.
+ * @param visible Whether the modal is visible / open.
+ * @param cancel The function to call when the "onCancel" event is called.
+ * @param content The content of the modal.
+ * @returns A modal that acts as an advanced tooltip.
+ */
+export function tooltipModal(
+  title: string,
+  visible: boolean,
+  cancel: () => void,
+  content: ReactNode,
+) {
+  return (
+    <Modal
+      title={title}
+      visible={visible}
+      footer={false}
+      onCancel={cancel}
+      width={1000}
+    >
+      {content}
+    </Modal>
+  );
+}
+
+/**
+ * The tooltip modal for ontology files.
+ * @param visible Whether this modal is currently visible / open.
+ * @param cancel The function to call when the "onCancel" event is called.
+ * @returns The tooltip modal for ontology files.
+ */
+export function ontologyModal(visible: boolean, cancel: () => void) {
+  return tooltipModal('Ontology file', visible, cancel, (
+    <p>Information about ontology files.</p>
+  ));
+}
+
+/**
+ * The tooltip modal for tool annotations files.
+ * @param visible Whether this modal is currently visible / open.
+ * @param cancel The function to call when the "onCancel" event is called.
+ * @returns The tooltip modal for tool annotations files.
+ */
+export function toolAnnotationsModal(visible: boolean, cancel: () => void) {
+  return tooltipModal('Tool annotations file', visible, cancel, (
+    <p>Information about tool annotations.</p>
+  ));
+}
+
+/**
+ * The tooltip modal for run config files.
+ * @param visible Whether this modal is currently visible / open.
+ * @param cancel The function to call when the "onCancel" event is called.
+ * @returns The tooltip modal for run config files.
+ */
+export function runConfigModal(visible: boolean, cancel: () => void) {
+  return tooltipModal('Run configuration file', visible, cancel, (
+    <p>Information about the run configuration.</p>
+  ));
+}
+
+/**
+ * The tooltip modal for constraints files.
+ * @param visible Whether this modal is currently visible / open.
+ * @param cancel The function to call when the "onCancel" event is called.
+ * @returns The tooltip modal for constraints files.
+ */
+export function constraintsModal(visible: boolean, cancel: () => void) {
+  return tooltipModal('Constraints file', visible, cancel, (
+    <p>Information about the constraints file.</p>
+  ));
 }

@@ -6,10 +6,10 @@
  */
 
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { ReactNode } from 'react';
-import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm, Modal } from 'antd';
+import React from 'react';
+import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm } from 'antd';
 import { Visibility } from '@models/Domain';
-import { fetchTopics } from '@components/Domain/Domain';
+import { constraintsModal, fetchTopics, ontologyModal, runConfigModal, toolAnnotationsModal } from '@components/Domain/Domain';
 import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import { useSession } from 'next-auth/client';
 import { InfoOutlined, UploadOutlined } from '@ant-design/icons';
@@ -178,18 +178,6 @@ class DomainCreate extends React.Component<{router, session}, IState> {
     modals[name] = visible;
     this.setState({ visibleModals: modals });
   };
-
-  tooltipModal = (title: string, name: string, visible: boolean, content: ReactNode) => (
-    <Modal
-      title={title}
-      visible={visible}
-      footer={false}
-      onCancel={() => this.updateModalVisibility(name, false)}
-      width={1000}
-    >
-      {content}
-    </Modal>
-  );
 
   /**
    * Render form
@@ -445,27 +433,19 @@ class DomainCreate extends React.Component<{router, session}, IState> {
         </Form>
 
         { // Ontology file pop-up
-          this.tooltipModal('Ontology file', 'ontology', visibleModals.ontology, (
-            <p>Information about ontology files.</p>
-          ))
+          ontologyModal(visibleModals.ontology, () => this.updateModalVisibility('ontology', false))
         }
 
         { // Tools annotations file pop-up
-          this.tooltipModal('Tool annotations file', 'tool_annotations', visibleModals.tool_annotations, (
-            <p>Information about tool annotations.</p>
-          ))
+          toolAnnotationsModal(visibleModals.tool_annotations, () => this.updateModalVisibility('tool_annotations', false))
         }
 
         { // Run configuration file pop-up
-          this.tooltipModal('Run configuration file', 'run_config', visibleModals.run_config, (
-            <p>Information about the run configuration.</p>
-          ))
+          runConfigModal(visibleModals.run_config, () => this.updateModalVisibility('run_config', false))
         }
 
         { // Constraints file pop-up
-          this.tooltipModal('Constraints file', 'constraints', visibleModals.constraints, (
-            <p>Information about the constraints file.</p>
-          ))
+          constraintsModal(visibleModals.constraints, () => this.updateModalVisibility('constraints', false))
         }
       </div>
     );
