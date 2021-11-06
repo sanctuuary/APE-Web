@@ -12,11 +12,11 @@ import { OntologyNode } from '@models/workflow/Workflow';
 const { TreeNode } = TreeSelect;
 
 /**
- * The seperator character, used to make the unique keys in {@link collapse}.
+ * The separator character, used to make the unique keys.
  * Warning: this string needs to be unique and can't be included in any node
  * label, otherwise a lookup will fail.
  */
-const seperator: string = '\n';
+const separator: string = '\n';
 
 /**
  * Props interface for {@link OntologyTreeSelect}
@@ -33,54 +33,46 @@ interface OntologyTreeSelectProps {
 }
 
 /**
- * Collapse the ontology node into TreeNode options for a TreeSelect
- * @param node - the node to collapse
- * @param parents - the keys of the parents, to form a unique key
- * @param query - the query that should be filtered on
- * @return - A TreeNode of the node and all children as child components
+ * Convert the ontology nodes into TreeNode options for a TreeSelect.
+ * @param node The node to collapse.
+ * @param parents The parent nodes, to form a unique key.
+ * @return A TreeNode of the node and all children as child components.
  */
-function collapse(node: OntologyNode, query: string = '', parents: string[] = []) {
-  // Concat the node to the parents in a new copy
-  const route = parents.concat([node.label]);
-  // Make it into a string
-  const joinedString = route.join(seperator);
+function serializeOntology(node: OntologyNode, parents: OntologyNode[] = []) {
+  const route = parents.concat(node);
 
   // List of children nodes, only assign if node.children isn't null
-  let childrenNodes;
+  let childrenNodes: any[] = null;
   if (node.children !== null) {
-    childrenNodes = node.children.map((child: OntologyNode) => collapse(child, query, route));
+    childrenNodes = node.children.map((child: OntologyNode) => serializeOntology(child, route));
   }
 
-  /*
-   * Check if the childrenNodes aren't null or if the current node has the query in its path.
-   * Look in the path, so if a parent node has the query, the children get included as well.
-   * If so: return a TreeNode of this node with its children.
-   * If not: return null, meaning that this node shouldn't be in the list of options.
-   */
-  return childrenNodes || joinedString.toLowerCase().includes(query) ? (
-    <TreeNode value={joinedString} key={joinedString} title={node.label}>
+  const key = parents.map((p) => p.id).concat(node.id).join(separator);
+
+  return (
+    <TreeNode value={key} key={key} title={node.label}>
       {
         childrenNodes
       }
     </TreeNode>
-  ) : null;
+  );
 }
 
 /**
- * Search recursively in the tree for a node with the given label. Stack the labels
- * of the parents, and when the node is found return a string the labels joined by
- * {@link seperator}. If the label is not in the tree, return null.
- * @param label - The label we are looking for.
+ * Search recursively in the tree for a node with the given id. Stack the ids
+ * of the parents, and when the node is found return a string the ids joined by
+ * {@link separator}. If the id is not in the tree, return null.
+ * @param id - The id we are looking for.
  * @param node - The current node that is being searched. Set this to the root
  * to search in the entire tree.
- * @param parents - A list of labels of the parent nodes.
- * @return - A joined string of the parent labels.
+ * @param parents - A list of ids of the parent nodes.
+ * @return - A joined string of the parent ids.
  */
-function searchInTree(label: string, node: OntologyNode, parents: string[] = []) {
-  const path = parents.concat([node.label]);
+function searchInTree(id: string, node: OntologyNode, parents: string[] = []) {
+  const path = parents.concat([node.id]);
 
-  if (node.label === label) {
-    return path.join(seperator);
+  if (node.id === id) {
+    return path.join(separator);
   }
 
   let output: string = null;
@@ -91,7 +83,7 @@ function searchInTree(label: string, node: OntologyNode, parents: string[] = [])
      * have found the node and can stop iterating.
      */
     node.children.some((child) => {
-      output = searchInTree(label, child, path);
+      output = searchInTree(id, child, path);
       return output !== null;
     });
   }
@@ -112,12 +104,12 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
    */
   const findPath = () => {
     /*
-     * For the inital path: find the node in the tree with that corresponds
-     * to the label. If the tree has duplicates, return the first one it finds.
+     * For the initial path: find the node in the tree with that corresponds
+     * to the id. If the tree has duplicates, return the first one it finds.
      */
     let result: string = null;
-    if (value.label !== null) {
-      result = searchInTree(value.label, ontology);
+    if (value.id !== null) {
+      result = searchInTree(value.id, ontology);
     }
 
     return result;
@@ -132,24 +124,24 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
   /*
    * This check is here to see if the path needs updating. When the OntologyTreeSelect
    * already had a value and gets changed from the outside, the path will not end with
-   * value.label so reset the path. The same goes for when the OntologyTreeSelect was
+   * value.id so reset the path. The same goes for when the OntologyTreeSelect was
    * instantiated, but didn't receive a value yet. The path will be null, but the value
    * might be non-null. Reset the path in that case too.
    */
-  if ((path && !path.endsWith(value.label)) || (!path && value.label)) {
+  if ((path && !path.endsWith(value.id)) || (!path && value.id)) {
     const result = findPath();
     if (result) {
       setPath(result);
     } else {
-      // Result is null, meaning that the label couldn't be found. Empty the value.
-      message.error(`Node with label ${value.label} could not be found in the tree`);
+      // Result is null, meaning that the id couldn't be found. Empty the value.
+      message.error(`Node with id ${value.id} could not be found in the tree`);
       setValue({ label: undefined, type: undefined, id: undefined });
     }
   }
 
   /**
    * Translate the key back into a tool and call the onChange function.
-   * @param key - the key, build up by joining the parent labels.
+   * @param key - the key, build up by joining the parent ids.
    */
   const onChange = (key: string): void => {
     if (key === undefined) {
@@ -159,8 +151,8 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
     } else {
       // Walk through the tree and go to the node given by splitting the key
 
-      // Split the key up by its seperator
-      const parts: string[] = key.split(seperator);
+      // Split the key up by its separator
+      const parts: string[] = key.split(separator);
 
       // Start at the top of the tree
       let node: OntologyNode = ontology;
@@ -170,7 +162,7 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
 
       // For each subsequent part of the chain, go into the child node
       parts.forEach((part) => {
-        node = node.children.find((child) => child.label === part);
+        node = node.children.find((child) => child.id === part);
       });
 
       // Set the value to the node value
@@ -179,15 +171,15 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
     }
   };
 
-  // Hooks for the data in the TreeSelect. Initial value is the unfiltered tree.
-  const [tree, setTree] = useState(collapse(ontology));
-
   /**
-   * On search function. Filter the ontology tree on a query. Set the
-   * data for the TreeSelect accordingly.
-   * @param query - the string to filter on.
+   * Filter the tree based on the search input value.
+   * @param inputValue The search input value.
+   * @param treeNode The tree to filter.
+   * @returns Whether a tree contains the input value and should show up in the search results.
    */
-  const onSearch = (query: string) => setTree(collapse(ontology, query.toLowerCase()));
+  const filterTreeNode = (inputValue: string, treeNode: any): boolean => (
+    treeNode.title.toLowerCase().includes(inputValue.toLowerCase())
+  );
 
   /*
    * The values of the tree have to be unique, so they are joined strings
@@ -202,10 +194,11 @@ function OntologyTreeSelect(props: OntologyTreeSelectProps) {
       placeholder={placeholder}
       allowClear
       onChange={onChange}
-      onSearch={onSearch}
-      treeDefaultExpandedKeys={[ontology.label]}
+      treeDefaultExpandedKeys={[ontology.id]}
+      dropdownMatchSelectWidth={400}
+      filterTreeNode={filterTreeNode}
     >
-      { tree }
+      { serializeOntology(ontology) }
     </TreeSelect>
   );
 }

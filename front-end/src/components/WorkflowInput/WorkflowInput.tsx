@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Button, Divider, message, Modal, Upload } from 'antd';
+import { Button, Divider, message, Modal, Typography, Upload } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import WorkflowRun from '@components/WorkflowInput/WorkflowRun';
 import InOutBox from '@components/Explore/InOutBox/InOutBox';
@@ -29,11 +29,17 @@ import ConstraintSketcher, { Sketch } from '@components/WorkflowInput/Constraint
 import { translateSketch } from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Config } from '@models/Configuration/Config';
 import { FormInstance } from 'antd/lib/form';
+import Domain from '@models/Domain';
 import { clamp } from '@helpers/Math';
 import styles from './WorkflowInput.module.less';
 
+const { Title } = Typography;
+
 /** The props for the {@link WorkflowInput} component */
 interface WorkflowInputProps {
+  /** The domain that is being explored. */
+  domain: Domain,
+
   /**
    * The onRun function that passes the parameters through to
    * the home page.
@@ -55,9 +61,6 @@ interface WorkflowInputProps {
 
   /** Use case constraints of the domain */
   useCaseConstraints: ConstraintsConfig;
-
-  /** The domain ID */
-  domain: string;
 
   /** The run parameters limits */
   runParametersLimits: RunOptions;
@@ -541,7 +544,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
     const input = this.refactorInOut(inputs);
     const expectedOutput = this.refactorInOut(outputs);
     const allConstraints = this.refactorConstraints(
-      constraints.concat(sketches.flatMap(translateSketch)),
+      constraints.concat(sketches.flatMap((s: Sketch) => translateSketch(s))),
     );
     const body = { input, expectedOutput, constraints: allConstraints, ...runOptions };
     const base = process.env.NEXT_PUBLIC_BASE_URL;
@@ -576,7 +579,11 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       .catch((error) => {
         // Await error parsing
         error.then((data: any) => {
-          message.error(data.message, 5);
+          if (data.message.includes('unknown')) {
+            message.error(data.message, 5);
+          } else {
+            message.warn(data.message, 5);
+          }
         });
       });
   };
@@ -894,6 +901,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
     } = this.state;
 
     const {
+      domain,
       dataOntology,
       toolOntology,
       constraintOptions,
@@ -906,6 +914,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
 
     return (
       <div className="WorkflowInput">
+        <Title level={2} className={styles.DomainHeader}>{domain.title}</Title>
         <div className={styles.ImportExport}>
           <Button
             type="default"

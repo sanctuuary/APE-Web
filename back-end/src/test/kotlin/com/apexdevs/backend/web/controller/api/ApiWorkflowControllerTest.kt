@@ -154,11 +154,11 @@ class ApiWorkflowControllerTest() {
     fun getCWL() {
         val testValue = "Test"
         val response = mockk<ResponseEntity<Resource>>()
-        every { apeRequest.generateCwl(any()) } returns testValue.toByteArray()
+        every { apeRequest.generateAbstractCwl(any()) } returns testValue.toByteArray()
         every { storageService.indexToResponseEntity(any(), any(), any(), any()) } returns response
         every { storageService.resourcesToZip(any(), any()) } returns response
 
-        assertEquals(response, apiWorkflowController.getSolutionCwl(session, listOf(1, 2)))
+        assertEquals(response, apiWorkflowController.getSolutionAbstractCwl(session, listOf(1, 2)))
     }
 
     @Test

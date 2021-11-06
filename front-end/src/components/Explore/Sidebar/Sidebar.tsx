@@ -80,7 +80,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   downloadMenu = () => (
     <Menu onClick={this.downloadSelectedWorkflows}>
       <Menu.Item key="bash" icon={<DownloadOutlined />}>Bash</Menu.Item>
-      <Menu.Item key="cwl" icon={<DownloadOutlined />}>CWL (beta)</Menu.Item>
+      <Menu.Item key="cwl" icon={<DownloadOutlined />}>Abstract CWL</Menu.Item>
       <Menu.Item key="png" icon={<DownloadOutlined />}>PNG</Menu.Item>
     </Menu>
   );
@@ -104,7 +104,12 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     }
 
     const dataString = checkedList.join(',');
-    const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/${type}/${dataString}`;
+    let endpoint: string = null;
+    if (type === 'cwl') {
+      endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/cwl/abstract/${dataString}`;
+    } else {
+      endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/${type}/${dataString}`;
+    }
 
     // Download the file
     await fetch(endpoint, {

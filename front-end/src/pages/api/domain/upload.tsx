@@ -10,6 +10,14 @@ import FormData from 'formdata-node';
 import Blob from 'fetch-blob';
 import { FileContent } from '@helpers/Files';
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: `${process.env.NEXT_PUBLIC_FILE_SIZE_LIMIT}mb`,
+    },
+  },
+};
+
 /**
  * Proxy endpoint for uploading domains
  */

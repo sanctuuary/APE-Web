@@ -14,6 +14,7 @@ import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.exception.DomainNotFoundException
 import com.apexdevs.backend.persistence.exception.UserAccessException
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
+import io.mockk.spyk
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.DisplayName
@@ -45,7 +46,17 @@ class DomainOperationIntegrationTest(@Autowired val domainOperation: DomainOpera
      * Create domain with domain operation and return for tests
      */
     private fun provideTestDomain(ownerId: ObjectId): Domain {
-        val domain = Domain("MyTestDomain", "My test domain description", DomainVisibility.Private, "Test", "Test", listOf("Test"), true)
+        val domain = spyk(
+            Domain(
+                "MyTestDomain",
+                "My test domain description",
+                DomainVisibility.Private,
+                "Test",
+                "Test",
+                listOf("Test"),
+                true
+            )
+        )
         domainOperation.createDomain(domain, ownerId)
 
         return domain
@@ -66,7 +77,7 @@ class DomainOperationIntegrationTest(@Autowired val domainOperation: DomainOpera
         if (domainResult.isEmpty)
             fail("Domain is not created")
 
-        val userAccessList = domainOperation.userDomainAccessRepository.findByDomainId(domainResult.get().id)
+        val userAccessList = domainOperation.userDomainAccessRepository.findByDomainId(spyk(domainResult.get()).id)
 
         // Check if all user access to domain contains valid DomainAccess values
         for (userAccess in userAccessList) {
@@ -124,11 +135,13 @@ class DomainOperationIntegrationTest(@Autowired val domainOperation: DomainOpera
         val domain = provideTestDomain(owner.id)
 
         // Make copy of domain and edit values
-        val domainCopy = domain.copy(
-            name = "testName123",
-            description = "testDescription123",
-            localPath = "/domain/testPath123",
-            visibility = DomainVisibility.Public
+        val domainCopy = spyk(
+            domain.copy(
+                name = "testName123",
+                description = "testDescription123",
+                localPath = "/domain/testPath123",
+                visibility = DomainVisibility.Public
+            )
         )
 
         // Save domain changes
@@ -157,11 +170,13 @@ class DomainOperationIntegrationTest(@Autowired val domainOperation: DomainOpera
         domainOperation.userDomainAccessRepository.insert(UserDomainAccess(secondUser.id, domain.id, DomainAccess.Read))
 
         // Make copy of domain and edit values
-        val domainCopy = domain.copy(
-            name = "testName123",
-            description = "testDescription123",
-            localPath = "/domain/testPath123",
-            visibility = DomainVisibility.Public
+        val domainCopy = spyk(
+            domain.copy(
+                name = "testName123",
+                description = "testDescription123",
+                localPath = "/domain/testPath123",
+                visibility = DomainVisibility.Public
+            )
         )
 
         // Attempt to save domain with read-only user
@@ -191,14 +206,16 @@ class DomainOperationIntegrationTest(@Autowired val domainOperation: DomainOpera
         val domain = provideTestDomain(owner.id)
 
         // Allow r/w access to user
-        domainOperation.setUserAccess(domain.id, user.id, DomainAccess.ReadWrite)
+        domainOperation.setUserAccess(domain, user.id, DomainAccess.ReadWrite)
 
         // Make copy and changes values
-        val domainCopy = domain.copy(
-            name = "testName123",
-            description = "testDescription123",
-            localPath = "/domain/testPath123",
-            visibility = DomainVisibility.Public
+        val domainCopy = spyk(
+            domain.copy(
+                name = "testName123",
+                description = "testDescription123",
+                localPath = "/domain/testPath123",
+                visibility = DomainVisibility.Public
+            )
         )
 
         // Save domain changes

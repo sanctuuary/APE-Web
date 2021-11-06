@@ -9,10 +9,10 @@
 import React from 'react';
 import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm } from 'antd';
 import { Visibility } from '@models/Domain';
-import { fetchTopics } from '@components/Domain/Domain';
+import { constraintsModal, fetchTopics, ontologyModal, runConfigModal, toolAnnotationsModal } from '@components/Domain/Domain';
 import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import { useSession } from 'next-auth/client';
-import { UploadOutlined } from '@ant-design/icons';
+import { InfoOutlined, UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { useRouter } from 'next/router';
 import styles from './DomainCreate.module.less';
@@ -33,6 +33,8 @@ interface IState {
   runConfig: UploadFile<any>[];
   /** The constraints JSON file */
   constraints: UploadFile<any>[];
+  /** Whether each of the tooltip modals are visible. */
+  visibleModals: { [name: string]: boolean };
 }
 
 /**
@@ -76,6 +78,12 @@ class DomainCreate extends React.Component<{router, session}, IState> {
       toolsAnnotations: [],
       runConfig: [],
       constraints: [],
+      visibleModals: {
+        ontology: false,
+        tool_annotations: false,
+        run_config: false,
+        constraints: false,
+      },
     };
   }
 
@@ -148,21 +156,42 @@ class DomainCreate extends React.Component<{router, session}, IState> {
             router.push('/');
             return Promise.resolve(message.success('Domain successfully created'));
           }
-          return Promise.reject(message.error('Something went wrong'));
+          if (response.status === 413) {
+            const limit = process.env.NEXT_PUBLIC_FILE_SIZE_LIMIT;
+            return Promise.reject(new Error(`Some files were too large. The maximum file size is ${limit}MB.`));
+          }
+          return Promise.reject(new Error('Error while trying to create domain'));
         })
         // Catch and print any errors
-        .catch((error) => {
-          message.error('Error while trying to create domain');
-          console.error(error);
+        .catch((error: Error) => {
+          message.error(error.message, 5);
         });
     });
+  };
+
+  /**
+   * Change the visibility of a modal by its name.
+   * @param name The name of the modal to change the visibility of.
+   * @param visible Whether the modal should be visible or not.
+   */
+  updateModalVisibility = (name: string, visible: boolean) => {
+    const { visibleModals: modals } = this.state;
+    modals[name] = visible;
+    this.setState({ visibleModals: modals });
   };
 
   /**
    * Render form
    */
   render() {
-    const { ontology, toolsAnnotations, topics, runConfig, constraints } = this.state;
+    const {
+      ontology,
+      toolsAnnotations,
+      topics,
+      runConfig,
+      constraints,
+      visibleModals,
+    } = this.state;
     const { router } = this.props;
     return (
       <div>
@@ -207,6 +236,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                       </ul>
                     </div>
                   ),
+                  color: 'black',
                 }}
               >
                 <Select
@@ -233,8 +263,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               </Form.Item>
               <Form.Item
                 name="useCaseRunConfig"
-                label="Run configuration:"
-                tooltip={{ title: 'Configuration used for a demo run' }}
+                label={(
+                  <div>
+                    Run configuration
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('run_config', true)}
+                    />
+                  </div>
+                )}
               >
                 <Upload
                   beforeUpload={validateJSON}
@@ -251,8 +290,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               </Form.Item>
               <Form.Item
                 name="useCaseConstraints"
-                label="Constraints:"
-                tooltip={{ title: 'Constraints used for a demo run' }}
+                label={(
+                  <div>
+                    Constraints
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('constraints', true)}
+                    />
+                  </div>
+                )}
               >
                 <Upload
                   beforeUpload={validateJSON}
@@ -274,6 +322,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="ontologyPrefix"
                 label="Ontology prefix:"
                 rules={[{ required: true, message: 'An ontology prefix is required' }]}
+                tooltip={{ title: 'Prefix of the ontology classes that will be used when full IRI is not provided.', color: 'black' }}
               >
                 <Input />
               </Form.Item>
@@ -281,6 +330,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="toolsTaxonomyRoot"
                 label="Tools taxonomy root:"
                 rules={[{ required: true, message: 'A tools taxonomy is required' }]}
+                tooltip={{ title: 'Ontology class (full IRI or class label) that corresponds to the tool taxonomy root.', color: 'black' }}
               >
                 <Input />
               </Form.Item>
@@ -288,7 +338,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                 name="dataDimensionsTaxonomyRoots"
                 label="Data taxonomy roots:"
                 rules={[{ required: true, message: 'A data taxonomy root is required' }]}
-                tooltip={{ title: 'Press space, comma, or ";" to start typing the next one' }}
+                tooltip={{ title: 'Ontology classes (full IRI or class label) that correspond to the data taxonomy roots, separated by "tab", "space", "comma" or ";".', color: 'black' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
               </Form.Item>
@@ -306,7 +356,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               </Form.Item>
               <Form.Item
                 name="ontology"
-                label="Ontology file:"
+                label={(
+                  <div>
+                    Ontology file
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('ontology', true)}
+                    />
+                  </div>
+                )}
                 rules={[{ required: true, message: 'An ontology is required' }]}
               >
                 <Upload
@@ -324,7 +384,17 @@ class DomainCreate extends React.Component<{router, session}, IState> {
               </Form.Item>
               <Form.Item
                 name="toolsAnnotations"
-                label="Tool annotations file:"
+                label={(
+                  <div>
+                    Tool annotations file
+                    <Button
+                      shape="circle"
+                      size="small"
+                      icon={<InfoOutlined />}
+                      onClick={() => this.updateModalVisibility('tool_annotations', true)}
+                    />
+                  </div>
+                )}
                 rules={[{ required: true, message: 'A tool annotation is required' }]}
               >
                 <Upload
@@ -362,6 +432,22 @@ class DomainCreate extends React.Component<{router, session}, IState> {
             </Col>
           </Row>
         </Form>
+
+        { // Ontology file modal
+          ontologyModal(visibleModals.ontology, () => this.updateModalVisibility('ontology', false))
+        }
+
+        { // Tools annotations file modal
+          toolAnnotationsModal(visibleModals.tool_annotations, () => this.updateModalVisibility('tool_annotations', false))
+        }
+
+        { // Run configuration file modal
+          runConfigModal(visibleModals.run_config, () => this.updateModalVisibility('run_config', false))
+        }
+
+        { // Constraints file modal
+          constraintsModal(visibleModals.constraints, () => this.updateModalVisibility('constraints', false))
+        }
       </div>
     );
   }

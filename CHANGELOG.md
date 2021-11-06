@@ -6,6 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2021-11-06
+
+### Added
+
+- The domain name is now shown on the domain explore page.
+- Notification explaining how to navigate the workflows on the explore page appears when the user selects more workflows for the first time.
+
+### Changed
+
+- Update APE dependency to 1.1.9.
+- Change "CWL (beta)" download to "Abstract CWL" download.
+- Make it possible to configure the size limit of file uploads in the .env files (default: 10MB).
+- Run parameter field "Max duration (s)" is now "Max duration (seconds)".
+- Improved tooltips on the domain creation page.
+- Improved tooltips on the domain edit page.
+
+### Fixed
+
+- OntologyTreeSelect's dropdown is now wider to fit all items.
+- OntologyTreeSelect now better handles items with the same name.
+- Several errors surrounding the constraint sketcher.
+- APE synthesis flag messages sometimes being empty.
+- OntologyTreeSelect search function.
+- First tree node in OntologyTreeSelect not expanding by default.
+- Run parameter fields are now required.
+
+## [1.3.3] - 2021-11-02
+
+This release is paired with the APE Web [DOI release](https://zenodo.org/badge/latestdoi/360515462).
+
 ## [1.3.2] - 2021-08-09
 
 ### Fixed
@@ -127,6 +157,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.4.0]: https://github.com/sanctuuary/APE-Web/compare/v1.3.3...v1.4.0
+[1.3.3]: https://github.com/sanctuuary/APE-Web/compare/v1.3.2...v1.3.3
 [1.3.2]: https://github.com/sanctuuary/APE-Web/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/sanctuuary/APE-Web/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/sanctuuary/APE-Web/compare/v1.2.0...v1.3.0

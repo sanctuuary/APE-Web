@@ -214,10 +214,10 @@ class ApiWorkflowController(
      * @return a CWL script of requested solution
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/cwl/{solutionId}")
-    fun getSolutionCwl(session: HttpSession, @PathVariable solutionId: List<Int>): ResponseEntity<Resource> {
+    @GetMapping("/cwl/abstract/{solutionId}")
+    fun getSolutionAbstractCwl(session: HttpSession, @PathVariable solutionId: List<Int>): ResponseEntity<Resource> {
         try {
-            val solutionConverter: (Int) -> ByteArray = { id -> apeRequestFactory.getApeRequest(session.id).generateCwl(id) }
+            val solutionConverter: (Int) -> ByteArray = { id -> apeRequestFactory.getApeRequest(session.id).generateAbstractCwl(id) }
             return storageService.indexToResponseEntity(solutionId, solutionConverter, "cwl", "workflow_CWL")
         } catch (exc: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR)

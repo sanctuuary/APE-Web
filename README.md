@@ -45,7 +45,17 @@ If you wish to change the configuration of the front-end and/or back-end first, 
 
 ## The APE Web team
 
-This project was initially developed by students from the bachelor Computer Science at Utrecht University within the Software Project course.
+This project was initially developed by students from the bachelor Computer Science at Utrecht University within the Software Project course, and students from Grafisch Lyceum Utrecht.
+* Silvan Eelman
+* Koen Haverkort
+* Alex Janse
+* Matthijs Rademaker
+* Megan Tjoeng
+* Inge van Dam
+* Jeroen van der Wal
+* Sem van Nieuwenhuizen
+* Rens Wolters
+* Sarrisa Wouts
 
 Currently, it is being maintained by:
 * Vedran Kasalica (v.kasalica[at]uu.nl), lead developer

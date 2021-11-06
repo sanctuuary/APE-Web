@@ -105,8 +105,14 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
             initialValues={options}
             ref={formRef}
             name="control-ref"
+            requiredMark={false}
           >
-            <Form.Item name="minLength" label="Min steps" className={Styles.Label}>
+            <Form.Item
+              name="minLength"
+              label="Min steps"
+              className={Styles.Label}
+              rules={[{ required: true, message: 'The minimum length is required' }]}
+            >
               <InputNumber
                 id="minLength"
                 min={0}
@@ -115,7 +121,12 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
               />
             </Form.Item>
 
-            <Form.Item name="maxLength" label="Max steps" className={Styles.Label}>
+            <Form.Item
+              name="maxLength"
+              label="Max steps"
+              className={Styles.Label}
+              rules={[{ required: true, message: 'The maximum length is required' }]}
+            >
               <InputNumber
                 id="maxLength"
                 min={0}
@@ -124,7 +135,12 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
               />
             </Form.Item>
 
-            <Form.Item name="maxDuration" label="Max duration (s)" className={Styles.Label}>
+            <Form.Item
+              name="maxDuration"
+              label="Max duration (seconds)"
+              className={Styles.Label}
+              rules={[{ required: true, message: 'The maximum duration is required' }]}
+            >
               <InputNumber
                 id="maxDuration"
                 min={0}
@@ -133,7 +149,13 @@ class WorkflowRun extends React.Component<WorkflowRunProps, WorkflowRunState> {
               />
             </Form.Item>
 
-            <Form.Item name="solutions" label="Number of solutions" className={Styles.Label} labelAlign="right">
+            <Form.Item
+              name="solutions"
+              label="Number of solutions"
+              className={Styles.Label}
+              labelAlign="right"
+              rules={[{ required: true, message: 'The number of solutions is required' }]}
+            >
               <InputNumber
                 id="solutions"
                 min={0}

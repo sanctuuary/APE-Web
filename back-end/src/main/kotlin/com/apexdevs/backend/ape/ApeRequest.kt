@@ -17,7 +17,7 @@ import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsExcep
 import com.apexdevs.backend.persistence.exception.SynthesisFlagException
 import guru.nidi.graphviz.attribute.Rank
 import nl.uu.cs.ape.sat.APE
-import nl.uu.cs.ape.sat.core.solutionStructure.CWLCreator
+import nl.uu.cs.ape.sat.core.solutionStructure.AbstractCWLCreator
 import nl.uu.cs.ape.sat.core.solutionStructure.ModuleNode
 import nl.uu.cs.ape.sat.core.solutionStructure.SolutionsList
 import nl.uu.cs.ape.sat.core.solutionStructure.TypeNode
@@ -166,15 +166,16 @@ class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: AP
     }
 
     /**
+     * Generate the abstract CWL representation of a certain solution.
      * @param index id of wanted solution
      * @return cwl content as a ByteArray
      */
-    fun generateCwl(index: Int): ByteArray {
+    fun generateAbstractCwl(index: Int): ByteArray {
         if (::solutions.isInitialized)
             if (index > solutions.numberOfSolutions)
                 throw Exception("This solution does not exist.")
             else
-                return CWLCreator(solutions[index], ape.config).cwl.toByteArray()
+                return AbstractCWLCreator(solutions[index]).generate().toByteArray()
         else
             throw Exception("No solutions could be found with the given input and output")
     }
