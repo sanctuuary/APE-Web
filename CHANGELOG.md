@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change "CWL (beta)" download to "Abstract CWL" download.
 - Make it possible to configure the size limit of file uploads in the .env files (default: 10MB).
 - Run parameter field "Max duration (s)" is now "Max duration (seconds)".
+- Improved tooltips on the domain creation page.
+- Improved tooltips on the domain edit page.
 
 ### Fixed
 
