@@ -470,7 +470,7 @@ class DomainEdit extends React.Component<IProps, IState> {
                 name="dataDimensionsTaxonomyRoots"
                 label="Data taxonomy roots:"
                 rules={[{ required: true, message: 'A data taxonomy root is required' }]}
-                tooltip={{ title: 'Ontology classes (full IRI or class label) that correspond to the data taxonomy roots, separated by "tab", "space", "comma" or ";".', color: 'black' }}
+                tooltip={{ title: 'Ontology classes (full IRI or class label) that correspond to the data taxonomy roots, separated by "space", "comma" or ";".', color: 'black' }}
               >
                 <Select mode="tags" style={{ width: '100%' }} tokenSeparators={[',', ' ', ';']} open={false} />
               </Form.Item>
