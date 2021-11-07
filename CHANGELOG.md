@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove "tab" as suggestion for separating data taxonomy roots as this also moves the user to the next input field. 
+
 ## [1.4.0] - 2021-11-06
 
 ### Added
