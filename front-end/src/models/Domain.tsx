@@ -60,7 +60,7 @@ export enum Visibility {
   /** Everyone can use this domain */
   Public = 'Public',
   /** Domain access is restricted to certain users */
-  Private = 'Private'
+  Private = 'Private',
 }
 
 /** The default value for the domain visibility select */
@@ -83,7 +83,7 @@ export enum Access {
   Owner = 'Owner',
   Read = 'Read',
   ReadWrite = 'ReadWrite',
-  Revoked = 'Revoked'
+  Revoked = 'Revoked',
 }
 
 /**
