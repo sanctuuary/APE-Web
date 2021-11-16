@@ -11,7 +11,7 @@ import { parseApprovalRequests } from '@components/Admin/Approval';
 
 /**
  * Get the pending user requests from the back-end.
- * @param req The incomming request
+ * @param req The incoming request
  * @param res The outgoing response
  */
 export default async function handler(req, res) {
