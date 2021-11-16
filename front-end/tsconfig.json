@@ -47,7 +47,9 @@
   "typedocOptions": {
     "name": "APE Web front-end documentation",
     "includeVersion": true,
+    "entryPointStrategy": "Expand",
     "entryPoints": ["src"],
+    "excludeExternals": true,
     "out": "docs"
   }
 }
