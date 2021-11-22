@@ -207,10 +207,10 @@ function WorkflowConstraint(props: WorkflowConstraintProps) {
       </label>
 
       <Row>
-        <Col span={22}>
+        <Col span={21}>
           { parameters }
         </Col>
-        <Col span={1}>
+        <Col span={3}>
           <Button
             className="delete"
             style={{ marginTop: 5, height: '100%' }}

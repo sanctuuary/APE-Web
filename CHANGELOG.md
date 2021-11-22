@@ -6,10 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Clear buttons to clear all input data, output data, constraints on the explore page.
+
 ### Fixed
 
 - Remove "tab" as suggestion for separating data taxonomy roots as this also moves the user to the next input field. 
 - Some dependencies were updated to fix vulnerability issues.
+- When there are many inputs, outputs, or constraints on the explore page; a scrollbar will now appear inside the workflow input box to prevent the workflow result from appearing far below.
 
 ## [1.4.0] - 2021-11-06
 

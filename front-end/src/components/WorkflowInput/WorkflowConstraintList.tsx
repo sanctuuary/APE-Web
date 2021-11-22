@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react';
 import WorkflowConstraint from '@components/WorkflowInput/WorkflowConstraint';
-import { Button, Checkbox, Divider, Popconfirm } from 'antd';
+import { Button, Checkbox, Col, Divider, Popconfirm, Row } from 'antd';
 import { ConstraintType, Tool, Constraint, Data, Ontology } from '@models/workflow/Workflow';
 import SketchTranslation from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Sketch } from '@components/WorkflowInput/ConstraintSketcher/ConstraintSketcher';
@@ -56,6 +56,9 @@ interface WorkflowConstraintListProps {
   defaultData: () => Data;
   defaultTool: () => Tool;
   defaultConstraint: () => Constraint;
+
+  /** Function to clear all constraints. */
+  clearConstraints: () => void;
 }
 
 /** The ids of the shortlist constraints */
@@ -76,7 +79,8 @@ const constraintFilter = [
  * Includes constraint dropdowns and a list of constraint sketches.
  */
 function WorkflowConstraintList(props: WorkflowConstraintListProps) {
-  const { constraints,
+  const {
+    constraints,
     dataOntology,
     toolOntology,
     constraintOptions,
@@ -90,7 +94,9 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
     sketchIndex,
     defaultData,
     defaultTool,
-    defaultConstraint } = props;
+    defaultConstraint,
+    clearConstraints,
+  } = props;
 
   /*
    * Function to filter the list of constraint options to a shortlist.
@@ -208,13 +214,38 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
 
   return (
     <div className="WorkflowConstraintList" id="Constraints">
-      <Checkbox
-        onChange={(e) => setShowAdvancedConstraints(e.target.checked)}
+      <Row>
+        <Col span={20}>
+          <Checkbox
+            onChange={(e) => setShowAdvancedConstraints(e.target.checked)}
+          >
+            Show advanced constraints
+          </Checkbox>
+        </Col>
+        <Col span={4}>
+          <Popconfirm
+            title={
+              <p>Are you sure you want to clear all constraints?<br />(Sketches not included)</p>
+            }
+            onConfirm={clearConstraints}
+          >
+            <Button size="small">Clear</Button>
+          </Popconfirm>
+        </Col>
+      </Row>
+      <div style={{ marginRight: 24 }}>
+        <Divider />
+      </div>
+      <div style={{
+        maxHeight: '70vh',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        paddingRight: '24px',
+        marginBottom: '5px',
+      }}
       >
-        Show advanced constraints
-      </Checkbox>
-      <Divider />
-      { workflowConstraintList }
+        { workflowConstraintList }
+      </div>
       <Button
         type="default"
         shape="round"
@@ -222,24 +253,27 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
         disabled={constraintOptions === undefined}
       >+ Add
       </Button>
-      <Divider>Sketches</Divider>
-      { sketchList }
-      <Popconfirm
-        title="You have unsaved changes in the constraint sketcher. Do you want to save them?"
-        okText="Save"
-        cancelText="Discard"
-        visible={visible}
-        onConfirm={onSave}
-        onCancel={onDiscard}
-      >
-        <Button
-          type="default"
-          shape="round"
-          onClick={onSketchAdd}
-          disabled={constraintOptions === undefined}
-        >+ Add
-        </Button>
-      </Popconfirm>
+      <div style={{ marginRight: 24 }}>
+        <Divider>Sketches</Divider>
+        { sketchList }
+        <Popconfirm
+          title="You have unsaved changes in the constraint sketcher. Do you want to save them?"
+          okText="Save"
+          cancelText="Discard"
+          visible={visible}
+          onConfirm={onSave}
+          onCancel={onDiscard}
+        >
+          <Button
+            type="default"
+            shape="round"
+            onClick={onSketchAdd}
+            disabled={constraintOptions === undefined}
+            style={{ marginTop: 10 }}
+          >+ Add
+          </Button>
+        </Popconfirm>
+      </div>
     </div>
   );
 }
