@@ -7,7 +7,7 @@
 
 import React, { useState } from 'react';
 import WorkflowConstraint from '@components/WorkflowInput/WorkflowConstraint';
-import { Button, Checkbox, Divider, Popconfirm } from 'antd';
+import { Button, Checkbox, Col, Divider, Popconfirm, Row } from 'antd';
 import { ConstraintType, Tool, Constraint, Data, Ontology } from '@models/workflow/Workflow';
 import SketchTranslation from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Sketch } from '@components/WorkflowInput/ConstraintSketcher/ConstraintSketcher';
@@ -56,6 +56,9 @@ interface WorkflowConstraintListProps {
   defaultData: () => Data;
   defaultTool: () => Tool;
   defaultConstraint: () => Constraint;
+
+  /** Function to clear all constraints. */
+  clearConstraints: () => void;
 }
 
 /** The ids of the shortlist constraints */
@@ -76,7 +79,8 @@ const constraintFilter = [
  * Includes constraint dropdowns and a list of constraint sketches.
  */
 function WorkflowConstraintList(props: WorkflowConstraintListProps) {
-  const { constraints,
+  const {
+    constraints,
     dataOntology,
     toolOntology,
     constraintOptions,
@@ -90,7 +94,9 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
     sketchIndex,
     defaultData,
     defaultTool,
-    defaultConstraint } = props;
+    defaultConstraint,
+    clearConstraints,
+  } = props;
 
   /*
    * Function to filter the list of constraint options to a shortlist.
@@ -208,11 +214,25 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
 
   return (
     <div className="WorkflowConstraintList" id="Constraints">
-      <Checkbox
-        onChange={(e) => setShowAdvancedConstraints(e.target.checked)}
-      >
-        Show advanced constraints
-      </Checkbox>
+      <Row>
+        <Col span={20}>
+          <Checkbox
+            onChange={(e) => setShowAdvancedConstraints(e.target.checked)}
+          >
+            Show advanced constraints
+          </Checkbox>
+        </Col>
+        <Col span={4}>
+          <Popconfirm
+            title={
+              <p>Are you sure you want to clear all constraints?<br />(Sketches not included)</p>
+            }
+            onConfirm={clearConstraints}
+          >
+            <Button size="small">Clear</Button>
+          </Popconfirm>
+        </Col>
+      </Row>
       <Divider />
       <div style={{
         maxHeight: '70vh',

@@ -64,6 +64,9 @@ interface ConstraintBoxProps {
   defaultData: () => Data;
   defaultTool: () => Tool;
   defaultConstraint: () => Constraint;
+
+  /** Function to clear all constraints. */
+  clearConstraints: () => void;
 }
 
 /**
@@ -72,7 +75,8 @@ interface ConstraintBoxProps {
  * Wrapper around {@link WorkflowConstraintList}.
  */
 function ConstraintBox(props: ConstraintBoxProps) {
-  const { constraints,
+  const {
+    constraints,
     dataOntology,
     toolOntology,
     constraintOptions,
@@ -86,7 +90,9 @@ function ConstraintBox(props: ConstraintBoxProps) {
     sketchIndex,
     defaultData,
     defaultTool,
-    defaultConstraint } = props;
+    defaultConstraint,
+    clearConstraints,
+  } = props;
 
   return (
     <div className={styles.Box}>
@@ -124,6 +130,7 @@ function ConstraintBox(props: ConstraintBoxProps) {
           defaultData={defaultData}
           defaultTool={defaultTool}
           defaultConstraint={defaultConstraint}
+          clearConstraints={clearConstraints}
         />
       </Card>
     </div>

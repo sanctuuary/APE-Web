@@ -282,6 +282,13 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
   };
 
   /**
+   * Clear all set constraints.
+   */
+  clearConstraints = () => {
+    this.setState({ constraints: [] });
+  };
+
+  /**
    * Check if an input/output/constraint type contains
    * an empty field. If that field is empty, we fill it in
    * with the root from the data ontology.
@@ -981,6 +988,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
             defaultData={this.defaultData}
             defaultTool={this.defaultTool}
             defaultConstraint={this.defaultConstraint}
+            clearConstraints={this.clearConstraints}
           />
           {/* Run */}
           <WorkflowRun
