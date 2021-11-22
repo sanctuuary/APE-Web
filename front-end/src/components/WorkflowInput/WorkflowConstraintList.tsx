@@ -233,7 +233,9 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
           </Popconfirm>
         </Col>
       </Row>
-      <Divider />
+      <div style={{ marginRight: 24 }}>
+        <Divider />
+      </div>
       <div style={{
         maxHeight: '70vh',
         overflowY: 'auto',
@@ -251,24 +253,27 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
         disabled={constraintOptions === undefined}
       >+ Add
       </Button>
-      <Divider>Sketches</Divider>
-      { sketchList }
-      <Popconfirm
-        title="You have unsaved changes in the constraint sketcher. Do you want to save them?"
-        okText="Save"
-        cancelText="Discard"
-        visible={visible}
-        onConfirm={onSave}
-        onCancel={onDiscard}
-      >
-        <Button
-          type="default"
-          shape="round"
-          onClick={onSketchAdd}
-          disabled={constraintOptions === undefined}
-        >+ Add
-        </Button>
-      </Popconfirm>
+      <div style={{ marginRight: 24 }}>
+        <Divider>Sketches</Divider>
+        { sketchList }
+        <Popconfirm
+          title="You have unsaved changes in the constraint sketcher. Do you want to save them?"
+          okText="Save"
+          cancelText="Discard"
+          visible={visible}
+          onConfirm={onSave}
+          onCancel={onDiscard}
+        >
+          <Button
+            type="default"
+            shape="round"
+            onClick={onSketchAdd}
+            disabled={constraintOptions === undefined}
+            style={{ marginTop: 10 }}
+          >+ Add
+          </Button>
+        </Popconfirm>
+      </div>
     </div>
   );
 }

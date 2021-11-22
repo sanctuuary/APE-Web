@@ -45,6 +45,8 @@ interface InOutBoxProps {
   headerText: string;
   /** The tooltip to provide in the box' header */
   tooltip: string;
+  /** Function to clear all workflow data. */
+  clearWorkflowData: () => void;
 }
 
 /**
@@ -53,14 +55,17 @@ interface InOutBoxProps {
  * Wrapper around {@link WorkflowDataList}.
  */
 function InOutBox(props: InOutBoxProps) {
-  const { dataOntology,
+  const {
+    dataOntology,
     onChange,
     onAdd,
     onRemove,
     inOuts,
     title,
     headerText,
-    tooltip } = props;
+    tooltip,
+    clearWorkflowData,
+  } = props;
 
   return (
     <div className={styles.Box}>
@@ -80,6 +85,7 @@ function InOutBox(props: InOutBoxProps) {
           onChange={onChange}
           onAdd={onAdd}
           onRemove={onRemove}
+          clearWorkflowData={clearWorkflowData}
         />
       </Card>
     </div>

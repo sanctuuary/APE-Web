@@ -228,6 +228,20 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
   };
 
   /**
+   * Clear all set input data.
+   */
+  clearInput = () => {
+    this.setState({ inputs: [] });
+  };
+
+  /**
+   * Clear all set output data.
+   */
+  clearOutput = () => {
+    this.setState({ outputs: [] });
+  };
+
+  /**
    * Change the output at the given index to the edited data.
    * @param index - index of the data in state.inputs.
    * @param newOutput - the edited data.
@@ -959,6 +973,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
             onRemove={this.onInputRemove}
             inOuts={inputs}
             tooltip="The input(s) you want your workflow to have."
+            clearWorkflowData={this.clearInput}
           />
           {/* Output */}
           <InOutBox
@@ -970,6 +985,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
             onRemove={this.onOutputRemove}
             inOuts={outputs}
             tooltip="The output(s) you want your workflow to have."
+            clearWorkflowData={this.clearOutput}
           />
           {/* Constraints */}
           <ConstraintBox
