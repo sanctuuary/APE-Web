@@ -218,7 +218,7 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
         maxHeight: '70vh',
         overflowY: 'auto',
         overflowX: 'hidden',
-        paddingRight: '15px',
+        paddingRight: '24px',
         marginBottom: '5px',
       }}
       >

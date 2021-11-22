@@ -49,6 +49,7 @@ function WorkflowDataList(props: WorkflowDataListProps) {
         maxHeight: '70vh',
         overflowY: 'auto',
         overflowX: 'hidden',
+        paddingRight: '24px',
         marginBottom: '5px',
       }}
       >
