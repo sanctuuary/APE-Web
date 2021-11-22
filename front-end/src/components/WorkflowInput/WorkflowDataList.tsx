@@ -45,19 +45,27 @@ function WorkflowDataList(props: WorkflowDataListProps) {
 
   return (
     <div className="DataList" id={title}>
-      {
-        dataList.map((data: Data, index: number) => (
-          <WorkflowData
-            title={title}
-            key={index.toString()}
-            dataOntology={dataOntology}
-            data={data}
-            index={index}
-            onChange={onChange}
-            onRemove={onRemove}
-          />
-        ))
-      }
+      <div style={{
+        maxHeight: '70vh',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        marginBottom: '5px',
+      }}
+      >
+        {
+          dataList.map((data: Data, index: number) => (
+            <WorkflowData
+              title={title}
+              key={index.toString()}
+              dataOntology={dataOntology}
+              data={data}
+              index={index}
+              onChange={onChange}
+              onRemove={onRemove}
+            />
+          ))
+        }
+      </div>
       <Button
         type="default"
         shape="round"
