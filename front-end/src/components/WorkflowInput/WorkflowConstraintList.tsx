@@ -214,7 +214,9 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
         Show advanced constraints
       </Checkbox>
       <Divider />
-      { workflowConstraintList }
+      <div style={{ maxHeight: '70vh', overflowY: 'auto', overflowX: 'hidden', paddingRight: '15px' }}>
+        { workflowConstraintList }
+      </div>
       <Button
         type="default"
         shape="round"

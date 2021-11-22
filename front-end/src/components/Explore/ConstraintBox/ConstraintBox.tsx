@@ -94,6 +94,7 @@ function ConstraintBox(props: ConstraintBoxProps) {
         title="Constraints"
         style={{ minWidth: 350, width: '100%' }}
         headStyle={{ background: '#F1634C' }}
+        bodyStyle={{ paddingRight: 0 }}
         extra={(
           <TooltipIcon
             content={(
