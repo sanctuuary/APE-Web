@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Clear buttons to clear all input data, output data, constraints on the explore page.
 
+### Changed
+
+- Update back-end Kotlin version from 1.3.72 -> 1.6.0.
+
 ### Fixed
 
 - Remove "tab" as suggestion for separating data taxonomy roots as this also moves the user to the next input field. 
