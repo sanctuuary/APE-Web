@@ -135,6 +135,54 @@ class ApiDomainController(
     }
 
     /**
+     * Allows the owner of a domain to permanently delete a domain.
+     * @param user authenticated user, automatically retrieved from session
+     * @param domainId The ID of the domain that should be deleted.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/delete/{domainId}")
+    fun deleteDomain(@AuthenticationPrincipal user: User, @PathVariable domainId: ObjectId) {
+        try {
+            // find the current user in the database
+            val userResult = userOperation.getByEmail(user.username)
+
+            // check if the domain exists
+            val domain = domainOperation.getDomain(domainId)
+
+            // check if the user is the owner of the domain
+            val owner = domainOperation.getOwner(domainId)
+            if (owner.id != userResult.id)
+                throw AccessDeniedException("User is not the owner of this domain")
+
+            // delete the domain and related database entries
+            // delete access to the domain
+            val accessList = domainOperation.userDomainAccessRepository.findByDomainId(domainId)
+            for (access in accessList) {
+                domainOperation.userDomainAccessRepository.deleteById(access.id)
+            }
+            // delete the connections to topics
+            val domainTopics = domainOperation.domainTopicRepository.findByDomainId(domainId)
+            for (topic in domainTopics) {
+                domainOperation.domainTopicRepository.deleteById(topic.id)
+            }
+            // delete the domain itself
+            domainOperation.domainRepository.deleteById(domainId)
+            storageService.deleteDomainDirectories(domainId)
+        } catch (exc: Exception) {
+            when (exc) {
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authorized user not found", exc)
+                is DomainNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.UNAUTHORIZED, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exc.message, exc)
+            }
+        }
+    }
+
+    /**
      * Downloads the toolsAnnotations file for the specified domain
      * @param user if the user needs to be authenticated for the domain
      * @param domainId the id of the domain
