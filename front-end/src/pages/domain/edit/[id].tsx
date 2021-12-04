@@ -8,7 +8,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { NextRouter, useRouter } from 'next/router';
-import { Button, message, Popconfirm, Result, Typography } from 'antd';
+import { Button, Card, message, Popconfirm, Result, Typography } from 'antd';
 import DomainEdit from '@components/Domain/DomainEdit/DomainEdit';
 import Domain, { Topic, UserWithAccess } from '@models/Domain';
 import { getSession } from 'next-auth/client';
@@ -174,23 +174,27 @@ function DomainEditPage(props: IDomainEditPageProps) {
                       onOwnershipTransferred={(newOwner) => setIsOwner(newOwner.userId === userId)}
                     />
                   </div>
-                  <div>
+                  <div style={{ marginTop: 24 }}>
                     <Title level={2}>Other</Title>
-                    <Popconfirm
-                      title={(
-                        <div>
-                          <div>You are about to delete the domain &quot;{domain.title}&quot;.</div>
+                    <Card>
+                      <Popconfirm
+                        title={(
                           <div>
-                            This is permanent and <strong>cannot be undone</strong>.
-                            Are you sure?
+                            <div>
+                              You are about to delete the domain &quot;{domain.title}&quot;.
+                            </div>
+                            <div>
+                              This is permanent and <strong>can not be undone</strong>.
+                              Are you sure?
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      onConfirm={() => deleteDomain(domain, router)}
-                      placement="topRight"
-                    >
-                      <Button danger>Delete domain</Button>
-                    </Popconfirm>
+                        )}
+                        onConfirm={() => deleteDomain(domain, router)}
+                        placement="topRight"
+                      >
+                        <Button danger>Delete domain</Button>
+                      </Popconfirm>
+                    </Card>
                   </div>
                 </div>
               )
