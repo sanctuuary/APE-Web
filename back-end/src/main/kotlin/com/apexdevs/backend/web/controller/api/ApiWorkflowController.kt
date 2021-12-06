@@ -162,9 +162,33 @@ class ApiWorkflowController(
     }
 
     /**
+     * Verify a domain can run without errors.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/verify/ontology")
+    fun verifyOntology(@AuthenticationPrincipal user: User?, session: HttpSession) {
+        try {
+            val apeRequest = apeRequestFactory.getApeRequest(session.id)
+            val runConfig = RunConfig(
+                solutionMinLength = 1,
+                solutionMaxLength = 10,
+                maxSolutionsToReturn = 10,
+                maxDuration = 60,
+            )
+            try {
+                val result = apeRequest.getWorkflows(runConfig)
+            } catch (_: SynthesisFlagException) {
+
+            }
+        } catch (exc: Exception) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+        }
+    }
+
+    /**
      * The user can send a configuration and is then returned as a zip containing the configuration
      * @param inputData
-     * @return an response entity containing the Response entity with the resource
+     * @return a response entity containing the Response entity with the resource
      */
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/config")
