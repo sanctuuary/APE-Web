@@ -24,7 +24,6 @@ export const config = {
 export default async function handler(req, res) {
   const session: any = await getSession({ req });
 
-  let result: Response;
   const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/api/domain/upload`;
 
   // Create form data
@@ -54,6 +53,7 @@ export default async function handler(req, res) {
     );
   });
 
+  let domainId: string;
   // Send request
   await fetch(endpoint, {
     method: 'POST',
@@ -65,8 +65,8 @@ export default async function handler(req, res) {
     body: formdata.stream as any,
   })
     // Parse response
-    .then((response) => { result = response; });
-
+    .then((response) => response.text())
+    .then((data) => { domainId = data; });
   // Pass on the result
-  return res.json(result);
+  return res.status(201).send(domainId);
 }

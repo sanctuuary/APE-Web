@@ -175,6 +175,7 @@ class ApiWorkflowController(
                 maxSolutionsToReturn = 10,
                 maxDuration = 60,
             )
+            storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, emptyList())
             try {
                 val result = apeRequest.getWorkflows(runConfig)
             } catch (_: SynthesisFlagException) {

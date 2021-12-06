@@ -7,6 +7,7 @@
 
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
+import { NextRouter, useRouter } from 'next/router';
 import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm } from 'antd';
 import { Visibility } from '@models/Domain';
 import { constraintsModal, fetchTopics, ontologyModal, runConfigModal, toolAnnotationsModal } from '@components/Domain/Domain';
@@ -14,13 +15,24 @@ import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFC
 import { useSession } from 'next-auth/client';
 import { InfoOutlined, UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { useRouter } from 'next/router';
 import styles from './DomainCreate.module.less';
 
 const { Option } = Select;
 
 /**
- * The state of DomainCreate
+ * The props of the {@link DomainCreate} component.
+ */
+interface DomainCreateProps {
+  /** The NextRouter. */
+  router: NextRouter,
+  /** The current session. */
+  session: any,
+  /** Callback function called when the domain is created. */
+  callback?: (domainId: string) => {},
+}
+
+/**
+ * The state of the {@link DomainCreate} component.
  */
 interface IState {
   /** The topic of the domain */
@@ -44,7 +56,7 @@ interface IState {
  */
 const withSession = (Component: any) => (props) => {
   const [session, loading] = useSession();
-  const router = useRouter();
+  const router: NextRouter = useRouter();
 
   if (loading) {
     return null;
@@ -65,12 +77,12 @@ const withSession = (Component: any) => (props) => {
 /**
  * Form for creating new APE domains.
  */
-class DomainCreate extends React.Component<{router, session}, IState> {
+class DomainCreate extends React.Component<DomainCreateProps, IState> {
   /**
    * Constructor
    * @param props DomainCreate has no props
    */
-  constructor(props) {
+  constructor(props: DomainCreateProps) {
     super(props);
     this.state = {
       topics: [],
@@ -105,7 +117,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
    * Handle submit
    */
   handleSubmit = (values) => {
-    const { router } = this.props;
+    const { callback } = this.props;
     const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/upload`;
 
     const files: RMFCInput[] = [];
@@ -153,14 +165,19 @@ class DomainCreate extends React.Component<{router, session}, IState> {
         // Print response
         .then((response) => {
           if (response.ok) {
-            router.push('/');
-            return Promise.resolve(message.success('Domain successfully created'));
+            return response.text();
           }
           if (response.status === 413) {
             const limit = process.env.NEXT_PUBLIC_FILE_SIZE_LIMIT;
             return Promise.reject(new Error(`Some files were too large. The maximum file size is ${limit}MB.`));
           }
           return Promise.reject(new Error('Error while trying to create domain'));
+        })
+        .then((data) => {
+          message.success('Domain successfully created');
+          if (callback !== null) {
+            callback(data);
+          }
         })
         // Catch and print any errors
         .catch((error: Error) => {
