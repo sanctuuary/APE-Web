@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Clear buttons to clear all input data, output data, constraints on the explore page.
 - Domains can now be permanently deleted in the domain edit page.
+- Domains' ontologies and use cases are now verified when created.
 
 ### Changed
 
