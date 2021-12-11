@@ -11,6 +11,12 @@ const { Step } = Steps;
 interface DomainVerifierProps {
   /** The ID of the domain to verify. */
   domainId: string,
+  /**
+   * Callback function called when the verifier is finished.
+   * @param currentStep The step the verifier finished on.
+   * @param totalSteps The total number of steps.
+   */
+  onFinish?: (currentStep: number, totalSteps: number) => void,
 }
 
 /**
@@ -21,6 +27,7 @@ interface DomainVerifierState {
   currentStep: number,
   /** The status of the steps. */
   status: 'wait' | 'process' | 'finish' | 'error',
+  /** The description for the "verify use case" step. */
   useCaseStepDesc: string,
 }
 
@@ -43,7 +50,8 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
   }
 
   async componentDidUpdate(prevProps: DomainVerifierProps) {
-    const { domainId } = this.props;
+    const { domainId, onFinish } = this.props;
+
     if (prevProps.domainId === domainId) {
       // Nothing changed, don't do anything.
       return;
@@ -59,7 +67,14 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
       success = success && await this.verifyOntology(session);
     }
     if (success) {
-      await this.verifyUseCase(session);
+      success = success && await this.verifyUseCase(session);
+    }
+
+    if (success) {
+      const { currentStep } = this.state;
+      if (onFinish != null) {
+        onFinish(currentStep, 3);
+      }
     }
   }
 
@@ -127,11 +142,11 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
    * @param session The current session.
    * @returns Whether the verification succeeded.
    */
-  async verifyUseCase(session: any) {
+  async verifyUseCase(session: any): Promise<boolean> {
     const shouldVerifyUseCase = false;
     if (!shouldVerifyUseCase) {
       this.setState({ currentStep: 3, useCaseStepDesc: '(No use case given)' });
-      return;
+      return true;
     }
 
     const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}`;
@@ -146,6 +161,7 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
       };
     }
     await fetch(endpoint, {});
+    return true;
   }
 
   render() {

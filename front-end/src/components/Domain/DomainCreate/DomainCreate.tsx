@@ -23,9 +23,9 @@ interface DomainCreateProps {
   /** All available topics. */
   topics: Topic[],
   /** Callback function called when the domain is created. */
-  callbackCreated?: (domainId: string) => void,
+  onCreated?: (domainId: string) => void,
   /** Callback function called when the domain creation is cancelled. */
-  callbackCancelled?: () => void,
+  onCancelled?: () => void,
 }
 
 /**
@@ -42,6 +42,8 @@ interface IState {
   constraints: UploadFile<any>[];
   /** Whether each of the tooltip modals are visible. */
   visibleModals: { [name: string]: boolean };
+  /** Whether the domain has been created. */
+  created: boolean,
 }
 
 /**
@@ -66,6 +68,7 @@ class DomainCreate extends React.Component<DomainCreateProps, IState> {
         run_config: false,
         constraints: false,
       },
+      created: false,
     };
   }
 
@@ -73,7 +76,7 @@ class DomainCreate extends React.Component<DomainCreateProps, IState> {
    * Handle submit
    */
   handleSubmit = (values) => {
-    const { callbackCreated } = this.props;
+    const { onCreated } = this.props;
     const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/upload`;
 
     const files: RMFCInput[] = [];
@@ -130,8 +133,9 @@ class DomainCreate extends React.Component<DomainCreateProps, IState> {
           return Promise.reject(new Error('Error while trying to create domain'));
         })
         .then((data) => {
-          if (callbackCreated !== null) {
-            callbackCreated(data);
+          if (onCreated !== null) {
+            this.setState({ created: true });
+            onCreated(data);
           }
         })
         // Catch and print any errors
@@ -156,13 +160,14 @@ class DomainCreate extends React.Component<DomainCreateProps, IState> {
    * Render form
    */
   render() {
-    const { topics, callbackCancelled } = this.props;
+    const { topics, onCancelled } = this.props;
     const {
       ontology,
       toolsAnnotations,
       runConfig,
       constraints,
       visibleModals,
+      created,
     } = this.state;
     return (
       <div>
@@ -394,7 +399,7 @@ class DomainCreate extends React.Component<DomainCreateProps, IState> {
           <Row justify="end">
             <Col pull={3}>
               <Space>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" disabled={created}>
                   Create domain
                 </Button>
                 <Popconfirm
@@ -402,9 +407,9 @@ class DomainCreate extends React.Component<DomainCreateProps, IState> {
                   okText="Yes"
                   cancelText="No"
                   placement="topLeft"
-                  onConfirm={callbackCancelled}
+                  onConfirm={onCancelled}
                 >
-                  <Button data-testid="cancelButton">Cancel</Button>
+                  <Button data-testid="cancelButton" disabled={created}>Cancel</Button>
                 </Popconfirm>
               </Space>
             </Col>
