@@ -15,8 +15,11 @@ import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
 import com.apexdevs.backend.persistence.exception.SynthesisFlagException
+import com.apexdevs.backend.persistence.filesystem.FileNotFoundException
 import com.apexdevs.backend.persistence.filesystem.FileTypes
 import com.apexdevs.backend.persistence.filesystem.StorageService
+import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
+import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
 import org.json.JSONObject
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
@@ -166,7 +169,7 @@ class ApiWorkflowController(
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/verify/ontology")
-    fun verifyOntology(@AuthenticationPrincipal user: User?, session: HttpSession) {
+    fun verifyOntology(@AuthenticationPrincipal user: User?, session: HttpSession): DomainVerificationResult {
         try {
             val apeRequest = apeRequestFactory.getApeRequest(session.id)
             val runConfig = RunConfig(
@@ -177,9 +180,34 @@ class ApiWorkflowController(
             )
             storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, emptyList())
             try {
-                val result = apeRequest.getWorkflows(runConfig)
-            } catch (_: SynthesisFlagException) {
+                apeRequest.getWorkflows(runConfig)
+                return DomainVerificationResult(true, null)
+            } catch (exc: SynthesisFlagException) {
+                if (exc.flag == SynthesisFlag.UNSAT) {
+                    // No solutions found is considered correct
+                    return DomainVerificationResult(true, null)
+                }
+                return DomainVerificationResult(false, null)
+            }
+        } catch (exc: Exception) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+        }
+    }
 
+    /**
+     * Verify a domain's use case configuration can run without errors.
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/verify/useCaseConfig")
+    fun verifyUseCase(@AuthenticationPrincipal user: User?, session: HttpSession): DomainVerificationResult  {
+        try {
+            val userResult = user?.let { userOperation.getByEmail(it.username) }
+            val apeRequest = apeRequestFactory.getApeRequest(session.id)
+            return try {
+                val useCaseConfig = storageService.loadFileAsResponse(apeRequest.domain.id, FileTypes.UseCaseRunConfig, userResult)
+                DomainVerificationResult(null, true)
+            } catch (_: FileNotFoundException) {
+                DomainVerificationResult(null, false)
             }
         } catch (exc: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)

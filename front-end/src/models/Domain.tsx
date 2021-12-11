@@ -112,3 +112,13 @@ export interface UserAccessUpload {
   /** The access level the user will get to the domain. */
   access: Access,
 }
+
+/**
+ * Object received from the back-end, whether a domain verification was successful.
+ */
+export interface DomainVerificationResult {
+  /** Whether the ontology was successfully verified. */
+  ontologySuccess: boolean,
+  /** Whether the use case configuration was successfully verified. */
+  useCaseSuccess: boolean,
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import { getSession } from 'next-auth/client';
 import { Steps } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
+import { DomainVerificationResult } from '@models/Domain';
 
 const { Step } = Steps;
 
@@ -128,11 +129,17 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
     await fetch(endpoint, init)
       .then((res) => {
         if (res.status !== 200) {
-          this.setState({ status: 'error' });
-          return;
+          return null;
         }
-        this.setState({ currentStep: 2 });
-        success = true;
+        return res.json();
+      })
+      .then((data: DomainVerificationResult | null) => {
+        if (data !== null && data.ontologySuccess) {
+          this.setState({ currentStep: 2 });
+          success = true;
+        } else {
+          this.setState({ status: 'error' });
+        }
       });
     return success;
   }
@@ -149,7 +156,7 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
       return true;
     }
 
-    const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}`;
+    const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/verify/useCaseConfig`;
     const init: RequestInit = {
       method: 'GET',
       credentials: 'include',
@@ -160,8 +167,24 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
         cookie: session.user.sessionid,
       };
     }
-    await fetch(endpoint, {});
-    return true;
+
+    let success: boolean = false;
+    await fetch(endpoint, init)
+      .then((res) => {
+        if (res.status !== 200) {
+          return null;
+        }
+        return res.json();
+      })
+      .then((data: DomainVerificationResult | null) => {
+        if (data !== null && data.useCaseSuccess) {
+          this.setState({ currentStep: 3 });
+          success = true;
+        } else {
+          this.setState({ status: 'error' });
+        }
+      });
+    return success;
   }
 
   render() {
