@@ -66,7 +66,7 @@ enum ParameterType {
   /** Data type */
   Data = 'data',
   /** Tool type */
-  Tool = 'tool'
+  Tool = 'tool',
 }
 
 /** Interface for the constraint type */

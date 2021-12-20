@@ -30,11 +30,11 @@ module.exports = {
     "../styles/globals.less": "<rootDir>/config/jest/cssTransform.js",
     "package.json": "<rootDir>/config/jest/packageTransform.js",
     // Path aliases, same as in tsconfig.json
-    "@components(.*)$": "<rootDir>/src/components$1",
-    "@pages(.*)$": "<rootDir>/src/pages$1",
-    "@models(.*)$": "<rootDir>/src/models$1",
-    "@helpers(.*)$": "<rootDir>/src/helpers$1",
-    "@tests(.*)$": "<rootDir>/tests$1",
+    "@components/(.*)$": "<rootDir>/src/components/$1",
+    "@pages/(.*)$": "<rootDir>/src/pages/$1",
+    "@models/(.*)$": "<rootDir>/src/models/$1",
+    "@helpers/(.*)$": "<rootDir>/src/helpers/$1",
+    "@tests/(.*)$": "<rootDir>/tests/$1",
   },
   setupFiles: [
     "<rootDir>/node_modules/jest-fetch-mock/setupJest.js"

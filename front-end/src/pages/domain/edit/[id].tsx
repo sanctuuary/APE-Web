@@ -7,8 +7,8 @@
 
 import React from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { Button, Result, Typography } from 'antd';
+import { NextRouter, useRouter } from 'next/router';
+import { Button, Card, message, Popconfirm, Result, Typography } from 'antd';
 import DomainEdit from '@components/Domain/DomainEdit/DomainEdit';
 import Domain, { Topic, UserWithAccess } from '@models/Domain';
 import { getSession } from 'next-auth/client';
@@ -117,6 +117,27 @@ async function fetchDomain(user: any, id: string): Promise<Domain | null> {
 }
 
 /**
+ * Delete a domain. Note: no questions are asked, this will delete the domain!
+ * @param domain The domain to delete.
+ * @param router The router, used to redirect the user back to the homepage.
+ */
+async function deleteDomain(domain: Domain, router: NextRouter) {
+  const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/delete/${domain.id}`;
+  await fetch(endpoint, {
+    method: 'POST',
+    credentials: 'include',
+  })
+    .then((res) => {
+      if (res.status !== 200) {
+        message.error(`Failed to delete domain: ${res.statusText}`);
+        return;
+      }
+      message.info(`Domain "${domain.title}" removed`);
+      router.push('/');
+    });
+}
+
+/**
  * Page for editing domains, built around the {@link DomainEdit} component.
  *
  * Includes result pages to be shown in case of errors.
@@ -146,11 +167,35 @@ function DomainEditPage(props: IDomainEditPageProps) {
             {
               isOwner && (
                 <div>
-                  <Title level={2}>Permissions</Title>
-                  <AccessManager
-                    domain={domain}
-                    onOwnershipTransferred={(newOwner) => setIsOwner(newOwner.userId === userId)}
-                  />
+                  <div>
+                    <Title level={2}>Permissions</Title>
+                    <AccessManager
+                      domain={domain}
+                      onOwnershipTransferred={(newOwner) => setIsOwner(newOwner.userId === userId)}
+                    />
+                  </div>
+                  <div style={{ marginTop: 24 }}>
+                    <Title level={2}>Other</Title>
+                    <Card>
+                      <Popconfirm
+                        title={(
+                          <div>
+                            <div>
+                              You are about to delete the domain &quot;{domain.title}&quot;.
+                            </div>
+                            <div>
+                              This is permanent and <strong>can not be undone</strong>.
+                              Are you sure?
+                            </div>
+                          </div>
+                        )}
+                        onConfirm={() => deleteDomain(domain, router)}
+                        placement="topRight"
+                      >
+                        <Button danger>Delete domain</Button>
+                      </Popconfirm>
+                    </Card>
+                  </div>
                 </div>
               )
             }

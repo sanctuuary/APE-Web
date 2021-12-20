@@ -19,7 +19,7 @@
  *
  * ## Workaround
  *
- * To work around this issue, the enviroment file defines two base URLs:
+ * To work around this issue, the environment file defines two base URLs:
  * - `NEXT_PUBLIC_BASE_URL_NODE`: for Node.js to call the back-end via an alias.
  * - `NEXT_PUBLIC_BASE_URL`: for web browsers to call the back-end.
  *

@@ -25,6 +25,7 @@ import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
 import nl.uu.cs.ape.sat.models.logic.constructs.TaxonomyPredicate
 import java.io.ByteArrayOutputStream
 import java.nio.file.Path
+import java.util.Locale
 import javax.imageio.ImageIO
 
 /**
@@ -141,7 +142,11 @@ class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: AP
     /**
      * String extension to format taxonomy labels into a pretty printed label
      */
-    private fun String.formatLabel(): String = replace("_", " ").split(" ").joinToString(" ") { it.capitalize() }
+    private fun String.formatLabel(): String = replace("_", " ").split(" ").joinToString(" ") { it ->
+        it.replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+        }
+    }
 
     private fun String.removePrefixIRI(): String = replace(domain.ontologyPrefixIRI, "").replace("\"", "")
 

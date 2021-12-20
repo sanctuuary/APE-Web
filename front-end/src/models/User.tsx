@@ -26,5 +26,5 @@ export enum UserStatus {
   /** The user account is pending approval. */
   Pending = 'Pending',
   /** The user account has been denied. */
-  Denied = 'Denied'
+  Denied = 'Denied',
 }
