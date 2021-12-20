@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update back-end Kotlin version from 1.3.72 -> 1.6.0.
+- Update APE dependency version 1.1.9 -> 1.1.12 (includes log4j vulnerability fix).
 
 ### Fixed
 
