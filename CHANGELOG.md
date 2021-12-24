@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2021-12-24
+
 ### Changed
 
 - Force all dependencies to use log4j and slf4j version 2.17.0.
@@ -179,6 +181,7 @@ This release is paired with the APE Web [DOI release](https://zenodo.org/badge/l
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.5.1]: https://github.com/sanctuuary/APE-Web/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/sanctuuary/APE-Web/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/sanctuuary/APE-Web/compare/v1.3.3...v1.4.0
 [1.3.3]: https://github.com/sanctuuary/APE-Web/compare/v1.3.2...v1.3.3
