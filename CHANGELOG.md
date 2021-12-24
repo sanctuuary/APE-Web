@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Force all dependencies to use log4j and slf4j version 2.17.0.
+
 ## [1.5.0] - 2021-12-20
 
 ### Added
