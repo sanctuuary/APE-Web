@@ -6,11 +6,14 @@ package com.apexdevs.backend.web.controller.api
 
 import com.apexdevs.backend.ape.ApeRequestFactory
 import com.apexdevs.backend.ape.entity.workflow.Constraint
+import com.apexdevs.backend.ape.entity.workflow.Data
 import com.apexdevs.backend.ape.entity.workflow.InputData
 import com.apexdevs.backend.ape.entity.workflow.Ontology
 import com.apexdevs.backend.ape.entity.workflow.RunConfig
 import com.apexdevs.backend.ape.entity.workflow.TotalConfig
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
+import com.apexdevs.backend.ape.entity.workflow.constraintsFromJSON
+import com.apexdevs.backend.ape.entity.workflow.dataListFromJSON
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
@@ -19,6 +22,8 @@ import com.apexdevs.backend.persistence.filesystem.FileNotFoundException
 import com.apexdevs.backend.persistence.filesystem.FileTypes
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
 import org.json.JSONObject
 import org.springframework.core.io.Resource
@@ -198,16 +203,45 @@ class ApiWorkflowController(
      * Verify a domain's use case configuration can run without errors.
      */
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/verify/useCaseConfig")
-    fun verifyUseCase(@AuthenticationPrincipal user: User?, session: HttpSession): DomainVerificationResult  {
+    @GetMapping("/verify/useCase")
+    fun verifyUseCase(@AuthenticationPrincipal user: User?, session: HttpSession): DomainVerificationResult {
         try {
             val userResult = user?.let { userOperation.getByEmail(it.username) }
             val apeRequest = apeRequestFactory.getApeRequest(session.id)
-            return try {
-                val useCaseConfig = storageService.loadFileAsResponse(apeRequest.domain.id, FileTypes.UseCaseRunConfig, userResult)
-                DomainVerificationResult(null, true)
+            try {
+                val mapper = jacksonObjectMapper()
+
+                val useCaseConfigJson = apeRequestFactory.fileService.loadFile(apeRequest.domain.id, FileTypes.UseCaseRunConfig)
+                val useCaseConstraintsJson = apeRequestFactory.fileService.loadFile(apeRequest.domain.id, FileTypes.UseCaseConstraints)
+                val useCaseConfig: Map<String, Any> = mapper.readValue(useCaseConfigJson)
+                val useCaseConstraints: Map<String, Any> = mapper.readValue(useCaseConstraintsJson)
+
+                val inputs: List<Data> =
+                    dataListFromJSON(useCaseConfig["inputs"] as ArrayList<LinkedHashMap<String, ArrayList<String>>>)
+                val outputs: List<Data> =
+                    dataListFromJSON(useCaseConfig["outputs"] as ArrayList<LinkedHashMap<String, ArrayList<String>>>)
+                val constraints: List<Constraint> =
+                    constraintsFromJSON(useCaseConstraints["constraints"] as ArrayList<LinkedHashMap<String, Any>>)
+                val solutionLengths: LinkedHashMap<String, Int> =
+                    useCaseConfig["solution_length"] as LinkedHashMap<String, Int>
+                val runConfig = RunConfig(
+                    solutionMinLength = solutionLengths["min"]!!,
+                    solutionMaxLength = solutionLengths["max"]!!,
+                    maxSolutionsToReturn = useCaseConfig["max_solutions"].toString().toInt(),
+                    maxDuration = useCaseConfig["timeout_sec"].toString().toInt(),
+                    inputs = inputs,
+                    outputs = outputs,
+                )
+                storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, constraints)
+                apeRequest.getWorkflows(runConfig)
+
+                return DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true)
             } catch (_: FileNotFoundException) {
-                DomainVerificationResult(null, false)
+                // Either run configuration or constraints file could not be found
+                return DomainVerificationResult(null, null)
+            } catch (_: SynthesisFlagException) {
+                // An error occurred while running APE
+                return DomainVerificationResult(null, false)
             }
         } catch (exc: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)

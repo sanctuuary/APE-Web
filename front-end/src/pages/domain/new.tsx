@@ -80,7 +80,9 @@ function CreateDomain(props: CreateDomainPageProps) {
             onCreated={afterCreate}
             onCancelled={onCancel}
           />
-          <DomainVerifier domainId={domainId} onFinish={onVerifyFinished} />
+          <div style={{ marginLeft: 200, marginRight: 200 }}>
+            <DomainVerifier domainId={domainId} onFinish={onVerifyFinished} />
+          </div>
 
           {verified && (
             <Row style={{ marginTop: 25 }}>

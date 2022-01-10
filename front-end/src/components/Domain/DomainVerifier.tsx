@@ -74,7 +74,7 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
     if (success) {
       const { currentStep } = this.state;
       if (onFinish != null) {
-        onFinish(currentStep, 3);
+        onFinish(currentStep, 4);
       }
     }
   }
@@ -98,7 +98,7 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
           this.setState({ status: 'error' });
           return;
         }
-        this.setState({ currentStep: 1 });
+        this.setState({ currentStep: 2 });
         success = true;
       })
       .catch(() => {
@@ -135,7 +135,7 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
       })
       .then((data: DomainVerificationResult | null) => {
         if (data !== null && data.ontologySuccess) {
-          this.setState({ currentStep: 2 });
+          this.setState({ currentStep: 3 });
           success = true;
         } else {
           this.setState({ status: 'error' });
@@ -150,13 +150,7 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
    * @returns Whether the verification succeeded.
    */
   async verifyUseCase(session: any): Promise<boolean> {
-    const shouldVerifyUseCase = false;
-    if (!shouldVerifyUseCase) {
-      this.setState({ currentStep: 3, useCaseStepDesc: '(No use case given)' });
-      return true;
-    }
-
-    const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/verify/useCaseConfig`;
+    const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/verify/useCase`;
     const init: RequestInit = {
       method: 'GET',
       credentials: 'include',
@@ -178,9 +172,15 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
       })
       .then((data: DomainVerificationResult | null) => {
         if (data !== null && data.useCaseSuccess) {
-          this.setState({ currentStep: 3 });
+          // Successfully verified the use case configuration
+          this.setState({ currentStep: 4 });
+          success = true;
+        } else if (data !== null && data.useCaseSuccess === null) {
+          // No use case configuration was given, this is allowed.
+          this.setState({ currentStep: 4, useCaseStepDesc: '(No use case given)' });
           success = true;
         } else {
+          // An error occurred, verification failed
           this.setState({ status: 'error' });
         }
       });
@@ -193,18 +193,22 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
     return (
       <Steps current={currentStep} status={status}>
         <Step
+          title="Fill form"
+          description="Fill in all the required data."
+        />
+        <Step
           title="Load"
           description="Load the domain."
         />
         <Step
           title="Verify ontology"
           description="Verify the domain runs without critical errors."
-          icon={currentStep === 1 && status !== 'error' ? (<LoadingOutlined />) : null}
+          icon={currentStep === 2 && status !== 'error' ? (<LoadingOutlined />) : null}
         />
         <Step
           title="Verify use case"
           description={useCaseStepDesc}
-          icon={currentStep === 2 && status !== 'error' ? (<LoadingOutlined />) : null}
+          icon={currentStep === 3 && status !== 'error' ? (<LoadingOutlined />) : null}
         />
       </Steps>
     );
