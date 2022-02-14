@@ -3,8 +3,8 @@ stages:
   - "Build"
   - "Lint"
 
-# Only build every commit on the master branch (pull requests on other branches are still built)
-if: (type = push AND branch IN (master)) OR (type = pull_request)
+# Only build every commit on the main branch (pull requests on other branches are still built)
+if: (type = push AND branch IN (main)) OR (type = pull_request)
 
 jobs:
   include:
