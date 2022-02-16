@@ -118,7 +118,9 @@ export interface UserAccessUpload {
  */
 export interface DomainVerificationResult {
   /** Whether the ontology was successfully verified. */
-  ontologySuccess: boolean,
+  ontologySuccess?: boolean,
   /** Whether the use case configuration was successfully verified. */
-  useCaseSuccess: boolean,
+  useCaseSuccess?: boolean,
+  /** A description why the verification failed, when applicable. */
+  errorMessage?: string,
 }

@@ -18,6 +18,12 @@ interface DomainVerifierProps {
    * @param totalSteps The total number of steps.
    */
   onFinish?: (currentStep: number, totalSteps: number) => void,
+  /**
+   * Callback function called when an error occurs during verification.
+   * @param currentStep The step the verifier errored on.
+   * @param error The error message.
+   */
+  onError?: (currentStep: number, error: string) => void,
 }
 
 /**
@@ -150,6 +156,9 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
    * @returns Whether the verification succeeded.
    */
   async verifyUseCase(session: any): Promise<boolean> {
+    const { onError } = this.props;
+    const { currentStep } = this.state;
+
     const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflow/verify/useCase`;
     const init: RequestInit = {
       method: 'GET',
@@ -164,24 +173,25 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
 
     let success: boolean = false;
     await fetch(endpoint, init)
-      .then((res) => {
-        if (res.status !== 200) {
-          return null;
-        }
-        return res.json();
-      })
-      .then((data: DomainVerificationResult | null) => {
-        if (data !== null && data.useCaseSuccess) {
+      .then((res) => res.json())
+      .then((data: DomainVerificationResult | any) => {
+        if (data.useCaseSuccess) {
           // Successfully verified the use case configuration
           this.setState({ currentStep: 4 });
           success = true;
-        } else if (data !== null && data.useCaseSuccess === null) {
+        } else if (data.useCaseSuccess === null) {
           // No use case configuration was given, this is allowed.
           this.setState({ currentStep: 4, useCaseStepDesc: '(No use case given)' });
           success = true;
+        } else if (data.errorMessage !== null) {
+          // An error occurred, verification failed
+          this.setState({ status: 'error' });
+          onError(currentStep, data.errorMessage);
         } else {
           // An error occurred, verification failed
           this.setState({ status: 'error' });
+          // eslint-disable-next-line no-console
+          console.error(data.message);
         }
       });
     return success;

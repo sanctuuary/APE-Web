@@ -186,13 +186,13 @@ class ApiWorkflowController(
             storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, emptyList())
             try {
                 apeRequest.getWorkflows(runConfig)
-                return DomainVerificationResult(true, null)
+                return DomainVerificationResult(true, null, null)
             } catch (exc: SynthesisFlagException) {
                 if (exc.flag == SynthesisFlag.UNSAT) {
                     // No solutions found is considered correct
-                    return DomainVerificationResult(true, null)
+                    return DomainVerificationResult(true, null, null)
                 }
-                return DomainVerificationResult(false, null)
+                return DomainVerificationResult(false, null, exc.message)
             }
         } catch (exc: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
@@ -235,13 +235,16 @@ class ApiWorkflowController(
                 storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, constraints)
                 apeRequest.getWorkflows(runConfig)
 
-                return DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true)
-            } catch (_: FileNotFoundException) {
-                // Either run configuration or constraints file could not be found
-                return DomainVerificationResult(null, null)
-            } catch (_: SynthesisFlagException) {
-                // An error occurred while running APE
-                return DomainVerificationResult(null, false)
+                return DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true, null)
+            } catch (exc: Exception) {
+                return when (exc) {
+                    is FileNotFoundException ->
+                        DomainVerificationResult(null, null, exc.message)
+                    is SynthesisFlagException, is RunParametersExceedLimitsException ->
+                        DomainVerificationResult(null, false, exc.message)
+                    else ->
+                        throw exc
+                }
             }
         } catch (exc: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)

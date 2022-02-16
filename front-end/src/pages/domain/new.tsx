@@ -57,6 +57,13 @@ function CreateDomain(props: CreateDomainPageProps) {
     message.success('Domain verified');
   };
 
+  /**
+   * An error occurred during verification. Display the error to the user.
+   */
+  const onVerifyError = (currentStep: number, error: string) => {
+    message.warning(`[STEP ${currentStep}] ${error}`, 5);
+  };
+
   return (
     <div>
       <Head>
@@ -81,7 +88,11 @@ function CreateDomain(props: CreateDomainPageProps) {
             onCancelled={onCancel}
           />
           <div style={{ marginLeft: 200, marginRight: 200 }}>
-            <DomainVerifier domainId={domainId} onFinish={onVerifyFinished} />
+            <DomainVerifier
+              domainId={domainId}
+              onFinish={onVerifyFinished}
+              onError={onVerifyError}
+            />
           </div>
 
           {verified && (
