@@ -13,5 +13,15 @@ package com.apexdevs.backend.web.controller.entity.domain
  * @param topics list of topics to which the domain relates
  * @param userId requesting user whose access is mentioned for the domain
  * @param access the access rights on the domain granted to the requesting user
+ * @param verification the verification status of the domain
  */
-data class DomainWithAccessResponse(val id: String, val title: String, val description: String, val visibility: String, val topics: List<String>, val userId: String, val access: String)
+data class DomainWithAccessResponse(
+    val id: String,
+    val title: String,
+    val description: String,
+    val visibility: String,
+    val topics: List<String>,
+    val userId: String,
+    val access: String,
+    val verification: DomainVerificationResult,
+)

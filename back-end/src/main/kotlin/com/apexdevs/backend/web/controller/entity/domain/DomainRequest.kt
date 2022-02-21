@@ -12,6 +12,7 @@ package com.apexdevs.backend.web.controller.entity.domain
  * @param description the description of the domain
  * @param official whether the domain is an official domain
  * @param ownerName the display name of the owner of the domain
+ * @param verification the result of the domain's verification
  */
 data class DomainRequest(
     val id: String,
@@ -19,5 +20,6 @@ data class DomainRequest(
     val topics: List<String>,
     val description: String,
     val official: Boolean,
-    val ownerName: String
+    val ownerName: String,
+    val verification: DomainVerificationResult?,
 )

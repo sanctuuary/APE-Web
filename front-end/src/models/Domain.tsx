@@ -51,6 +51,8 @@ export interface DomainInfo {
   visibility?: Visibility,
   /** Optional access level for the current user. */
   access?: Access,
+  /** Domain verification status. */
+  verification?: DomainVerificationResult
 }
 
 /**

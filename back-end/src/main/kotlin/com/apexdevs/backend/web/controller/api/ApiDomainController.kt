@@ -19,6 +19,7 @@ import com.apexdevs.backend.persistence.exception.UserNotFoundException
 import com.apexdevs.backend.persistence.filesystem.FileTypes
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
+import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
 import com.apexdevs.backend.web.controller.entity.domain.DomainWithAccessResponse
 import com.apexdevs.backend.web.controller.entity.domain.UserAccessUpload
 import com.apexdevs.backend.web.controller.entity.domain.UserWithAccessResponse
@@ -314,6 +315,12 @@ class ApiDomainController(
                 try {
                     // get domain by domainId
                     val domain = domainOperation.getDomain(userDomainAccess.domainId)
+                    val verification = domainOperation.getVerification(domain.id)
+                    val verificationResult: DomainVerificationResult = if (verification.isPresent) {
+                        verification.get().asResult()
+                    } else {
+                        DomainVerificationResult()
+                    }
 
                     // add DomainWithAccessResponse to the list
                     results.add(
@@ -324,7 +331,8 @@ class ApiDomainController(
                             domain.visibility.toString(),
                             domainOperation.getTopics(domain).map { topic: Topic -> topic.name },
                             authUser.id.toHexString(),
-                            userDomainAccess.access.toString()
+                            userDomainAccess.access.toString(),
+                            verificationResult
                         )
                     )
                 } catch (exc: DomainNotFoundException) {
@@ -477,6 +485,39 @@ class ApiDomainController(
                     throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
                 else ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
+        }
+    }
+
+    /**
+     * Get the verification status of a domain
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{id}/verification")
+    fun getVerification(@AuthenticationPrincipal user: User, @PathVariable id: ObjectId): DomainVerificationResult {
+        try {
+            val authUser = userOperation.getByEmail(user.username)
+            val domain = domainOperation.getDomain(id)
+
+            val userHasReadAccess = domainOperation.hasUserAccess(domain, DomainAccess.Read, authUser.id)
+            if (!userHasReadAccess)
+                throw AccessDeniedException("User does not have read access to the domain")
+
+            val verification = domainOperation.getVerification(domain.id)
+            val result: DomainVerificationResult = if (verification.isPresent) {
+                verification.get().asResult()
+            } else {
+                DomainVerificationResult()
+            }
+            return result
+        } catch (exc: Exception) {
+            when (exc) {
+                is UserNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
+                is DomainNotFoundException ->
+                    throw ResponseStatusException(HttpStatus.NOT_FOUND, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exc.message, exc)
             }
         }
     }

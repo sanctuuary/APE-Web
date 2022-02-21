@@ -233,7 +233,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         every { domain.id.toHexString() } returns "testId"
 
-        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, false, user.displayName)
+        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, false, user.displayName, null)
 
         every { domainCollection.getPublicDomains() } returns listOf(domain)
         every { domainOperation.getTopics(any()) } returns listOf(Topic(t))
@@ -256,7 +256,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         every { domain.id.toHexString() } returns "testId"
 
-        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, true, user.displayName)
+        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, true, user.displayName, null)
 
         every { domainCollection.getPublicDomains() } returns listOf(domain)
         every { domainOperation.getTopics(any()) } returns listOf(Topic(t))

@@ -20,6 +20,7 @@ import com.apexdevs.backend.persistence.exception.UserAccessException
 import com.apexdevs.backend.persistence.exception.UserNotFoundException
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
+import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
 import com.apexdevs.backend.web.controller.entity.domain.DomainWithAccessResponse
 import com.apexdevs.backend.web.controller.entity.domain.UserAccessUpload
 import com.apexdevs.backend.web.controller.entity.domain.UserWithAccessResponse
@@ -324,7 +325,8 @@ internal class ApiDomainControllerTest {
                 domain.visibility.toString(),
                 listOf("Test"),
                 id.toHexString(),
-                DomainAccess.Read.toString()
+                DomainAccess.Read.toString(),
+                DomainVerificationResult()
             )
         )
 

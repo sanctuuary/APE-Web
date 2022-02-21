@@ -7,16 +7,19 @@ package com.apexdevs.backend.persistence
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.DomainAccess
 import com.apexdevs.backend.persistence.database.entity.DomainTopic
+import com.apexdevs.backend.persistence.database.entity.DomainVerification
 import com.apexdevs.backend.persistence.database.entity.DomainVisibility
 import com.apexdevs.backend.persistence.database.entity.Topic
 import com.apexdevs.backend.persistence.database.entity.User
 import com.apexdevs.backend.persistence.database.entity.UserDomainAccess
 import com.apexdevs.backend.persistence.database.repository.DomainRepository
 import com.apexdevs.backend.persistence.database.repository.DomainTopicRepository
+import com.apexdevs.backend.persistence.database.repository.DomainVerificationRepository
 import com.apexdevs.backend.persistence.database.repository.TopicRepository
 import com.apexdevs.backend.persistence.database.repository.UserDomainAccessRepository
 import com.apexdevs.backend.persistence.database.repository.UserRepository
 import com.apexdevs.backend.persistence.exception.DomainNotFoundException
+import com.apexdevs.backend.persistence.exception.DomainVerificationNotFoundException
 import com.apexdevs.backend.persistence.exception.UserAccessException
 import com.apexdevs.backend.persistence.exception.UserDomainAccessNotFoundException
 import com.apexdevs.backend.persistence.exception.UserNotFoundException
@@ -24,6 +27,7 @@ import com.apexdevs.backend.web.controller.entity.domain.DomainDetails
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
 import org.bson.types.ObjectId
 import org.springframework.stereotype.Component
+import java.util.Optional
 import java.util.logging.Logger
 
 /**
@@ -33,9 +37,17 @@ import java.util.logging.Logger
  * @param userDomainAccessRepository (autowired)
  * @param domainTopicRepository (autowired)
  * @param topicRepository (autowired)
+ * @param domainVerificationRepository (autowired)
  */
 @Component
-class DomainOperation(val domainRepository: DomainRepository, val userRepository: UserRepository, val userDomainAccessRepository: UserDomainAccessRepository, val domainTopicRepository: DomainTopicRepository, val topicRepository: TopicRepository) {
+class DomainOperation(
+    val domainRepository: DomainRepository,
+    val userRepository: UserRepository,
+    val userDomainAccessRepository: UserDomainAccessRepository,
+    val domainTopicRepository: DomainTopicRepository,
+    val topicRepository: TopicRepository,
+    val domainVerificationRepository: DomainVerificationRepository,
+) {
     /**
      * Create a new domain, with provided user id as the owner
      * @param domain constructed domain to add to database
@@ -288,6 +300,42 @@ class DomainOperation(val domainRepository: DomainRepository, val userRepository
             throw UserNotFoundException(this, "Failed to find the owner of the domain")
         }
         return user.get()
+    }
+
+    /**
+     * Get the verification status of a domain.
+     * @param domainId The id of the domain of which to get the verification status.
+     */
+    @Throws(DomainNotFoundException::class)
+    fun getVerification(domainId: ObjectId): Optional<DomainVerification> {
+        val domain = domainRepository.findById(domainId)
+        if (domain.isEmpty)
+            throw DomainNotFoundException(this, domainId, "Domain with id \"$domainId\" was not found")
+
+        return domainVerificationRepository.findByDomainId(domainId)
+    }
+
+    /**
+     * Save the verification status of a domain.
+     * @param domainVerification The domain verification to save.
+     */
+    @Throws(DomainNotFoundException::class)
+    fun saveVerification(domainVerification: DomainVerification) {
+        val domain = domainRepository.findById(domainVerification.domainId)
+        if (domain.isEmpty)
+            throw DomainNotFoundException(this, domainVerification.domainId, "Domain with id \"$domainVerification.domainId\" was not found")
+
+        val verification = domainVerificationRepository.findByDomainId(domainVerification.domainId)
+        if (verification.isEmpty) {
+            // No verification entry for this domain exists, store a new verification entry
+            domainVerificationRepository.save(domainVerification)
+        } else {
+            // Update the existing entry
+            val ver = verification.get()
+            ver.ontologySuccess = domainVerification.ontologySuccess
+            ver.useCaseSuccess = domainVerification.useCaseSuccess
+            domainVerificationRepository.save(ver)
+        }
     }
 
     companion object {

@@ -14,11 +14,12 @@ import com.apexdevs.backend.ape.entity.workflow.TotalConfig
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
 import com.apexdevs.backend.ape.entity.workflow.constraintsFromJSON
 import com.apexdevs.backend.ape.entity.workflow.dataListFromJSON
+import com.apexdevs.backend.persistence.DomainOperation
 import com.apexdevs.backend.persistence.UserOperation
+import com.apexdevs.backend.persistence.database.entity.DomainVerification
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
 import com.apexdevs.backend.persistence.exception.SynthesisFlagException
-import com.apexdevs.backend.persistence.filesystem.FileNotFoundException
 import com.apexdevs.backend.persistence.filesystem.FileTypes
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
+import java.io.FileNotFoundException
 import javax.servlet.http.HttpSession
 
 /**
@@ -54,7 +56,8 @@ import javax.servlet.http.HttpSession
 class ApiWorkflowController(
     val apeRequestFactory: ApeRequestFactory,
     val storageService: StorageService,
-    val userOperation: UserOperation
+    val userOperation: UserOperation,
+    val domainOperation: DomainOperation,
 ) {
     /**
      * @Return: workflow input and output data
@@ -184,16 +187,18 @@ class ApiWorkflowController(
                 maxDuration = 60,
             )
             storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, emptyList())
-            try {
+            val result: DomainVerificationResult = try {
                 apeRequest.getWorkflows(runConfig)
-                return DomainVerificationResult(true, null, null)
+                DomainVerificationResult(true, null, null)
             } catch (exc: SynthesisFlagException) {
                 if (exc.flag == SynthesisFlag.UNSAT) {
                     // No solutions found is considered correct
-                    return DomainVerificationResult(true, null, null)
-                }
-                return DomainVerificationResult(false, null, exc.message)
+                    DomainVerificationResult(true, null, null)
+                } else
+                    DomainVerificationResult(false, null, exc.message)
             }
+            domainOperation.saveVerification(DomainVerification(apeRequest.domain.id, result))
+            return result
         } catch (exc: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
         }
@@ -208,6 +213,13 @@ class ApiWorkflowController(
         try {
             val userResult = user?.let { userOperation.getByEmail(it.username) }
             val apeRequest = apeRequestFactory.getApeRequest(session.id)
+            val currentVerification = domainOperation.getVerification(apeRequest.domain.id)
+            val current = if (currentVerification.isPresent) {
+                currentVerification.get().asResult()
+            } else {
+                DomainVerificationResult()
+            }
+
             try {
                 val mapper = jacksonObjectMapper()
 
@@ -235,16 +247,20 @@ class ApiWorkflowController(
                 storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, constraints)
                 apeRequest.getWorkflows(runConfig)
 
-                return DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true, null)
+                val result = DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true, null)
+                domainOperation.saveVerification(DomainVerification(apeRequest.domain.id, result))
+                return result
             } catch (exc: Exception) {
-                return when (exc) {
+                val result = when (exc) {
                     is FileNotFoundException ->
-                        DomainVerificationResult(null, null, exc.message)
+                        DomainVerificationResult(current.ontologySuccess, null, exc.message)
                     is SynthesisFlagException, is RunParametersExceedLimitsException ->
-                        DomainVerificationResult(null, false, exc.message)
+                        DomainVerificationResult(current.ontologySuccess, false, exc.message)
                     else ->
                         throw exc
                 }
+                domainOperation.saveVerification(DomainVerification(apeRequest.domain.id, result))
+                return result
             }
         } catch (exc: Exception) {
             throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)

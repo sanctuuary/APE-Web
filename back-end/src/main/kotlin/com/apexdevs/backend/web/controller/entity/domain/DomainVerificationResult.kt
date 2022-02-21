@@ -10,4 +10,6 @@ data class DomainVerificationResult(
     val ontologySuccess: Boolean?,
     val useCaseSuccess: Boolean?,
     val errorMessage: String?,
-)
+) {
+    constructor() : this(null, null, null)
+}

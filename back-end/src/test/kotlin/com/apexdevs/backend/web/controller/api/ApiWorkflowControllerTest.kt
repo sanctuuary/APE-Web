@@ -10,6 +10,7 @@ import com.apexdevs.backend.ape.entity.workflow.Constraint
 import com.apexdevs.backend.ape.entity.workflow.InputData
 import com.apexdevs.backend.ape.entity.workflow.Ontology
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
+import com.apexdevs.backend.persistence.DomainOperation
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.UserStatus
@@ -35,13 +36,15 @@ class ApiWorkflowControllerTest() {
     private val apeRequestFactory = mockk<ApeRequestFactory>(relaxed = true)
     private val storageService = mockk<StorageService>()
     private val userOperation = mockk<UserOperation>()
+    private val domainOperation = mockk<DomainOperation>()
     private val apeRequest = mockk<ApeRequest>()
     private val domain = mockk<Domain>()
 
     private val apiWorkflowController = ApiWorkflowController(
         apeRequestFactory,
         storageService,
-        userOperation
+        userOperation,
+        domainOperation
     )
     private val test = "Test"
     private val id = ObjectId()

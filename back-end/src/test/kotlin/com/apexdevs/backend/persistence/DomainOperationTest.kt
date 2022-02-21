@@ -14,6 +14,7 @@ import com.apexdevs.backend.persistence.database.entity.UserDomainAccess
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.database.repository.DomainRepository
 import com.apexdevs.backend.persistence.database.repository.DomainTopicRepository
+import com.apexdevs.backend.persistence.database.repository.DomainVerificationRepository
 import com.apexdevs.backend.persistence.database.repository.TopicRepository
 import com.apexdevs.backend.persistence.database.repository.UserDomainAccessRepository
 import com.apexdevs.backend.persistence.database.repository.UserRepository
@@ -43,8 +44,16 @@ class DomainOperationTest() {
     private val userDomainAccessRepository = mockk<UserDomainAccessRepository>()
     private val domainTopicRepository = mockk<DomainTopicRepository>()
     private val topicRepository = mockk<TopicRepository>()
+    private val domainVerificationRepository = mockk<DomainVerificationRepository>()
 
-    private fun getDomainOperation() = DomainOperation(domainRepository, userRepository, userDomainAccessRepository, domainTopicRepository, topicRepository)
+    private fun getDomainOperation() = DomainOperation(
+        domainRepository,
+        userRepository,
+        userDomainAccessRepository,
+        domainTopicRepository,
+        topicRepository,
+        domainVerificationRepository
+    )
 
     /**
      * Method: getDomainDetails
