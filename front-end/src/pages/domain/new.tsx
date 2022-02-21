@@ -9,12 +9,14 @@ import React from 'react';
 import { getSession } from 'next-auth/client';
 import { NextRouter, useRouter } from 'next/router';
 import Head from 'next/head';
-import { Button, Col, message, Result, Row, Space } from 'antd';
+import { Button, Col, message, Result, Row, Space, Typography } from 'antd';
 import DomainCreate from '@components/Domain/DomainCreate/DomainCreate';
 import DomainVerifier from '@components/Domain/DomainVerifier';
 import { fetchTopics } from '@components/Domain/Domain';
 import { Topic } from '@models/Domain';
 import styles from './edit/[id].module.less';
+
+const { Title } = Typography;
 
 /**
  * Props for the {@link CreateDomain} page.
@@ -61,7 +63,7 @@ function CreateDomain(props: CreateDomainPageProps) {
    * An error occurred during verification. Display the error to the user.
    */
   const onVerifyError = (currentStep: number, error: string) => {
-    message.warning(`[STEP ${currentStep}] ${error}`, 5);
+    message.warning(`[STEP ${currentStep + 1}] ${error}`, 5);
   };
 
   return (
@@ -88,6 +90,7 @@ function CreateDomain(props: CreateDomainPageProps) {
             onCancelled={onCancel}
           />
           <div style={{ marginLeft: 200, marginRight: 200 }}>
+            <Title level={3}>Verification</Title>
             <DomainVerifier
               domainId={domainId}
               onFinish={onVerifyFinished}

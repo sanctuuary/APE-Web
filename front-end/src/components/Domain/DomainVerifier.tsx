@@ -59,7 +59,7 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
   async componentDidUpdate(prevProps: DomainVerifierProps) {
     const { domainId, onFinish } = this.props;
 
-    if (prevProps.domainId === domainId) {
+    if (prevProps.domainId === domainId || domainId === null) {
       // Nothing changed, don't do anything.
       return;
     }

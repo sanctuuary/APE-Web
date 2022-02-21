@@ -27,6 +27,8 @@ interface IProps {
   topics: Topic[],
   /** Router used for redirecting after save or cancel */
   router: NextRouter,
+  /** Callback function called when the domain is updated. */
+  onUpdated?: () => void,
 }
 
 /**
@@ -198,7 +200,7 @@ class DomainEdit extends React.Component<IProps, IState> {
    */
   handleSubmit = (values: any) => {
     // Add any changed values to the payload
-    const { domain } = this.props;
+    const { domain, onUpdated } = this.props;
     const { owlFiles, toolsAnnotationsFiles, runConfigFiles, constraintsFiles } = this.state;
     // Add topics of they are changed
     const { appliedTopics, topicsChanged } = this.state;
@@ -262,6 +264,9 @@ class DomainEdit extends React.Component<IProps, IState> {
             return;
           }
           message.success('Domain has been updated');
+          if (onUpdated !== null) {
+            onUpdated();
+          }
         });
     });
   };

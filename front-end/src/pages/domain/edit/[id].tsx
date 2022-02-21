@@ -5,7 +5,7 @@
  * © Copyright Utrecht University (Department of Information and Computing Sciences)
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { NextRouter, useRouter } from 'next/router';
 import { Button, Card, message, Popconfirm, Result, Typography } from 'antd';
@@ -14,6 +14,7 @@ import Domain, { Topic, UserWithAccess } from '@models/Domain';
 import { getSession } from 'next-auth/client';
 import { fetchTopics } from '@components/Domain/Domain';
 import AccessManager from '@components/Domain/AccessManager/AccessManager';
+import DomainVerifier from '@components/Domain/DomainVerifier';
 import styles from './[id].module.less';
 
 const { Title } = Typography;
@@ -146,6 +147,28 @@ function DomainEditPage(props: IDomainEditPageProps) {
   const router = useRouter();
   const { userId, domain, topics, notFound, access, isOwner: isOwnerInitial } = props;
   const [isOwner, setIsOwner] = React.useState<boolean>(isOwnerInitial);
+  const [verifyTrigger, triggerVerify] = React.useState<string>(null);
+
+  useEffect(() => {
+    // Run the verification after the page has loaded
+    triggerVerify(domain.id);
+  }, []);
+
+  /**
+   * Verification is done. Act according to the results.
+   */
+  const onVerifyFinish = () => {
+    message.success('Domain verified');
+    triggerVerify(null);
+  };
+
+  /**
+   * An error occurred during verification. Display the error to the user.
+   */
+  const onVerifyError = (currentStep: number, error: string) => {
+    message.warning(`[STEP ${currentStep + 1}] ${error}`, 5);
+    triggerVerify(null);
+  };
 
   return (
     <div className={styles.sideMargins}>
@@ -158,47 +181,62 @@ function DomainEditPage(props: IDomainEditPageProps) {
             <Head>
               <title>Edit {domain.title} | APE</title>
             </Head>
-            <Title level={2}>Domain</Title>
-            <DomainEdit
-              domain={domain}
-              topics={topics}
-              router={router}
-            />
-            {
-              isOwner && (
-                <div>
-                  <div>
-                    <Title level={2}>Permissions</Title>
-                    <AccessManager
-                      domain={domain}
-                      onOwnershipTransferred={(newOwner) => setIsOwner(newOwner.userId === userId)}
-                    />
-                  </div>
-                  <div style={{ marginTop: 24 }}>
-                    <Title level={2}>Other</Title>
-                    <Card>
-                      <Popconfirm
-                        title={(
-                          <div>
-                            <div>
-                              You are about to delete the domain &quot;{domain.title}&quot;.
-                            </div>
-                            <div>
-                              This is permanent and <strong>can not be undone</strong>.
-                              Are you sure?
-                            </div>
-                          </div>
-                        )}
-                        onConfirm={() => deleteDomain(domain, router)}
-                        placement="topRight"
-                      >
-                        <Button danger>Delete domain</Button>
-                      </Popconfirm>
-                    </Card>
-                  </div>
-                </div>
-              )
-            }
+            <div className={styles.sideMargins}>
+              <div style={{ marginLeft: 200, marginRight: 200 }}>
+                <Title level={2}>Domain</Title>
+              </div>
+              <DomainEdit
+                domain={domain}
+                topics={topics}
+                router={router}
+                onUpdated={() => triggerVerify(domain.id)}
+              />
+              <div style={{ marginLeft: 200, marginRight: 200 }}>
+                <Title level={3}>Verification</Title>
+                <DomainVerifier
+                  domainId={verifyTrigger}
+                  onFinish={onVerifyFinish}
+                  onError={onVerifyError}
+                />
+                {
+                  isOwner && (
+                    <div>
+                      <div>
+                        <Title level={3}>Permissions</Title>
+                        <AccessManager
+                          domain={domain}
+                          onOwnershipTransferred={
+                            (newOwner) => setIsOwner(newOwner.userId === userId)
+                          }
+                        />
+                      </div>
+                      <div style={{ marginTop: 24 }}>
+                        <Title level={2}>Other</Title>
+                        <Card>
+                          <Popconfirm
+                            title={(
+                              <div>
+                                <div>
+                                  You are about to delete the domain &quot;{domain.title}&quot;.
+                                </div>
+                                <div>
+                                  This is permanent and <strong>can not be undone</strong>.
+                                  Are you sure?
+                                </div>
+                              </div>
+                            )}
+                            onConfirm={() => deleteDomain(domain, router)}
+                            placement="topRight"
+                          >
+                            <Button danger>Delete domain</Button>
+                          </Popconfirm>
+                        </Card>
+                      </div>
+                    </div>
+                  )
+                }
+              </div>
+            </div>
           </div>
         )
       }
