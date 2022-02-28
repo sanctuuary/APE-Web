@@ -44,7 +44,7 @@ interface DomainVerifierState {
 const initialState: any = {
   currentStep: 0,
   status: 'process',
-  useCaseStepDesc: 'Verify the use case configuration runs without errors.',
+  useCaseStepDesc: 'Verify the use case configuration.',
 };
 
 /**
@@ -211,8 +211,8 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
           description="Load the domain."
         />
         <Step
-          title="Verify ontology"
-          description="Verify the domain runs without critical errors."
+          title="Verify domain"
+          description="Verify the domain's ontology and tool annotations."
           icon={currentStep === 2 && status !== 'error' ? (<LoadingOutlined />) : null}
         />
         <Step
