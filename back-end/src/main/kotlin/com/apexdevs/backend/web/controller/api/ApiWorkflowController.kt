@@ -182,8 +182,8 @@ class ApiWorkflowController(
             val apeRequest = apeRequestFactory.getApeRequest(session.id)
             val runConfig = RunConfig(
                 solutionMinLength = 1,
-                solutionMaxLength = 10,
-                maxSolutionsToReturn = 10,
+                solutionMaxLength = 1,
+                maxSolutionsToReturn = 1,
                 maxDuration = 60,
             )
             storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, emptyList())
@@ -245,9 +245,16 @@ class ApiWorkflowController(
                     outputs = outputs,
                 )
                 storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, constraints)
-                apeRequest.getWorkflows(runConfig)
-
-                val result = DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true, null)
+                val workflows = apeRequest.getWorkflows(runConfig)
+                val result = if (workflows.size == 0) {
+                    DomainVerificationResult(
+                        ontologySuccess = true,
+                        useCaseSuccess = false,
+                        "No workflows found"
+                    )
+                } else {
+                    DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true, null)
+                }
                 domainOperation.saveVerification(DomainVerification(apeRequest.domain.id, result))
                 return result
             } catch (exc: Exception) {
