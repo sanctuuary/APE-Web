@@ -19,7 +19,6 @@ import com.apexdevs.backend.persistence.database.repository.TopicRepository
 import com.apexdevs.backend.persistence.database.repository.UserDomainAccessRepository
 import com.apexdevs.backend.persistence.database.repository.UserRepository
 import com.apexdevs.backend.persistence.exception.DomainNotFoundException
-import com.apexdevs.backend.persistence.exception.DomainVerificationNotFoundException
 import com.apexdevs.backend.persistence.exception.UserAccessException
 import com.apexdevs.backend.persistence.exception.UserDomainAccessNotFoundException
 import com.apexdevs.backend.persistence.exception.UserNotFoundException

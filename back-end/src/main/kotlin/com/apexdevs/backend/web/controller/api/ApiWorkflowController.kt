@@ -15,6 +15,7 @@ import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
 import com.apexdevs.backend.ape.entity.workflow.constraintsFromJSON
 import com.apexdevs.backend.ape.entity.workflow.dataListFromJSON
 import com.apexdevs.backend.persistence.DomainOperation
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.DomainVerification
 import com.apexdevs.backend.persistence.database.entity.UserStatus
@@ -50,6 +51,8 @@ import javax.servlet.http.HttpSession
  * @param apeRequestFactory factory that maintains the ApeRequest instances
  * @param storageService handles filesystem operations
  * @param userOperation operates on database user information
+ * @param domainOperation operates on database of domains
+ * @param runParametersOperation operates on database of run parameters
  */
 @RestController
 @RequestMapping("/api/workflow")
@@ -58,6 +61,7 @@ class ApiWorkflowController(
     val storageService: StorageService,
     val userOperation: UserOperation,
     val domainOperation: DomainOperation,
+    val runParametersOperation: RunParametersOperation,
 ) {
     /**
      * @Return: workflow input and output data
@@ -219,6 +223,7 @@ class ApiWorkflowController(
             } else {
                 DomainVerificationResult()
             }
+            val runParameters = runParametersOperation.getGlobalRunParameters()
 
             try {
                 val mapper = jacksonObjectMapper()
@@ -244,17 +249,50 @@ class ApiWorkflowController(
                     inputs = inputs,
                     outputs = outputs,
                 )
-                storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, constraints)
-                val workflows = apeRequest.getWorkflows(runConfig)
-                val result = if (workflows.size == 0) {
+
+                // Check if the use case configuration does not exceed the allowed run parameters
+                val result: DomainVerificationResult = if (runConfig.solutionMinLength > runParameters.minLength) {
                     DomainVerificationResult(
                         ontologySuccess = true,
                         useCaseSuccess = false,
-                        "No workflows found"
+                        "Use case solution minimum length exceeds the allowed minimum length " +
+                            "(${runConfig.solutionMinLength} vs ${runParameters.minLength})"
                     )
-                } else {
-                    DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true, null)
+                } else if (runConfig.solutionMaxLength > runParameters.maxLength) {
+                    DomainVerificationResult(
+                        ontologySuccess = true,
+                        useCaseSuccess = false,
+                        "Use case solution maximum length exceeds the allowed maximum length " +
+                            "(${runConfig.solutionMaxLength} vs ${runParameters.maxLength})"
+                    )
+                } else if (runConfig.maxSolutionsToReturn > runParameters.solutions) {
+                    DomainVerificationResult(
+                        ontologySuccess = true,
+                        useCaseSuccess = false,
+                        "Use cas max solutions exceeds the allowed max solutions " +
+                            "(${runConfig.maxSolutionsToReturn} vs ${runParameters.maxLength})"
+                    )
+                } else if (runConfig.maxDuration > runParameters.maxDuration) {
+                    DomainVerificationResult(
+                        ontologySuccess = true,
+                        useCaseSuccess = false,
+                        "Use case max duration exceeds the allowed max duration " +
+                            "(${runConfig.maxDuration} vs ${runParameters.maxDuration})"
+                    )
+                } else { // Run the configuration and check requirements for verification
+                    storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, constraints)
+                    val workflows = apeRequest.getWorkflows(runConfig)
+                    if (workflows.size == 0) {
+                        DomainVerificationResult(
+                            ontologySuccess = true,
+                            useCaseSuccess = false,
+                            "No workflows found"
+                        )
+                    } else {
+                        DomainVerificationResult(ontologySuccess = true, useCaseSuccess = true, null)
+                    }
                 }
+
                 domainOperation.saveVerification(DomainVerification(apeRequest.domain.id, result))
                 return result
             } catch (exc: Exception) {

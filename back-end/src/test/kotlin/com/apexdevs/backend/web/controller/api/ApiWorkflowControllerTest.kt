@@ -11,6 +11,7 @@ import com.apexdevs.backend.ape.entity.workflow.InputData
 import com.apexdevs.backend.ape.entity.workflow.Ontology
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
 import com.apexdevs.backend.persistence.DomainOperation
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.UserStatus
@@ -37,6 +38,7 @@ class ApiWorkflowControllerTest() {
     private val storageService = mockk<StorageService>()
     private val userOperation = mockk<UserOperation>()
     private val domainOperation = mockk<DomainOperation>()
+    private val runParametersOperation = mockk<RunParametersOperation>()
     private val apeRequest = mockk<ApeRequest>()
     private val domain = mockk<Domain>()
 
@@ -44,7 +46,8 @@ class ApiWorkflowControllerTest() {
         apeRequestFactory,
         storageService,
         userOperation,
-        domainOperation
+        domainOperation,
+        runParametersOperation,
     )
     private val test = "Test"
     private val id = ObjectId()
