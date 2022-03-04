@@ -8,7 +8,7 @@
 import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { NextRouter, useRouter } from 'next/router';
-import { Button, Card, message, Popconfirm, Result, Typography } from 'antd';
+import { Alert, Button, Card, Col, message, Popconfirm, Result, Row, Typography } from 'antd';
 import DomainEdit from '@components/Domain/DomainEdit/DomainEdit';
 import Domain, { Topic, UserWithAccess } from '@models/Domain';
 import { getSession } from 'next-auth/client';
@@ -148,6 +148,7 @@ function DomainEditPage(props: IDomainEditPageProps) {
   const { userId, domain, topics, notFound, access, isOwner: isOwnerInitial } = props;
   const [isOwner, setIsOwner] = React.useState<boolean>(isOwnerInitial);
   const [verifyTrigger, triggerVerify] = React.useState<string>(null);
+  const [verificationError, setVerificationError] = React.useState<string>(null);
 
   useEffect(() => {
     // Run the verification after the page has loaded
@@ -166,7 +167,7 @@ function DomainEditPage(props: IDomainEditPageProps) {
    * An error occurred during verification. Display the error to the user.
    */
   const onVerifyError = (currentStep: number, error: string) => {
-    message.warning(`[STEP ${currentStep + 1}] ${error}`, 5);
+    setVerificationError(error);
     triggerVerify(null);
   };
 
@@ -189,15 +190,33 @@ function DomainEditPage(props: IDomainEditPageProps) {
                 domain={domain}
                 topics={topics}
                 router={router}
-                onUpdated={() => triggerVerify(domain.id)}
+                onUpdated={() => {
+                  setVerificationError(null);
+                  triggerVerify(domain.id);
+                }}
               />
               <div style={{ marginLeft: 200, marginRight: 200 }}>
                 <Title level={3}>Verification</Title>
-                <DomainVerifier
-                  domainId={verifyTrigger}
-                  onFinish={onVerifyFinish}
-                  onError={onVerifyError}
-                />
+                <Card>
+                  <DomainVerifier
+                    domainId={verifyTrigger}
+                    onFinish={onVerifyFinish}
+                    onError={onVerifyError}
+                  />
+                  {verificationError !== null && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col span={6} />
+                      <Col span={12}>
+                        <Alert
+                          message="Verification error"
+                          description={verificationError}
+                          type="error"
+                          showIcon
+                        />
+                      </Col>
+                    </Row>
+                  )}
+                </Card>
                 {
                   isOwner && (
                     <div>
