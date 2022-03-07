@@ -219,7 +219,7 @@ function DomainEditPage(props: IDomainEditPageProps) {
                 </Card>
                 {
                   isOwner && (
-                    <div>
+                    <div style={{ marginTop: 24 }}>
                       <div>
                         <Title level={3}>Permissions</Title>
                         <AccessManager
@@ -230,7 +230,7 @@ function DomainEditPage(props: IDomainEditPageProps) {
                         />
                       </div>
                       <div style={{ marginTop: 24 }}>
-                        <Title level={2}>Other</Title>
+                        <Title level={3}>Other</Title>
                         <Card>
                           <Popconfirm
                             title={(

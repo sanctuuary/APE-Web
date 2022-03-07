@@ -256,28 +256,28 @@ class ApiWorkflowController(
                         ontologySuccess = true,
                         useCaseSuccess = false,
                         "Use case solution minimum length exceeds the allowed minimum length " +
-                            "(${runConfig.solutionMinLength} vs ${runParameters.minLength})"
+                            "(Use case ${runConfig.solutionMinLength} vs allowed ${runParameters.minLength})"
                     )
                 } else if (runConfig.solutionMaxLength > runParameters.maxLength) {
                     DomainVerificationResult(
                         ontologySuccess = true,
                         useCaseSuccess = false,
                         "Use case solution maximum length exceeds the allowed maximum length " +
-                            "(${runConfig.solutionMaxLength} vs ${runParameters.maxLength})"
+                            "(Use case ${runConfig.solutionMaxLength} vs allowed ${runParameters.maxLength})"
                     )
                 } else if (runConfig.maxSolutionsToReturn > runParameters.solutions) {
                     DomainVerificationResult(
                         ontologySuccess = true,
                         useCaseSuccess = false,
-                        "Use cas max solutions exceeds the allowed max solutions " +
-                            "(${runConfig.maxSolutionsToReturn} vs ${runParameters.maxLength})"
+                        "Use case max solutions exceeds the allowed max solutions " +
+                            "(Use case ${runConfig.maxSolutionsToReturn} vs allowed ${runParameters.solutions})"
                     )
                 } else if (runConfig.maxDuration > runParameters.maxDuration) {
                     DomainVerificationResult(
                         ontologySuccess = true,
                         useCaseSuccess = false,
                         "Use case max duration exceeds the allowed max duration " +
-                            "(${runConfig.maxDuration} vs ${runParameters.maxDuration})"
+                            "(Use case ${runConfig.maxDuration} vs allowed ${runParameters.maxDuration})"
                     )
                 } else { // Run the configuration and check requirements for verification
                     storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, constraints)
