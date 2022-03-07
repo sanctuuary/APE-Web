@@ -9,7 +9,7 @@ import React from 'react';
 import Head from 'next/head';
 import { Button, Typography } from 'antd';
 import DomainList from '@components/Domain/DomainList/DomainList';
-import { DomainInfo } from '@models/Domain';
+import { DomainInfo, DomainWithAccess } from '@models/Domain';
 import { getSession } from 'next-auth/client';
 import styles from './index.module.less';
 
@@ -22,9 +22,9 @@ interface IDomainsPageProps {
   /** Public domains available to all users. */
   publicDomains: DomainInfo[],
   /** Domains owned by the current user (when user is logged in). */
-  ownedDomains: DomainInfo[],
+  ownedDomains: DomainWithAccess[],
   /** Domains shared with the current user (when user is logged in). */
-  sharedDomains: DomainInfo[],
+  sharedDomains: DomainWithAccess[],
   /** Current user's session. */
   session: any,
 }
@@ -127,8 +127,8 @@ export async function getServerSideProps({ req }) {
       publicDomains = data;
     });
 
-  let ownedDomains: DomainInfo[] = [];
-  let sharedDomains: DomainInfo[] = [];
+  let ownedDomains: DomainWithAccess[] = [];
+  let sharedDomains: DomainWithAccess[] = [];
   const session: any = await getSession({ req });
   if (session && session.user) {
     const { user } = session;

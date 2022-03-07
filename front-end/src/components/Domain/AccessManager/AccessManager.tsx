@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Form, Input, message, Modal, Progress, Select, Table, Tooltip } from 'antd';
-import Domain, { Access, UserWithAccess } from '@models/Domain';
+import { DomainDetails, Access, UserWithAccess } from '@models/Domain';
 import UserSearch from '@components/UserSearch/UserSearch';
 import { UserAddOutlined } from '@ant-design/icons';
 import UserInfo from '@models/User';
@@ -14,7 +14,7 @@ const { Option } = Select;
  */
 interface AccessManagerProps {
   /** The domain who's access to manage. */
-  domain: Domain,
+  domain: DomainDetails,
   /** Callback function when the ownership is transferred to another user. */
   onOwnershipTransferred: (newOwner: UserInfo) => void,
 }

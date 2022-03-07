@@ -10,7 +10,7 @@ import { Button, Input, Space, Table, Tag, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { ColumnFilterItem } from 'antd/lib/table/interface';
 import { CheckCircleTwoTone, CloseCircleTwoTone, MinusCircleTwoTone, SearchOutlined } from '@ant-design/icons';
-import Domain, { Access, DomainInfo } from '@models/Domain';
+import Domain, { Access, DomainInfo, DomainWithAccess } from '@models/Domain';
 import styles from './DomainList.module.less';
 
 /**
@@ -18,7 +18,7 @@ import styles from './DomainList.module.less';
  */
 interface IProps {
   /** The domains to display */
-  domains: DomainInfo[],
+  domains: DomainInfo[] | DomainWithAccess[],
   /** Boolean to show edit button */
   edit: boolean,
   /** Boolean to show if visibility column should be shown or not */
@@ -144,7 +144,7 @@ class DomainList extends React.Component<IProps, IState> {
    * and we would get an "Property is used before its initialization" error.
    */
   // eslint-disable-next-line react/sort-comp
-  columns: ColumnsType<DomainInfo> = [
+  columns: ColumnsType<DomainInfo | DomainWithAccess> = [
     {
       title: 'Name',
       dataIndex: 'title',

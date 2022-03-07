@@ -52,7 +52,57 @@ export interface DomainInfo {
   /** Optional access level for the current user. */
   access?: Access,
   /** Domain verification status. */
-  verification?: DomainVerificationResult
+  verification?: DomainVerificationResult,
+}
+
+/**
+ * Domain information with more details when requesting a specific domain from the back-end.
+ *
+ * Used when exploring or editing a domain.
+ */
+export interface DomainDetails {
+  /** The ID of the domain. */
+  id: string,
+  /** The name of the domain. */
+  title: string,
+  /** The description of the domain. */
+  description: string,
+  /** The visibility level of the domain. */
+  visibility: Visibility,
+  /** The topics related to the domain. */
+  topics: string[],
+  /** The ontology prefix IRI. */
+  ontologyPrefixIRI: string,
+  /** The tools taxonomy root. */
+  toolsTaxonomyRoot: string,
+  /** The data dimensions taxonomy root. */
+  dataDimensionsTaxonomyRoot: string[],
+  /** Whether the domain uses strict tool annotations. */
+  strictToolAnnotations: boolean,
+}
+
+/**
+ * Domain with additional access information.
+ *
+ * Used when fetching all domains a certain user has access to.
+ */
+export interface DomainWithAccess {
+  /** The ID of the domain. */
+  id: string,
+  /** The name of the domain. */
+  title: string,
+  /** The description of the domain. */
+  description: string,
+  /** The visibility level of the domain. */
+  visibility: Visibility,
+  /** The topics related to the domain. */
+  topics: string[],
+  /** The ID of the user who's access this is about. */
+  userId: string,
+  /** Access level for the current user. */
+  access: Access,
+  /** Domain verification status. */
+  verification: DomainVerificationResult,
 }
 
 /**

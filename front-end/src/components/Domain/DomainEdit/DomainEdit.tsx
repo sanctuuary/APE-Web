@@ -11,7 +11,7 @@ import { Button, Col, Form, Input, message, Popconfirm, Row, Select, Space, Uplo
 import { DownloadOutlined, InfoOutlined, UploadOutlined } from '@ant-design/icons';
 import { UploadFile } from 'antd/lib/upload/interface';
 import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
-import Domain, { Topic, Visibility } from '@models/Domain';
+import { DomainDetails, Topic, Visibility } from '@models/Domain';
 import { constraintsModal, ontologyModal, runConfigModal, toolAnnotationsModal } from '@components/Domain/Domain';
 import styles from './DomainEdit.module.less';
 
@@ -22,7 +22,7 @@ const { Option } = Select;
  */
 interface IProps {
   /** The domain to edit */
-  domain: Domain,
+  domain: DomainDetails,
   /** The topics that are available to choose from */
   topics: Topic[],
   /** Router used for redirecting after save or cancel */
@@ -312,7 +312,7 @@ class DomainEdit extends React.Component<IProps, IState> {
           wrapperCol={{ span: 14 }}
           initialValues={{
             ...domain,
-            strictToolsAnnotations: domain.strictToolsAnnotations.toString(),
+            strictToolsAnnotations: domain.strictToolAnnotations.toString(),
           }}
           onFinish={this.handleSubmit}
           className={styles['Domain-edit']}

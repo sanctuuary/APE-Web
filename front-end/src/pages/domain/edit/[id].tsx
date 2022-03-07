@@ -10,7 +10,7 @@ import Head from 'next/head';
 import { NextRouter, useRouter } from 'next/router';
 import { Alert, Button, Card, Col, message, Popconfirm, Result, Row, Typography } from 'antd';
 import DomainEdit from '@components/Domain/DomainEdit/DomainEdit';
-import Domain, { Topic, UserWithAccess } from '@models/Domain';
+import { DomainDetails, DomainWithAccess, Topic, UserWithAccess } from '@models/Domain';
 import { getSession } from 'next-auth/client';
 import { fetchTopics } from '@components/Domain/Domain';
 import AccessManager from '@components/Domain/AccessManager/AccessManager';
@@ -25,8 +25,8 @@ const { Title } = Typography;
 interface IDomainEditPageProps {
   /** The ID of the current user. */
   userId: string,
-  /** The ID of the domain to edit */
-  domain: Domain;
+  /** The domain to edit */
+  domain: DomainDetails;
   /** The topics of the domain. */
   topics: Topic[];
   /** Whether the domain was found. */
@@ -59,11 +59,11 @@ async function hasAccess(user, domainID: string): Promise<boolean> {
       }
       return res.json();
     })
-    .then((data: Array<Domain>) => {
+    .then((data: Array<DomainWithAccess>) => {
       if (!data) {
         return false;
       }
-      return data.some((domain: Domain) => domain.id === domainID);
+      return data.some((domain: DomainWithAccess) => domain.id === domainID);
     });
   return access;
 }
@@ -100,7 +100,7 @@ async function checkOwnership(user, domainId: string): Promise<boolean> {
  * @param user The user information, with the sessionid.
  * @param id The ID of the domain to fetch
  */
-async function fetchDomain(user: any, id: string): Promise<Domain | null> {
+async function fetchDomain(user: any, id: string): Promise<DomainDetails | null> {
   const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/${id}/`;
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -122,7 +122,7 @@ async function fetchDomain(user: any, id: string): Promise<Domain | null> {
  * @param domain The domain to delete.
  * @param router The router, used to redirect the user back to the homepage.
  */
-async function deleteDomain(domain: Domain, router: NextRouter) {
+async function deleteDomain(domain: DomainDetails, router: NextRouter) {
   const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/delete/${domain.id}`;
   await fetch(endpoint, {
     method: 'POST',
