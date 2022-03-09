@@ -126,7 +126,7 @@ function CreateDomain(props: CreateDomainPageProps) {
           {verified && (
             <Row style={{ marginTop: 25 }}>
               <Col span={6} push={9}>
-                <Space>
+                <Space style={{ width: '100%', justifyContent: 'center' }}>
                   <Button size="large" href="/">Back to home</Button>
                   <Button size="large" type="primary" href={`/explore/${domainId}`}>Go to domain</Button>
                 </Space>
