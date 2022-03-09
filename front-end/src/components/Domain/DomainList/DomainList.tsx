@@ -10,15 +10,20 @@ import { Button, Input, Space, Table, Tag, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { ColumnFilterItem } from 'antd/lib/table/interface';
 import { CheckCircleTwoTone, CloseCircleTwoTone, MinusCircleTwoTone, SearchOutlined } from '@ant-design/icons';
-import Domain, { Access, DomainInfo, DomainWithAccess } from '@models/Domain';
+import { Access, DomainInfo, DomainWithAccess } from '@models/Domain';
 import styles from './DomainList.module.less';
+
+/**
+ * Domain types accepted by the {@link DomainList} component.
+ */
+type DomainListTypes = DomainInfo | DomainWithAccess;
 
 /**
  * Props for DomainList component.
  */
 interface IProps {
   /** The domains to display */
-  domains: DomainInfo[] | DomainWithAccess[],
+  domains: DomainListTypes[],
   /** Boolean to show edit button */
   edit: boolean,
   /** Boolean to show if visibility column should be shown or not */
@@ -144,7 +149,7 @@ class DomainList extends React.Component<IProps, IState> {
    * and we would get an "Property is used before its initialization" error.
    */
   // eslint-disable-next-line react/sort-comp
-  columns: ColumnsType<DomainInfo | DomainWithAccess> = [
+  columns: ColumnsType<DomainListTypes> = [
     {
       title: 'Name',
       dataIndex: 'title',
@@ -377,7 +382,7 @@ class DomainList extends React.Component<IProps, IState> {
           dataSource={tableData}
           onChange={this.onTableChange}
           expandable={{
-            expandedRowRender: (domain: Domain) => (
+            expandedRowRender: (domain: DomainListTypes) => (
               <p
                 style={{ whiteSpace: 'pre-line' }}
                 data-testid={`description-${domain.id}`}
@@ -385,7 +390,9 @@ class DomainList extends React.Component<IProps, IState> {
                 {domain.description}
               </p>
             ),
-            rowExpandable: (domain: Domain) => domain.description !== undefined,
+            rowExpandable: (domain: DomainListTypes) => (
+              domain.description !== undefined
+            ),
           }}
         />
       </div>

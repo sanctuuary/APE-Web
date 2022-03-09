@@ -7,6 +7,9 @@
 
 /**
  * An APE domain
+ *
+ * @deprecated Has been replaced by the more specific
+ * {@link DomainInfo}, {@link DomainDetails} and {@link DomainWithAccess} types.
  */
 export default interface Domain {
   /** The ID of the domain */
