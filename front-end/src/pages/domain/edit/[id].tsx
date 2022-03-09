@@ -205,8 +205,7 @@ function DomainEditPage(props: IDomainEditPageProps) {
                   />
                   {verificationError !== null && (
                     <Row style={{ marginTop: 10 }}>
-                      <Col span={6} />
-                      <Col span={12}>
+                      <Col span={12} push={6}>
                         <Alert
                           message="Verification error"
                           description={verificationError}

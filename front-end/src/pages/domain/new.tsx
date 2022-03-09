@@ -99,17 +99,26 @@ function CreateDomain(props: CreateDomainPageProps) {
                 onError={onVerifyError}
               />
               {verificationError !== null && (
-                <Row>
-                  <Col span={6} />
-                  <Col span={12}>
-                    <Alert
-                      message="Verification error"
-                      description={verificationError}
-                      type="error"
-                      showIcon
-                    />
-                  </Col>
-                </Row>
+                <div>
+                  <Row>
+                    <Col span={12} push={6}>
+                      <Alert
+                        message="Verification error"
+                        description={verificationError}
+                        type="error"
+                        showIcon
+                      />
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: 10 }}>
+                    <Col span={6} push={9}>
+                      <Space style={{ width: '100%', justifyContent: 'center' }}>
+                        <Button size="large" href="/">Back to home</Button>
+                        <Button size="large" href={`/domain/edit/${domainId}`} type="primary">Edit domain</Button>
+                      </Space>
+                    </Col>
+                  </Row>
+                </div>
               )}
             </Card>
           </div>
