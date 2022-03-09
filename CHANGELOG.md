@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Domain verification. Domains' ontology and core configuration are verified with an empty run, and use cases are verified to run and give at least one workflow result.
+
+### Fixed
+
+- Buttons "Go back home" and "Go to domain" after creating a domain are now properly centered.
+
 ## [1.5.1] - 2021-12-24
 
 ### Changed
