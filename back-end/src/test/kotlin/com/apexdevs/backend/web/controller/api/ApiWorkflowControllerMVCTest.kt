@@ -10,6 +10,7 @@ import com.apexdevs.backend.ape.entity.workflow.InputData
 import com.apexdevs.backend.ape.entity.workflow.Ontology
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
 import com.apexdevs.backend.persistence.DomainOperation
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.TopicOperation
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
@@ -76,6 +77,9 @@ class ApiWorkflowControllerMVCTest(@Autowired val context: WebApplicationContext
 
     @MockkBean
     private lateinit var userOperation: UserOperation
+
+    @MockkBean
+    private lateinit var runParametersOperation: RunParametersOperation
 
     private val mockMvc: MockMvc = MockMvcBuilders.webAppContextSetup(context).apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity()).build()
 
