@@ -10,6 +10,7 @@ import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.collection.DomainCollection
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.DomainAccess
+import com.apexdevs.backend.persistence.database.entity.DomainVerification
 import com.apexdevs.backend.persistence.database.entity.DomainVisibility
 import com.apexdevs.backend.persistence.database.entity.Topic
 import com.apexdevs.backend.persistence.database.entity.UserDomainAccess
@@ -20,7 +21,6 @@ import com.apexdevs.backend.persistence.exception.UserAccessException
 import com.apexdevs.backend.persistence.exception.UserNotFoundException
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
-import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
 import com.apexdevs.backend.web.controller.entity.domain.DomainWithAccessResponse
 import com.apexdevs.backend.web.controller.entity.domain.UserAccessUpload
 import com.apexdevs.backend.web.controller.entity.domain.UserWithAccessResponse
@@ -317,6 +317,7 @@ internal class ApiDomainControllerTest {
         val domainAccess = listOf(DomainAccess.Read)
         val domain = Domain("Test", "Test", "Test", DomainVisibility.Public, "Test", "Test", listOf(), true)
         val userDomainAccess = listOf(UserDomainAccess(mockUser.id, domain.id, DomainAccess.Read))
+        val verification = DomainVerification(domain.id, true, true)
         val expected = mutableListOf(
             DomainWithAccessResponse(
                 domain.id.toHexString(),
@@ -326,7 +327,7 @@ internal class ApiDomainControllerTest {
                 listOf("Test"),
                 id.toHexString(),
                 DomainAccess.Read.toString(),
-                DomainVerificationResult()
+                verification.asResult()
             )
         )
 
@@ -335,6 +336,7 @@ internal class ApiDomainControllerTest {
         every { mockDomainOperation.getTopics(any()) } returns listOf(topic)
         every { topic.name } returns "Test"
         every { mockDomainOperation.getDomain(any()) } returns domain
+        every { mockDomainOperation.getVerification(domain.id) } returns Optional.of(verification)
 
         assertEquals(expected, apiDomainController.getDomainsWithUserAccess(mockSpringUser, id, domainAccess))
     }
@@ -654,5 +656,119 @@ internal class ApiDomainControllerTest {
             apiDomainController.transferOwnership(mockSpringUser, domain.id, user.id)
         }
         assertEquals(HttpStatus.BAD_REQUEST, exc.status)
+    }
+
+    @Test
+    fun `Get verification`() {
+        val domain = Domain(
+            "Test",
+            "Test",
+            "Test",
+            DomainVisibility.Public,
+            "Test",
+            "Test",
+            listOf(),
+            true
+        )
+        val verification = DomainVerification(domain.id, true, true)
+
+        every { mockUserOperation.getByEmail(mockSpringUser.username) } returns mockUser
+        every { mockDomainOperation.getDomain(domain.id) } returns domain
+        every { mockDomainOperation.hasUserAccess(domain, DomainAccess.Read, mockUser.id) } returns true
+        every { mockDomainOperation.getVerification(domain.id) } returns Optional.of(verification)
+
+        assertEquals(verification.asResult(), apiDomainController.getVerification(mockSpringUser, domain.id))
+    }
+
+    @Test
+    fun `Get verification not pre-existent`() {
+        val domain = Domain(
+            "Test",
+            "Test",
+            "Test",
+            DomainVisibility.Public,
+            "Test",
+            "Test",
+            listOf(),
+            true
+        )
+
+        every { mockUserOperation.getByEmail(mockSpringUser.username) } returns mockUser
+        every { mockDomainOperation.getDomain(domain.id) } returns domain
+        every { mockDomainOperation.hasUserAccess(domain, DomainAccess.Read, mockUser.id) } returns true
+        every { mockDomainOperation.getVerification(domain.id) } returns Optional.empty()
+
+        val verification = apiDomainController.getVerification(mockSpringUser, domain.id)
+        assertEquals(null, verification.ontologySuccess)
+        assertEquals(null, verification.useCaseSuccess)
+        assertEquals(null, verification.errorMessage)
+    }
+
+    @Test
+    fun `Get verification user not found`() {
+        val domain = Domain(
+            "Test",
+            "Test",
+            "Test",
+            DomainVisibility.Public,
+            "Test",
+            "Test",
+            listOf(),
+            true
+        )
+
+        every { mockUserOperation.getByEmail(any()) } throws
+            UserNotFoundException(this, "User with email: ${mockSpringUser.username} not found")
+
+        val exc = assertThrows<ResponseStatusException> {
+            apiDomainController.getVerification(mockSpringUser, domain.id)
+        }
+        assertEquals(HttpStatus.BAD_REQUEST, exc.status)
+    }
+
+    @Test
+    fun `Get verification domain not found`() {
+        val domain = Domain(
+            "Test",
+            "Test",
+            "Test",
+            DomainVisibility.Public,
+            "Test",
+            "Test",
+            listOf(),
+            true
+        )
+
+        every { mockUserOperation.getByEmail(mockSpringUser.username) } returns mockUser
+        every { mockDomainOperation.getDomain(domain.id) } throws
+            DomainNotFoundException(this, domain.id, "Requested domain was not found")
+
+        val exc = assertThrows<ResponseStatusException> {
+            apiDomainController.getVerification(mockSpringUser, domain.id)
+        }
+        assertEquals(HttpStatus.NOT_FOUND, exc.status)
+    }
+
+    @Test
+    fun `Get verification no access`() {
+        val domain = Domain(
+            "Test",
+            "Test",
+            "Test",
+            DomainVisibility.Public,
+            "Test",
+            "Test",
+            listOf(),
+            true
+        )
+
+        every { mockUserOperation.getByEmail(mockSpringUser.username) } returns mockUser
+        every { mockDomainOperation.getDomain(domain.id) } returns domain
+        every { mockDomainOperation.hasUserAccess(domain, DomainAccess.Read, mockUser.id) } returns false
+
+        val exc = assertThrows<ResponseStatusException> {
+            apiDomainController.getVerification(mockSpringUser, domain.id)
+        }
+        assertEquals(HttpStatus.FORBIDDEN, exc.status)
     }
 }

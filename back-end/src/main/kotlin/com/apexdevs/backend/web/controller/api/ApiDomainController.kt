@@ -516,6 +516,8 @@ class ApiDomainController(
                     throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
                 is DomainNotFoundException ->
                     throw ResponseStatusException(HttpStatus.NOT_FOUND, exc.message, exc)
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
                 else ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exc.message, exc)
             }
