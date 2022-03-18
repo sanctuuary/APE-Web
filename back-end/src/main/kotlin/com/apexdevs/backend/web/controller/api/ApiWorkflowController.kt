@@ -17,6 +17,7 @@ import com.apexdevs.backend.ape.entity.workflow.dataListFromJSON
 import com.apexdevs.backend.persistence.DomainOperation
 import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.UserOperation
+import com.apexdevs.backend.persistence.database.entity.DomainAccess
 import com.apexdevs.backend.persistence.database.entity.DomainVerification
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
@@ -31,6 +32,7 @@ import org.json.JSONObject
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.User
 import org.springframework.web.bind.annotation.GetMapping
@@ -181,9 +183,22 @@ class ApiWorkflowController(
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/verify/ontology")
-    fun verifyOntology(@AuthenticationPrincipal user: User?, session: HttpSession): DomainVerificationResult {
+    fun verifyOntology(@AuthenticationPrincipal user: User, session: HttpSession): DomainVerificationResult {
         try {
             val apeRequest = apeRequestFactory.getApeRequest(session.id)
+
+            val userResult = userOperation.getByEmail(user.username)
+            val hasAccess = domainOperation.hasUserAccess(apeRequest.domain, DomainAccess.ReadWrite, userResult.id)
+            if (!hasAccess)
+                throw AccessDeniedException("User does not have access to edit the domain")
+
+            val currentVerification = domainOperation.getVerification(apeRequest.domain.id)
+            val current = if (currentVerification.isPresent) {
+                currentVerification.get().asResult()
+            } else {
+                DomainVerificationResult()
+            }
+
             val runConfig = RunConfig(
                 solutionMinLength = 1,
                 solutionMaxLength = 1,
@@ -193,18 +208,23 @@ class ApiWorkflowController(
             storageService.storeConstraint(apeRequest.domain.id, FileTypes.Constraints, emptyList())
             val result: DomainVerificationResult = try {
                 apeRequest.getWorkflows(runConfig)
-                DomainVerificationResult(true, null, null)
+                DomainVerificationResult(true, current.useCaseSuccess, null)
             } catch (exc: SynthesisFlagException) {
                 if (exc.flag == SynthesisFlag.UNSAT) {
                     // No solutions found is considered correct
-                    DomainVerificationResult(true, null, null)
+                    DomainVerificationResult(true, current.useCaseSuccess, null)
                 } else
-                    DomainVerificationResult(false, null, exc.message)
+                    DomainVerificationResult(false, current.useCaseSuccess, exc.message)
             }
             domainOperation.saveVerification(DomainVerification(apeRequest.domain.id, result))
             return result
         } catch (exc: Exception) {
-            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
         }
     }
 
@@ -213,10 +233,15 @@ class ApiWorkflowController(
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/verify/useCase")
-    fun verifyUseCase(@AuthenticationPrincipal user: User?, session: HttpSession): DomainVerificationResult {
+    fun verifyUseCase(@AuthenticationPrincipal user: User, session: HttpSession): DomainVerificationResult {
         try {
-            val userResult = user?.let { userOperation.getByEmail(it.username) }
             val apeRequest = apeRequestFactory.getApeRequest(session.id)
+
+            val userResult = userOperation.getByEmail(user.username)
+            val hasAccess = domainOperation.hasUserAccess(apeRequest.domain, DomainAccess.ReadWrite, userResult.id)
+            if (!hasAccess)
+                throw AccessDeniedException("User does not have access to edit the domain")
+
             val currentVerification = domainOperation.getVerification(apeRequest.domain.id)
             val current = if (currentVerification.isPresent) {
                 currentVerification.get().asResult()
@@ -308,7 +333,12 @@ class ApiWorkflowController(
                 return result
             }
         } catch (exc: Exception) {
-            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            when (exc) {
+                is AccessDeniedException ->
+                    throw ResponseStatusException(HttpStatus.FORBIDDEN, exc.message, exc)
+                else ->
+                    throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
+            }
         }
     }
 
