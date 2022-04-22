@@ -45,3 +45,23 @@ data class Constraint(
         return constraintJSON
     }
 }
+
+/**
+ * Construct a list of Constraint object from JSON data.
+ * @param json The JSON data.
+ * @return A list of Constraint objects constructed from the given JSON data.
+ */
+fun constraintsFromJSON(json: ArrayList<LinkedHashMap<String, Any>>): List<Constraint> {
+    val result = mutableListOf<Constraint>()
+    json.forEach { linkedHashmap ->
+        val id: String = linkedHashmap["constraintid"] as String
+        val parameters = dataListFromJSON(linkedHashmap["parameters"] as ArrayList<LinkedHashMap<String, ArrayList<String>>>)
+        result.add(
+            Constraint(
+                id = id,
+                parameters = parameters,
+            )
+        )
+    }
+    return result
+}

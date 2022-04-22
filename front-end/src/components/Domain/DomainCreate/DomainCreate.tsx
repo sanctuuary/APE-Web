@@ -5,26 +5,33 @@
  * © Copyright Utrecht University (Department of Information and Computing Sciences)
  */
 
-/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import { Select, Form, Result, Button, Input, Upload, message, Col, Row, Space, Popconfirm } from 'antd';
-import { Visibility } from '@models/Domain';
-import { constraintsModal, fetchTopics, ontologyModal, runConfigModal, toolAnnotationsModal } from '@components/Domain/Domain';
-import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
-import { useSession } from 'next-auth/client';
-import { InfoOutlined, UploadOutlined } from '@ant-design/icons';
+import { Select, Form, Button, Input, Upload, message, Col, Row, Space, Popconfirm } from 'antd';
 import { UploadFile } from 'antd/lib/upload/interface';
-import { useRouter } from 'next/router';
+import { InfoOutlined, UploadOutlined } from '@ant-design/icons';
+import { Topic, Visibility } from '@models/Domain';
+import { constraintsModal, ontologyModal, runConfigModal, toolAnnotationsModal } from '@components/Domain/Domain';
+import { validateJSON, validateOWL, onFileChange, ReadMultipleFileContents, RMFCInput } from '@helpers/Files';
 import styles from './DomainCreate.module.less';
 
 const { Option } = Select;
 
 /**
- * The state of DomainCreate
+ * The props of the {@link DomainCreate} component.
+ */
+interface DomainCreateProps {
+  /** All available topics. */
+  topics: Topic[],
+  /** Callback function called when the domain is created. */
+  onCreated?: (domainId: string) => void,
+  /** Callback function called when the domain creation is cancelled. */
+  onCancelled?: () => void,
+}
+
+/**
+ * The state of the {@link DomainCreate} component.
  */
 interface IState {
-  /** The topic of the domain */
-  topics: any[];
   /** The OWL file for the domain */
   ontology: UploadFile<any>[];
   /** The tool annotations JSON file */
@@ -35,45 +42,22 @@ interface IState {
   constraints: UploadFile<any>[];
   /** Whether each of the tooltip modals are visible. */
   visibleModals: { [name: string]: boolean };
+  /** Whether the domain has been created. */
+  created: boolean,
 }
-
-/**
- * Use the session hook in a class component
- * @param Component class component that uses session hook
- * @returns the element to be rendered
- */
-const withSession = (Component: any) => (props) => {
-  const [session, loading] = useSession();
-  const router = useRouter();
-
-  if (loading) {
-    return null;
-  }
-  if (session && session.user) {
-    return <Component router={router} session={session} {...props} />;
-  }
-  return (
-    <Result
-      status="403"
-      title="403 Forbidden"
-      subTitle="You must be logged in to access this page."
-      extra={<Button type="primary" href="/login">Go to login</Button>}
-    />
-  );
-};
 
 /**
  * Form for creating new APE domains.
  */
-class DomainCreate extends React.Component<{router, session}, IState> {
+class DomainCreate extends React.Component<DomainCreateProps, IState> {
   /**
    * Constructor
    * @param props DomainCreate has no props
    */
-  constructor(props) {
+  constructor(props: DomainCreateProps) {
     super(props);
+
     this.state = {
-      topics: [],
       ontology: [],
       toolsAnnotations: [],
       runConfig: [],
@@ -84,28 +68,15 @@ class DomainCreate extends React.Component<{router, session}, IState> {
         run_config: false,
         constraints: false,
       },
+      created: false,
     };
-  }
-
-  componentDidMount() {
-    const { session } = this.props;
-    fetchTopics(session.user).then((topics) => {
-      const tops = topics.map((elem, i) => (
-        <Option
-          key={i.toString()}
-          value={elem.id}
-        >{elem.name}
-        </Option>
-      ));
-      this.setState({ topics: tops });
-    });
   }
 
   /**
    * Handle submit
    */
   handleSubmit = (values) => {
-    const { router } = this.props;
+    const { onCreated } = this.props;
     const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/upload`;
 
     const files: RMFCInput[] = [];
@@ -153,14 +124,19 @@ class DomainCreate extends React.Component<{router, session}, IState> {
         // Print response
         .then((response) => {
           if (response.ok) {
-            router.push('/');
-            return Promise.resolve(message.success('Domain successfully created'));
+            return response.text();
           }
           if (response.status === 413) {
             const limit = process.env.NEXT_PUBLIC_FILE_SIZE_LIMIT;
             return Promise.reject(new Error(`Some files were too large. The maximum file size is ${limit}MB.`));
           }
           return Promise.reject(new Error('Error while trying to create domain'));
+        })
+        .then((data) => {
+          if (onCreated !== null) {
+            this.setState({ created: true });
+            onCreated(data);
+          }
         })
         // Catch and print any errors
         .catch((error: Error) => {
@@ -184,15 +160,15 @@ class DomainCreate extends React.Component<{router, session}, IState> {
    * Render form
    */
   render() {
+    const { topics, onCancelled } = this.props;
     const {
       ontology,
       toolsAnnotations,
-      topics,
       runConfig,
       constraints,
       visibleModals,
+      created,
     } = this.state;
-    const { router } = this.props;
     return (
       <div>
         <Form
@@ -258,7 +234,14 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                   mode="multiple"
                   dropdownMatchSelectWidth={false}
                 >
-                  {topics}
+                  {topics.map((elem, i) => (
+                    <Option
+                      key={i.toString()}
+                      value={elem.id}
+                    >
+                      {elem.name}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item
@@ -416,7 +399,7 @@ class DomainCreate extends React.Component<{router, session}, IState> {
           <Row justify="end">
             <Col pull={3}>
               <Space>
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" htmlType="submit" disabled={created}>
                   Create domain
                 </Button>
                 <Popconfirm
@@ -424,9 +407,9 @@ class DomainCreate extends React.Component<{router, session}, IState> {
                   okText="Yes"
                   cancelText="No"
                   placement="topLeft"
-                  onConfirm={() => router.push('/')}
+                  onConfirm={onCancelled}
                 >
-                  <Button data-testid="cancelButton">Cancel</Button>
+                  <Button data-testid="cancelButton" disabled={created}>Cancel</Button>
                 </Popconfirm>
               </Space>
             </Col>
@@ -453,4 +436,4 @@ class DomainCreate extends React.Component<{router, session}, IState> {
   }
 }
 
-export default withSession(DomainCreate);
+export default DomainCreate;

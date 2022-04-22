@@ -18,6 +18,7 @@ import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainDetails
 import com.apexdevs.backend.web.controller.entity.domain.DomainRequest
 import com.apexdevs.backend.web.controller.entity.domain.DomainUploadRequest
+import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
 import org.bson.types.ObjectId
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
@@ -61,13 +62,20 @@ class DomainController(val storageService: StorageService, val domainOperation: 
                 domainOperation.getTopics(domain).map { topic: Topic -> topicStrings.add(topic.name) }
                 val owner = domainOperation.getOwner(domain.id)
                 val isAdmin = userOperation.userIsAdmin(owner.email)
+                val verification = domainOperation.getVerification(domain.id)
+                val verificationResult: DomainVerificationResult = if (verification.isPresent) {
+                    verification.get().asResult()
+                } else {
+                    DomainVerificationResult()
+                }
                 safeDomains.add(
                     DomainRequest(
                         domain.id.toHexString(),
                         domain.name, topicStrings,
                         domain.description,
                         isAdmin,
-                        owner.displayName
+                        owner.displayName,
+                        verificationResult
                     )
                 )
             }

@@ -7,6 +7,7 @@ package com.apexdevs.backend.persistence
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.database.entity.DomainAccess
 import com.apexdevs.backend.persistence.database.entity.DomainTopic
+import com.apexdevs.backend.persistence.database.entity.DomainVerification
 import com.apexdevs.backend.persistence.database.entity.DomainVisibility
 import com.apexdevs.backend.persistence.database.entity.Topic
 import com.apexdevs.backend.persistence.database.entity.User
@@ -14,6 +15,7 @@ import com.apexdevs.backend.persistence.database.entity.UserDomainAccess
 import com.apexdevs.backend.persistence.database.entity.UserStatus
 import com.apexdevs.backend.persistence.database.repository.DomainRepository
 import com.apexdevs.backend.persistence.database.repository.DomainTopicRepository
+import com.apexdevs.backend.persistence.database.repository.DomainVerificationRepository
 import com.apexdevs.backend.persistence.database.repository.TopicRepository
 import com.apexdevs.backend.persistence.database.repository.UserDomainAccessRepository
 import com.apexdevs.backend.persistence.database.repository.UserRepository
@@ -43,8 +45,16 @@ class DomainOperationTest() {
     private val userDomainAccessRepository = mockk<UserDomainAccessRepository>()
     private val domainTopicRepository = mockk<DomainTopicRepository>()
     private val topicRepository = mockk<TopicRepository>()
+    private val domainVerificationRepository = mockk<DomainVerificationRepository>()
 
-    private fun getDomainOperation() = DomainOperation(domainRepository, userRepository, userDomainAccessRepository, domainTopicRepository, topicRepository)
+    private fun getDomainOperation() = DomainOperation(
+        domainRepository,
+        userRepository,
+        userDomainAccessRepository,
+        domainTopicRepository,
+        topicRepository,
+        domainVerificationRepository
+    )
 
     /**
      * Method: getDomainDetails
@@ -750,6 +760,93 @@ class DomainOperationTest() {
         val result = domainOperation.getUsersByDomainAndAccess(domain.id, listOf(DomainAccess.Owner, DomainAccess.ReadWrite))
         assertEquals(2, result.size)
         assert(result.containsAll(listOf(access1, access2)))
+    }
+
+    @Test
+    fun `Assert getVerification existing domain`() {
+        val domain = getTestDomain()
+        val verification = DomainVerification(domain.id, true, true)
+        val domainOperation = getDomainOperation()
+
+        every { domainRepository.findById(domain.id) } returns
+            Optional.of(domain)
+
+        every { domainVerificationRepository.findByDomainId(domain.id) } returns
+            Optional.of(verification)
+
+        val result = domainOperation.getVerification(domain.id)
+        assertEquals(verification, result.get())
+    }
+
+    @Test
+    fun `Assert getVerification domain does not exist`() {
+        val domain = getTestDomain()
+        val domainOperation = getDomainOperation()
+
+        every { domainRepository.findById(domain.id) } returns
+            Optional.empty()
+
+        assertThrows<DomainNotFoundException> {
+            domainOperation.getDomain(domain.id)
+        }
+    }
+
+    @Test
+    fun `Assert saveVerification new`() {
+        val domainOperation = getDomainOperation()
+        val domain = getTestDomain()
+        val verification = DomainVerification(domain.id, true, true)
+
+        every { domainRepository.findById(domain.id) } returns
+            Optional.of(domain)
+
+        every { domainVerificationRepository.findByDomainId(domain.id) } returns
+            Optional.empty()
+
+        val verificationSlot = slot<DomainVerification>()
+        every { domainVerificationRepository.save(capture(verificationSlot)) } answers
+            { verificationSlot.captured }
+
+        domainOperation.saveVerification(verification)
+
+        assert(verificationSlot.isCaptured)
+        assertEquals(verification, verificationSlot.captured)
+    }
+
+    @Test
+    fun `Assert saveVerification update`() {
+        val domainOperation = getDomainOperation()
+        val domain = getTestDomain()
+        val verification = DomainVerification(domain.id, true, true)
+
+        every { domainRepository.findById(domain.id) } returns
+            Optional.of(domain)
+
+        every { domainVerificationRepository.findByDomainId(domain.id) } returns
+            Optional.of(verification)
+
+        val verificationSlot = slot<DomainVerification>()
+        every { domainVerificationRepository.save(capture(verificationSlot)) } answers
+            { verificationSlot.captured }
+
+        domainOperation.saveVerification(verification)
+
+        assert(verificationSlot.isCaptured)
+        assertEquals(verification, verificationSlot.captured)
+    }
+
+    @Test
+    fun `Assert saveVerification domain does not exist`() {
+        val domainOperation = getDomainOperation()
+        val domain = getTestDomain()
+        val verification = DomainVerification(domain.id, true, true)
+
+        every { domainRepository.findById(domain.id) } returns
+            Optional.empty()
+
+        assertThrows<DomainNotFoundException> {
+            domainOperation.saveVerification(verification)
+        }
     }
 
     /**

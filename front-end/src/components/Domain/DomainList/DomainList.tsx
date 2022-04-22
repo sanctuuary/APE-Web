@@ -6,19 +6,24 @@
  */
 
 import React from 'react';
-import { Button, Input, Space, Table, Tag } from 'antd';
+import { Button, Input, Space, Table, Tag, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { ColumnFilterItem } from 'antd/lib/table/interface';
-import { SearchOutlined } from '@ant-design/icons';
-import Domain, { Access, DomainInfo } from '@models/Domain';
+import { CheckCircleTwoTone, CloseCircleTwoTone, MinusCircleTwoTone, SearchOutlined } from '@ant-design/icons';
+import { Access, DomainInfo, DomainWithAccess } from '@models/Domain';
 import styles from './DomainList.module.less';
+
+/**
+ * Domain types accepted by the {@link DomainList} component.
+ */
+type DomainListTypes = DomainInfo | DomainWithAccess;
 
 /**
  * Props for DomainList component.
  */
 interface IProps {
   /** The domains to display */
-  domains: DomainInfo[],
+  domains: DomainListTypes[],
   /** Boolean to show edit button */
   edit: boolean,
   /** Boolean to show if visibility column should be shown or not */
@@ -144,7 +149,7 @@ class DomainList extends React.Component<IProps, IState> {
    * and we would get an "Property is used before its initialization" error.
    */
   // eslint-disable-next-line react/sort-comp
-  columns: ColumnsType<DomainInfo> = [
+  columns: ColumnsType<DomainListTypes> = [
     {
       title: 'Name',
       dataIndex: 'title',
@@ -225,6 +230,56 @@ class DomainList extends React.Component<IProps, IState> {
         // Check if all tags were found
         const containsAll = contains.every((x) => x === true);
         return containsAll;
+      },
+    },
+    {
+      title: 'Verified',
+      dataIndex: 'verification',
+      key: 'verification',
+      width: 100,
+      render: (_, domain) => {
+        /**
+         * Get the right icon based on the verification status.
+         * @param status The verification status.
+         * @returns An icon representing the verification status.
+         */
+        const getIcon = (status?: boolean) => {
+          switch (status) {
+            case null:
+              return <MinusCircleTwoTone twoToneColor="#d3d3d3" />;
+            case true:
+              return <CheckCircleTwoTone twoToneColor="#52c41a" />;
+            case false:
+              return <CloseCircleTwoTone twoToneColor="#eb2f96" />;
+            default:
+              return <MinusCircleTwoTone twoToneColor="#d3d3d3" />;
+          }
+        };
+        if (domain.verification === undefined) {
+          // Domain verification was not included, show as if no verification was run
+          return (
+            <Space>
+              <Tooltip title="Ontology">
+                <MinusCircleTwoTone twoToneColor="#999999" />
+              </Tooltip>
+              <Tooltip title="Use case">
+                <MinusCircleTwoTone twoToneColor="#999999" />
+              </Tooltip>
+            </Space>
+          );
+        }
+
+        // Show verification status
+        return (
+          <Space>
+            <Tooltip title="Ontology">
+              {getIcon(domain.verification.ontologySuccess)}
+            </Tooltip>
+            <Tooltip title="Use case">
+              {getIcon(domain.verification.useCaseSuccess)}
+            </Tooltip>
+          </Space>
+        );
       },
     },
   ];
@@ -327,7 +382,7 @@ class DomainList extends React.Component<IProps, IState> {
           dataSource={tableData}
           onChange={this.onTableChange}
           expandable={{
-            expandedRowRender: (domain: Domain) => (
+            expandedRowRender: (domain: DomainListTypes) => (
               <p
                 style={{ whiteSpace: 'pre-line' }}
                 data-testid={`description-${domain.id}`}
@@ -335,7 +390,9 @@ class DomainList extends React.Component<IProps, IState> {
                 {domain.description}
               </p>
             ),
-            rowExpandable: (domain: Domain) => domain.description !== undefined,
+            rowExpandable: (domain: DomainListTypes) => (
+              domain.description !== undefined
+            ),
           }}
         />
       </div>

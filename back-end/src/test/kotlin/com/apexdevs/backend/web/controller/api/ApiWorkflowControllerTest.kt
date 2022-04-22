@@ -10,12 +10,18 @@ import com.apexdevs.backend.ape.entity.workflow.Constraint
 import com.apexdevs.backend.ape.entity.workflow.InputData
 import com.apexdevs.backend.ape.entity.workflow.Ontology
 import com.apexdevs.backend.ape.entity.workflow.WorkflowOutput
+import com.apexdevs.backend.persistence.DomainOperation
+import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.UserOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
+import com.apexdevs.backend.persistence.database.entity.DomainAccess
+import com.apexdevs.backend.persistence.database.entity.DomainVerification
 import com.apexdevs.backend.persistence.database.entity.UserStatus
+import com.apexdevs.backend.persistence.exception.SynthesisFlagException
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import io.mockk.every
 import io.mockk.mockk
+import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -27,6 +33,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.User
 import org.springframework.web.server.ResponseStatusException
+import java.util.Optional
 import javax.servlet.http.HttpSession
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -35,13 +42,17 @@ class ApiWorkflowControllerTest() {
     private val apeRequestFactory = mockk<ApeRequestFactory>(relaxed = true)
     private val storageService = mockk<StorageService>()
     private val userOperation = mockk<UserOperation>()
+    private val domainOperation = mockk<DomainOperation>()
+    private val runParametersOperation = mockk<RunParametersOperation>()
     private val apeRequest = mockk<ApeRequest>()
     private val domain = mockk<Domain>()
 
     private val apiWorkflowController = ApiWorkflowController(
         apeRequestFactory,
         storageService,
-        userOperation
+        userOperation,
+        domainOperation,
+        runParametersOperation,
     )
     private val test = "Test"
     private val id = ObjectId()
@@ -187,5 +198,80 @@ class ApiWorkflowControllerTest() {
         val ontology = Ontology(mutableListOf())
         every { apeRequest.toolsOntology } returns ontology
         assertEquals(ontology, apiWorkflowController.getToolData(session))
+    }
+
+    @Test
+    fun verifyOntology() {
+        val mockUser = mockk<User>()
+        val mockUserResult = mockk<com.apexdevs.backend.persistence.database.entity.User>()
+        val output = mutableListOf<WorkflowOutput>()
+
+        every { mockUser.username } returns "Test"
+        every { userOperation.getByEmail("Test") } returns mockUserResult
+        every { domainOperation.hasUserAccess(domain, DomainAccess.ReadWrite, mockUserResult.id) } returns true
+        every { domainOperation.getVerification(domain.id) } returns Optional.empty()
+        every { storageService.storeConstraint(any(), any(), any()) } returns true
+        every { apeRequest.getWorkflows(any()) } returns output
+        every { domainOperation.saveVerification(any()) } returns Unit
+
+        val result = apiWorkflowController.verifyOntology(mockUser, session)
+        assertEquals(true, result.ontologySuccess)
+        assertEquals(null, result.useCaseSuccess)
+        assertEquals(null, result.errorMessage)
+    }
+
+    @Test
+    fun `verifyOntology existing verification`() {
+        val mockUser = mockk<User>()
+        val mockUserResult = mockk<com.apexdevs.backend.persistence.database.entity.User>()
+        val output = mutableListOf<WorkflowOutput>()
+        val verification = DomainVerification(domain.id, true, true)
+
+        every { mockUser.username } returns "Test"
+        every { userOperation.getByEmail("Test") } returns mockUserResult
+        every { domainOperation.hasUserAccess(domain, DomainAccess.ReadWrite, mockUserResult.id) } returns true
+        every { domainOperation.getVerification(domain.id) } returns Optional.of(verification)
+        every { storageService.storeConstraint(any(), any(), any()) } returns true
+        every { apeRequest.getWorkflows(any()) } returns output
+        every { domainOperation.saveVerification(any()) } returns Unit
+
+        val result = apiWorkflowController.verifyOntology(mockUser, session)
+        assertEquals(true, result.ontologySuccess)
+        assertEquals(true, result.useCaseSuccess)
+        assertEquals(null, result.errorMessage)
+    }
+
+    @Test
+    fun `verifyOntology something wrong during synthesis`() {
+        val mockUser = mockk<User>()
+        val mockUserResult = mockk<com.apexdevs.backend.persistence.database.entity.User>()
+
+        every { mockUser.username } returns "Test"
+        every { userOperation.getByEmail("Test") } returns mockUserResult
+        every { domainOperation.hasUserAccess(domain, DomainAccess.ReadWrite, mockUserResult.id) } returns true
+        every { domainOperation.getVerification(domain.id) } returns Optional.empty()
+        every { storageService.storeConstraint(any(), any(), any()) } returns true
+        every { apeRequest.getWorkflows(any()) } throws SynthesisFlagException(this, SynthesisFlag.UNKNOWN)
+        every { domainOperation.saveVerification(any()) } returns Unit
+
+        val result = apiWorkflowController.verifyOntology(mockUser, session)
+        assertEquals(false, result.ontologySuccess)
+        assertEquals(null, result.useCaseSuccess)
+        result.errorMessage?.let { assert(it.isNotEmpty()) }
+    }
+
+    @Test
+    fun `verifyOntology no access`() {
+        val mockUser = mockk<User>()
+        val mockUserResult = mockk<com.apexdevs.backend.persistence.database.entity.User>()
+
+        every { mockUser.username } returns "Test"
+        every { userOperation.getByEmail("Test") } returns mockUserResult
+        every { domainOperation.hasUserAccess(domain, DomainAccess.ReadWrite, mockUserResult.id) } returns false
+
+        val exception = assertThrows<ResponseStatusException> {
+            apiWorkflowController.verifyOntology(mockUser, session)
+        }
+        assertEquals(HttpStatus.FORBIDDEN, exception.status)
     }
 }

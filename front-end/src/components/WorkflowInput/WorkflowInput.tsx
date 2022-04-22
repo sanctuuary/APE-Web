@@ -29,7 +29,7 @@ import ConstraintSketcher, { Sketch } from '@components/WorkflowInput/Constraint
 import { translateSketch } from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Config } from '@models/Configuration/Config';
 import { FormInstance } from 'antd/lib/form';
-import Domain from '@models/Domain';
+import { DomainDetails } from '@models/Domain';
 import { clamp } from '@helpers/Math';
 import styles from './WorkflowInput.module.less';
 
@@ -38,7 +38,7 @@ const { Title } = Typography;
 /** The props for the {@link WorkflowInput} component */
 interface WorkflowInputProps {
   /** The domain that is being explored. */
-  domain: Domain,
+  domain: DomainDetails,
 
   /**
    * The onRun function that passes the parameters through to
