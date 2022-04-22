@@ -12,7 +12,7 @@ import Explore from '@components/Explore/Explore';
 import { Ontology, ConstraintType, DataType, OntologyNode, RunOptions } from '@models/workflow/Workflow';
 import WorkflowData from '@models/workflow/WorkflowVisualizerData';
 import WorkflowInput from '@components/WorkflowInput/WorkflowInput';
-import Domain from '@models/Domain';
+import { DomainDetails } from '@models/Domain';
 import fetchWithRedirect from '@helpers/FetchWithRedirect';
 import styles from '@pages/app.module.less';
 import { Config } from '@models/Configuration/Config';
@@ -24,7 +24,7 @@ import { getSession } from 'next-auth/client';
  */
 interface IExplorePageProps {
   /** The domain to explore */
-  domain: Domain | null,
+  domain: DomainDetails | null,
   /** The run parameters limits from the back-end */
   runParametersLimits: RunOptions,
 }

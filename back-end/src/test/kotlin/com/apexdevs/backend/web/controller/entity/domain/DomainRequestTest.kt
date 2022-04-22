@@ -13,7 +13,16 @@ internal class DomainRequestTest {
     private val test = "Test"
     private val topicList = listOf(test)
     private val ownerName = "TestUser"
-    private val domainRequest = DomainRequest(ObjectId.get().toHexString(), test, topicList, test, false, ownerName)
+    private val domainVerificationResult = DomainVerificationResult(true, true, null)
+    private val domainRequest = DomainRequest(
+        ObjectId.get().toHexString(),
+        test,
+        topicList,
+        test,
+        false,
+        ownerName,
+        domainVerificationResult,
+    )
 
     @Test
     fun getTitle() {
@@ -23,5 +32,10 @@ internal class DomainRequestTest {
     @Test
     fun getTopics() {
         assertEquals(topicList, domainRequest.topics)
+    }
+
+    @Test
+    fun getVerification() {
+        assertEquals(domainVerificationResult, domainRequest.verification)
     }
 }

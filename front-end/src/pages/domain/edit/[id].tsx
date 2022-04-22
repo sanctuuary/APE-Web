@@ -5,15 +5,16 @@
  * © Copyright Utrecht University (Department of Information and Computing Sciences)
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Head from 'next/head';
 import { NextRouter, useRouter } from 'next/router';
-import { Button, Card, message, Popconfirm, Result, Typography } from 'antd';
+import { Alert, Button, Card, Col, message, Popconfirm, Result, Row, Typography } from 'antd';
 import DomainEdit from '@components/Domain/DomainEdit/DomainEdit';
-import Domain, { Topic, UserWithAccess } from '@models/Domain';
+import { DomainDetails, DomainWithAccess, Topic, UserWithAccess } from '@models/Domain';
 import { getSession } from 'next-auth/client';
 import { fetchTopics } from '@components/Domain/Domain';
 import AccessManager from '@components/Domain/AccessManager/AccessManager';
+import DomainVerifier from '@components/Domain/DomainVerifier';
 import styles from './[id].module.less';
 
 const { Title } = Typography;
@@ -24,8 +25,8 @@ const { Title } = Typography;
 interface IDomainEditPageProps {
   /** The ID of the current user. */
   userId: string,
-  /** The ID of the domain to edit */
-  domain: Domain;
+  /** The domain to edit */
+  domain: DomainDetails;
   /** The topics of the domain. */
   topics: Topic[];
   /** Whether the domain was found. */
@@ -58,11 +59,11 @@ async function hasAccess(user, domainID: string): Promise<boolean> {
       }
       return res.json();
     })
-    .then((data: Array<Domain>) => {
+    .then((data: Array<DomainWithAccess>) => {
       if (!data) {
         return false;
       }
-      return data.some((domain: Domain) => domain.id === domainID);
+      return data.some((domain: DomainWithAccess) => domain.id === domainID);
     });
   return access;
 }
@@ -99,7 +100,7 @@ async function checkOwnership(user, domainId: string): Promise<boolean> {
  * @param user The user information, with the sessionid.
  * @param id The ID of the domain to fetch
  */
-async function fetchDomain(user: any, id: string): Promise<Domain | null> {
+async function fetchDomain(user: any, id: string): Promise<DomainDetails | null> {
   const endpoint = `${process.env.NEXT_PUBLIC_BASE_URL_NODE}/domain/${id}/`;
   const response = await fetch(endpoint, {
     method: 'GET',
@@ -121,7 +122,7 @@ async function fetchDomain(user: any, id: string): Promise<Domain | null> {
  * @param domain The domain to delete.
  * @param router The router, used to redirect the user back to the homepage.
  */
-async function deleteDomain(domain: Domain, router: NextRouter) {
+async function deleteDomain(domain: DomainDetails, router: NextRouter) {
   const endpoint = `${process.env.NEXT_PUBLIC_FE_URL}/api/domain/delete/${domain.id}`;
   await fetch(endpoint, {
     method: 'POST',
@@ -146,6 +147,29 @@ function DomainEditPage(props: IDomainEditPageProps) {
   const router = useRouter();
   const { userId, domain, topics, notFound, access, isOwner: isOwnerInitial } = props;
   const [isOwner, setIsOwner] = React.useState<boolean>(isOwnerInitial);
+  const [verifyTrigger, triggerVerify] = React.useState<string>(null);
+  const [verificationError, setVerificationError] = React.useState<string>(null);
+
+  useEffect(() => {
+    // Run the verification after the page has loaded
+    triggerVerify(domain.id);
+  }, []);
+
+  /**
+   * Verification is done. Act according to the results.
+   */
+  const onVerifyFinish = () => {
+    message.success('Domain verified');
+    triggerVerify(null);
+  };
+
+  /**
+   * An error occurred during verification. Display the error to the user.
+   */
+  const onVerifyError = (currentStep: number, error: string) => {
+    setVerificationError(error);
+    triggerVerify(null);
+  };
 
   return (
     <div className={styles.sideMargins}>
@@ -158,47 +182,79 @@ function DomainEditPage(props: IDomainEditPageProps) {
             <Head>
               <title>Edit {domain.title} | APE</title>
             </Head>
-            <Title level={2}>Domain</Title>
-            <DomainEdit
-              domain={domain}
-              topics={topics}
-              router={router}
-            />
-            {
-              isOwner && (
-                <div>
-                  <div>
-                    <Title level={2}>Permissions</Title>
-                    <AccessManager
-                      domain={domain}
-                      onOwnershipTransferred={(newOwner) => setIsOwner(newOwner.userId === userId)}
-                    />
-                  </div>
-                  <div style={{ marginTop: 24 }}>
-                    <Title level={2}>Other</Title>
-                    <Card>
-                      <Popconfirm
-                        title={(
-                          <div>
-                            <div>
-                              You are about to delete the domain &quot;{domain.title}&quot;.
-                            </div>
-                            <div>
-                              This is permanent and <strong>can not be undone</strong>.
-                              Are you sure?
-                            </div>
-                          </div>
-                        )}
-                        onConfirm={() => deleteDomain(domain, router)}
-                        placement="topRight"
-                      >
-                        <Button danger>Delete domain</Button>
-                      </Popconfirm>
-                    </Card>
-                  </div>
-                </div>
-              )
-            }
+            <div className={styles.sideMargins}>
+              <div style={{ marginLeft: 200, marginRight: 200 }}>
+                <Title level={2}>Domain</Title>
+              </div>
+              <DomainEdit
+                domain={domain}
+                topics={topics}
+                router={router}
+                onUpdated={() => {
+                  setVerificationError(null);
+                  triggerVerify(domain.id);
+                }}
+              />
+              <div style={{ marginLeft: 200, marginRight: 200 }}>
+                <Title level={3}>Verification</Title>
+                <Card>
+                  <DomainVerifier
+                    domainId={verifyTrigger}
+                    onFinish={onVerifyFinish}
+                    onError={onVerifyError}
+                  />
+                  {verificationError !== null && (
+                    <Row style={{ marginTop: 10 }}>
+                      <Col span={12} push={6}>
+                        <Alert
+                          message="Verification error"
+                          description={verificationError}
+                          type="error"
+                          showIcon
+                        />
+                      </Col>
+                    </Row>
+                  )}
+                </Card>
+                {
+                  isOwner && (
+                    <div style={{ marginTop: 24 }}>
+                      <div>
+                        <Title level={3}>Permissions</Title>
+                        <AccessManager
+                          domain={domain}
+                          onOwnershipTransferred={
+                            (newOwner) => setIsOwner(newOwner.userId === userId)
+                          }
+                        />
+                      </div>
+                      <div style={{ marginTop: 24 }}>
+                        <Title level={3}>Other</Title>
+                        <Card>
+                          <Popconfirm
+                            title={(
+                              <div>
+                                <div>
+                                  You are about to delete the domain &quot;{domain.title}&quot;.
+                                </div>
+                                <div>
+                                  This is permanent and <strong>can not be undone</strong>.
+                                  Are you sure?
+                                </div>
+                              </div>
+                            )}
+                            onConfirm={() => deleteDomain(domain, router)}
+                            placement="topRight"
+                          >
+                            <Button danger>Delete domain</Button>
+                          </Popconfirm>
+                        </Card>
+                      </div>
+                    </div>
+                  )
+                }
+              </div>
+            </div>
           </div>
         )
       }

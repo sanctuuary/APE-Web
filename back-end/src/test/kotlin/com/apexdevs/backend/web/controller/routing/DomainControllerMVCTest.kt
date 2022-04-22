@@ -18,6 +18,7 @@ import com.apexdevs.backend.persistence.exception.DomainNotFoundException
 import com.apexdevs.backend.persistence.filesystem.DomainFileService
 import com.apexdevs.backend.web.controller.entity.domain.DomainDetails
 import com.apexdevs.backend.web.controller.entity.domain.DomainRequest
+import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
 import com.apexdevs.backend.web.security.SecurityMVCTestConfig
 import com.apexdevs.backend.web.security.SecurityTestConfig
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -233,7 +234,15 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         every { domain.id.toHexString() } returns "testId"
 
-        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, false, user.displayName)
+        val domainRequest = DomainRequest(
+            domain.id.toHexString(),
+            t,
+            listOf(t),
+            t,
+            false,
+            user.displayName,
+            DomainVerificationResult()
+        )
 
         every { domainCollection.getPublicDomains() } returns listOf(domain)
         every { domainOperation.getTopics(any()) } returns listOf(Topic(t))
@@ -256,7 +265,15 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         every { domain.id.toHexString() } returns "testId"
 
-        val domainRequest = DomainRequest(domain.id.toHexString(), t, listOf(t), t, true, user.displayName)
+        val domainRequest = DomainRequest(
+            domain.id.toHexString(),
+            t,
+            listOf(t),
+            t,
+            true,
+            user.displayName,
+            DomainVerificationResult()
+        )
 
         every { domainCollection.getPublicDomains() } returns listOf(domain)
         every { domainOperation.getTopics(any()) } returns listOf(Topic(t))
