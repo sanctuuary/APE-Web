@@ -40,7 +40,7 @@ class TopicControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/topic/") {
         }.andExpect {
-            status { isInternalServerError }
+            status { isInternalServerError() }
         }
     }
 }

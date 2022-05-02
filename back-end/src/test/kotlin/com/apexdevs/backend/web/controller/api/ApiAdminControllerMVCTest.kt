@@ -70,7 +70,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -86,7 +86,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -102,7 +102,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isBadRequest }
+            status { isBadRequest() }
         }
     }
 
@@ -116,7 +116,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -132,7 +132,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -143,7 +143,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
         every { userOperation.getPendingRequests() } returns emptyList()
 
         mockMvc.get("/api/admin/pending-requests").andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -154,7 +154,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
         every { userOperation.getPendingRequests() } returns emptyList()
 
         mockMvc.get("/api/admin/pending-requests").andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -166,7 +166,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
         every { userOperation.getByEmail(any()) } throws UserNotFoundException(this, "Test")
 
         mockMvc.get("/api/admin/pending-requests").andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 

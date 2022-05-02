@@ -122,7 +122,7 @@ class SecurityHttpConfig(val userDetailsService: UserDetailsService, val passwor
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("*")
+        configuration.allowedOriginPatterns = listOf("*")
         configuration.allowedMethods = listOf(
             "HEAD",
             "GET", "POST", "PUT", "DELETE", "PATCH"

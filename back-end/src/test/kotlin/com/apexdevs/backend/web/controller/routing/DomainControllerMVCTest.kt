@@ -70,7 +70,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
         mockMvc.get("/domain/") {
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -92,7 +92,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
         mockMvc.get("/domain/$id") {
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { json(expected) }
         }
     }
@@ -107,7 +107,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
             param("title", "test")
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -122,7 +122,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/domain/$id") {
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -139,12 +139,12 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/domain/$id1") {
         }.andExpect {
-            status { isUnauthorized }
+            status { isUnauthorized() }
         }
 
         mockMvc.get("/domain/$id2") {
         }.andExpect {
-            status { isUnauthorized }
+            status { isUnauthorized() }
         }
     }
 
@@ -163,12 +163,12 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/domain/$id1") {
         }.andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
 
         mockMvc.get("/domain/$id2") {
         }.andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -183,7 +183,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.patch("/domain/$id") {
         }.andExpect {
-            status { isInternalServerError }
+            status { isInternalServerError() }
         }
     }
 
@@ -198,7 +198,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/domain/$id") {
         }.andExpect {
-            status { isInternalServerError }
+            status { isInternalServerError() }
         }
     }
 
@@ -212,7 +212,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/domain/$id") {
         }.andExpect {
-            status { isNotFound }
+            status { isNotFound() }
         }
     }
 
@@ -223,7 +223,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/domain/") {
         }.andExpect {
-            status { isInternalServerError }
+            status { isInternalServerError() }
         }
     }
 
@@ -253,7 +253,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
         mockMvc.get("/domain/") {
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { json(expected) }
         }
     }
@@ -284,7 +284,7 @@ class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
         mockMvc.get("/domain/") {
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { json(expected) }
         }
     }

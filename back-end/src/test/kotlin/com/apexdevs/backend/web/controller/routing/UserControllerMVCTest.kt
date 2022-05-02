@@ -57,7 +57,7 @@ class UserControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/user/$userId") {
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -76,7 +76,7 @@ class UserControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/user/$otherUser") {
         }.andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -94,7 +94,7 @@ class UserControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/user/$userId") {
         }.andExpect {
-            status { isNotFound }
+            status { isNotFound() }
         }
     }
 
@@ -112,7 +112,7 @@ class UserControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/user/$userId") {
         }.andExpect {
-            status { isBadRequest }
+            status { isBadRequest() }
         }
     }
 
@@ -125,7 +125,7 @@ class UserControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/user/$id") {
         }.andExpect {
-            status { isInternalServerError }
+            status { isInternalServerError() }
         }
     }
 

@@ -44,7 +44,7 @@ class ApiUserControllerMVCTest(@Autowired val context: WebApplicationContext) {
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isCreated }
+            status { isCreated() }
         }
     }
 }

@@ -110,7 +110,7 @@ class ApiWorkflowControllerMVCTest(@Autowired val context: WebApplicationContext
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isBadRequest }
+            status { isBadRequest() }
         }
     }
 
@@ -122,7 +122,7 @@ class ApiWorkflowControllerMVCTest(@Autowired val context: WebApplicationContext
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { json(output.toString()) }
         }
     }
@@ -133,7 +133,7 @@ class ApiWorkflowControllerMVCTest(@Autowired val context: WebApplicationContext
         val responseJson = ow.writeValueAsString(ontology)
         mockMvc.get("/api/workflow/data") {
         }.andExpect {
-            status { isOk }
+            status { isOk() }
             content { json(responseJson) }
         }
     }

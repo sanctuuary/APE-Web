@@ -95,7 +95,7 @@ class ApiDomainControllerMVCTest(@Autowired val context: WebApplicationContext, 
             file(useCaseConstraints)
         }.andExpect {
             // check if result is what we wanted
-            status { isCreated }
+            status { isCreated() }
         }.andReturn()
 
         // assert that returned domain id is valid
@@ -117,7 +117,7 @@ class ApiDomainControllerMVCTest(@Autowired val context: WebApplicationContext, 
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
             // check if result is what we wanted
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -139,7 +139,7 @@ class ApiDomainControllerMVCTest(@Autowired val context: WebApplicationContext, 
             file(mockToolsAnnotation)
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { isBadRequest }
+            status { isBadRequest() }
         }
     }
 

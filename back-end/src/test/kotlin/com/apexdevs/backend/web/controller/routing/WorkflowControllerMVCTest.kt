@@ -78,7 +78,7 @@ class WorkflowControllerMVCTest(@Autowired val context: WebApplicationContext) {
         mockMvc.get("/workflow/$id") {
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -90,7 +90,7 @@ class WorkflowControllerMVCTest(@Autowired val context: WebApplicationContext) {
         mockMvc.get("/workflow/$badId") {
             contentType = MediaType.APPLICATION_JSON
         }.andExpect {
-            status { isBadRequest }
+            status { isBadRequest() }
         }
     }
 
@@ -104,7 +104,7 @@ class WorkflowControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/workflow/$id") {
         }.andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -117,7 +117,7 @@ class WorkflowControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/workflow/$id") {
         }.andExpect {
-            status { isUnauthorized }
+            status { isUnauthorized() }
         }
     }
 
@@ -129,7 +129,7 @@ class WorkflowControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/workflow/$id") {
         }.andExpect {
-            status { isBadRequest }
+            status { isBadRequest() }
         }
     }
 
@@ -140,7 +140,7 @@ class WorkflowControllerMVCTest(@Autowired val context: WebApplicationContext) {
 
         mockMvc.get("/workflow/$id") {
         }.andExpect {
-            status { isInternalServerError }
+            status { isInternalServerError() }
         }
     }
 }
