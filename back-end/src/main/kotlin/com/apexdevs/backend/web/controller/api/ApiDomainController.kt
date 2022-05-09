@@ -148,7 +148,7 @@ class ApiDomainController(
             val userResult = userOperation.getByEmail(user.username)
 
             // check if the domain exists
-            val domain = domainOperation.getDomain(domainId)
+            domainOperation.getDomain(domainId)
 
             // check if the user is the owner of the domain
             val owner = domainOperation.getOwner(domainId)
