@@ -13,6 +13,7 @@ import io.mockk.every
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -24,7 +25,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [TopicController::class, SecurityMVCTestConfig::class, SecurityTestConfig::class])
+@ContextConfiguration(
+    classes = [TopicController::class, SecurityMVCTestConfig::class, SecurityTestConfig::class],
+    initializers = [ConfigDataApplicationContextInitializer::class]
+)
 @WebAppConfiguration
 class TopicControllerMVCTest(@Autowired val context: WebApplicationContext) {
     @MockkBean(relaxed = true)

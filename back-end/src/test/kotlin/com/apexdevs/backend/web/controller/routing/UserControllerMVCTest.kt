@@ -16,6 +16,7 @@ import org.bson.types.ObjectId
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.context.ContextConfiguration
@@ -32,7 +33,10 @@ import java.lang.NullPointerException
 import java.util.Optional
 
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, UserController::class])
+@ContextConfiguration(
+    classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, UserController::class],
+    initializers = [ConfigDataApplicationContextInitializer::class]
+)
 @WebAppConfiguration
 class UserControllerMVCTest(@Autowired val context: WebApplicationContext) {
     @MockkBean

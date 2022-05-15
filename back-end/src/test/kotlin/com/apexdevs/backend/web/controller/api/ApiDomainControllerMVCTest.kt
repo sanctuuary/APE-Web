@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -44,7 +45,10 @@ import java.util.Optional
 
 @ExtendWith(SpringExtension::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, ApiDomainController::class])
+@ContextConfiguration(
+    classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, ApiDomainController::class],
+    initializers = [ConfigDataApplicationContextInitializer::class]
+)
 @WebAppConfiguration
 class ApiDomainControllerMVCTest(@Autowired val context: WebApplicationContext, @Autowired val userDetailsService: UserDetailsService) {
     @MockkBean(relaxed = true)

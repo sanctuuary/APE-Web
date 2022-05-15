@@ -30,6 +30,7 @@ import org.bson.types.ObjectId
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
@@ -44,7 +45,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
 @ExtendWith(SpringExtension::class)
-@ContextConfiguration(classes = [DomainController::class, SecurityMVCTestConfig::class, SecurityTestConfig::class])
+@ContextConfiguration(
+    classes = [DomainController::class, SecurityMVCTestConfig::class, SecurityTestConfig::class],
+    initializers = [ConfigDataApplicationContextInitializer::class]
+)
 @WebAppConfiguration
 class DomainControllerMVCTest(@Autowired val context: WebApplicationContext) {
 

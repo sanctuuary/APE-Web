@@ -30,6 +30,7 @@ import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
@@ -43,7 +44,10 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
-@ContextConfiguration(classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, ApiWorkflowController::class])
+@ContextConfiguration(
+    classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, ApiWorkflowController::class],
+    initializers = [ConfigDataApplicationContextInitializer::class]
+)
 @ExtendWith(SpringExtension::class, MockitoExtension::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WebAppConfiguration
