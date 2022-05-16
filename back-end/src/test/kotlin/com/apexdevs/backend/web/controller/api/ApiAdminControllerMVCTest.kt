@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.ConfigDataApplicationContextInitializer
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
@@ -42,7 +43,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 
 @ExtendWith(SpringExtension::class, MockitoExtension::class)
-@ContextConfiguration(classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, ApiAdminController::class])
+@ContextConfiguration(
+    classes = [SecurityMVCTestConfig::class, SecurityTestConfig::class, ApiAdminController::class],
+    initializers = [ConfigDataApplicationContextInitializer::class]
+)
 @WebAppConfiguration
 internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationContext) {
     private val mockMvc: MockMvc = MockMvcBuilders.webAppContextSetup(context).apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity()).build()
@@ -70,7 +74,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -86,7 +90,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -102,7 +106,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isBadRequest }
+            status { isBadRequest() }
         }
     }
 
@@ -116,7 +120,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -132,7 +136,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
             contentType = MediaType.APPLICATION_JSON
             content = requestJson
         }.andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -143,7 +147,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
         every { userOperation.getPendingRequests() } returns emptyList()
 
         mockMvc.get("/api/admin/pending-requests").andExpect {
-            status { isOk }
+            status { isOk() }
         }
     }
 
@@ -154,7 +158,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
         every { userOperation.getPendingRequests() } returns emptyList()
 
         mockMvc.get("/api/admin/pending-requests").andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 
@@ -166,7 +170,7 @@ internal class ApiAdminControllerMVCTest(@Autowired val context: WebApplicationC
         every { userOperation.getByEmail(any()) } throws UserNotFoundException(this, "Test")
 
         mockMvc.get("/api/admin/pending-requests").andExpect {
-            status { isForbidden }
+            status { isForbidden() }
         }
     }
 

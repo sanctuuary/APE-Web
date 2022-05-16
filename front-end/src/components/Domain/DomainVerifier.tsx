@@ -123,13 +123,10 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
     const init: RequestInit = {
       method: 'GET',
       credentials: 'include',
-    };
-    // Only include cookie if a user is logged in
-    if (session !== null) {
-      init.headers = {
+      headers: {
         cookie: session.user.sessionid,
-      };
-    }
+      },
+    };
 
     let success: boolean = false;
     await fetch(endpoint, init)
@@ -163,13 +160,10 @@ class DomainVerifier extends React.Component<DomainVerifierProps, DomainVerifier
     const init: RequestInit = {
       method: 'GET',
       credentials: 'include',
-    };
-    // Only include cookie if a user is logged in
-    if (session !== null) {
-      init.headers = {
+      headers: {
         cookie: session.user.sessionid,
-      };
-    }
+      },
+    };
 
     let success: boolean = false;
     await fetch(endpoint, init)
