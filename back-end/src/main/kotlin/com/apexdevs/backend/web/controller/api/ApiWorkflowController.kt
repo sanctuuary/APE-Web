@@ -27,7 +27,7 @@ import com.apexdevs.backend.persistence.filesystem.StorageService
 import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResult
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
+import nl.uu.cs.ape.models.enums.SynthesisFlag
 import org.json.JSONObject
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus

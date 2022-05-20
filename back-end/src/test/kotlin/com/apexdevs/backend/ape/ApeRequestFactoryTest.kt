@@ -11,7 +11,7 @@ import com.apexdevs.backend.persistence.filesystem.FileService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
-import nl.uu.cs.ape.sat.APE
+import nl.uu.cs.ape.APE
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
