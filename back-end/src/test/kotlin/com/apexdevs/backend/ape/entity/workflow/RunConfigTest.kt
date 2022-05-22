@@ -38,7 +38,7 @@ internal class RunConfigTest {
         json.put("solution_length", lengths)
         json.put("inputs", inputJsonArray)
         json.put("outputs", inputJsonArray)
-        json.put("max_solutions", "$noSol")
+        json.put("solutions", "$noSol")
         json.put("number_of_execution_scripts", "0")
         json.put("number_of_generated_graphs", "0")
         json.put("shared_memory", true)
