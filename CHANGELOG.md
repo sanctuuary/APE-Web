@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade back-end dependencies.
+- Update back-end dependencies.
   * spring boot 2.3.4 -> 2.6.7
   * owlapi 5.1.17 -> 5.1.20
   * gson 8.6 -> 9.0
@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * graphviz-java 0.17.0 -> 0.18.1
   * springmockk 2.0.3 -> 3.1.1
   * json 20200518 -> 20220320
+- Update APE dependency version 1.1.12 -> 2.0.0.
 
 ## [1.6.0] - 2022-04-22
 
