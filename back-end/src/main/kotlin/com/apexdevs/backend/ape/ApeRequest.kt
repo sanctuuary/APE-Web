@@ -16,13 +16,13 @@ import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.exception.RunParametersExceedLimitsException
 import com.apexdevs.backend.persistence.exception.SynthesisFlagException
 import guru.nidi.graphviz.attribute.Rank
-import nl.uu.cs.ape.sat.APE
-import nl.uu.cs.ape.sat.core.solutionStructure.AbstractCWLCreator
-import nl.uu.cs.ape.sat.core.solutionStructure.ModuleNode
-import nl.uu.cs.ape.sat.core.solutionStructure.SolutionsList
-import nl.uu.cs.ape.sat.core.solutionStructure.TypeNode
-import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
-import nl.uu.cs.ape.sat.models.logic.constructs.TaxonomyPredicate
+import nl.uu.cs.ape.APE
+import nl.uu.cs.ape.core.solutionStructure.AbstractCWLCreator
+import nl.uu.cs.ape.core.solutionStructure.ModuleNode
+import nl.uu.cs.ape.core.solutionStructure.SolutionsList
+import nl.uu.cs.ape.core.solutionStructure.TypeNode
+import nl.uu.cs.ape.models.enums.SynthesisFlag
+import nl.uu.cs.ape.models.logic.constructs.TaxonomyPredicate
 import java.io.ByteArrayOutputStream
 import java.nio.file.Path
 import java.util.Locale
@@ -38,7 +38,7 @@ class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: AP
     private lateinit var solutions: SolutionsList
     /**
      * Takes a RunConfig object and adds two local paths and converts it to a JSON object to run the synthesis
-     * @param runConfig The config provided that is used by APE to run it's synthesis
+     * @param runConfig The config provided that is used by APE to run its synthesis
      * @return A list of solutions found by APE
      */
     private fun runWithConfig(runConfig: RunConfig) {
@@ -81,7 +81,7 @@ class ApeRequest(val domain: Domain, private val rootLocation: Path, val ape: AP
 
             val solutionWorkflow = solutions.get(i)
 
-            if (solutionWorkflow.moduleNodes.size> 0) {
+            if (solutionWorkflow.moduleNodes.size > 0) {
                 val workflowOutput = WorkflowOutput(
                     i,
                     parseTypeNodes(solutionWorkflow.workflowInputTypeStates),

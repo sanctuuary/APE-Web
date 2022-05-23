@@ -1,6 +1,6 @@
 package com.apexdevs.backend.persistence.exception
 
-import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
+import nl.uu.cs.ape.models.enums.SynthesisFlag
 
 class SynthesisFlagException(val from: Any, val flag: SynthesisFlag) : RuntimeException(flag.message) {
     /**

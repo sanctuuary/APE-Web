@@ -8,8 +8,8 @@ import com.apexdevs.backend.persistence.RunParametersOperation
 import com.apexdevs.backend.persistence.database.entity.Domain
 import com.apexdevs.backend.persistence.filesystem.FileService
 import com.apexdevs.backend.persistence.filesystem.FileTypes
-import nl.uu.cs.ape.sat.APE
-import nl.uu.cs.ape.sat.configuration.APECoreConfig
+import nl.uu.cs.ape.APE
+import nl.uu.cs.ape.configuration.APECoreConfig
 import org.springframework.stereotype.Component
 
 /**

@@ -35,7 +35,7 @@ data class TotalConfig(
     fun toJSONObject(): JSONObject {
         val json = JSONObject()
         json.put("ontology_path", ontologyPath)
-        json.put("ontologyPrexifIRI", ontologyPrefix)
+        json.put("ontologyPrefixIRI", ontologyPrefix)
         json.put("toolsTaxonomyRoot", toolsTaxonomyRoot)
         json.put("dataDimensionsTaxonomyRoots", dataDimensionsTaxonomyRoots)
         json.put("tool_annotations_path", toolAnnotationsPath)
@@ -46,7 +46,7 @@ data class TotalConfig(
 
         val lengths = JSONObject().accumulate("min", solutionMinLength).accumulate("max", solutionMaxLength)
         json.put("solution_length", lengths)
-        json.put("max_solutions", maxSolutionsToReturn)
+        json.put("solutions", maxSolutionsToReturn)
         json.put("number_of_execution_scripts", noExecutionScripts)
         json.put("number_of_generated_graphs", noWorkflowImages)
         json.put("tool_seq_repeat", toolSeqRepeat)

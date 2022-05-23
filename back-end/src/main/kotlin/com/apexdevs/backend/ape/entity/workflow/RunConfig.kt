@@ -60,7 +60,7 @@ data class RunConfig(
         }
 
         json.put("solution_length", lengths)
-        json.put("max_solutions", "$maxSolutionsToReturn")
+        json.put("solutions", "$maxSolutionsToReturn")
         json.put("number_of_execution_scripts", "$noExecutionScripts")
         json.put("number_of_generated_graphs", "$noWorkflowImages")
         json.put("shared_memory", sharedMemory)
