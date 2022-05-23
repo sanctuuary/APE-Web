@@ -8,7 +8,7 @@
 import fetchMock from 'jest-fetch-mock';
 import fetchWithRedirect from '@helpers/FetchWithRedirect';
 
-describe('FetchWithRedirect', () => {
+describe.skip('FetchWithRedirect', () => {
   it('Returns the requested data', async () => {
     const testObject = {
       title: 'Test',

@@ -14,16 +14,16 @@
     "typedoc": "typedoc"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.2.2",
-    "antd": "^4.7.0",
+    "@ant-design/icons": "^4.7",
+    "antd": "^4.8.6",
     "fetch-blob": "^2.1.1",
     "formdata-node": "^2.4.0",
     "next": "^10.2.3",
     "next-auth": "^3.15.9",
-    "react": "16.14.0",
-    "react-dom": "16.13.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-flow-renderer": "^8.3.5",
-    "react-select": "^3.1.1"
+    "react-select": "^3.2.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.16.0",
@@ -34,14 +34,14 @@
     "@types/enzyme": "^3.10.10",
     "@types/jest": "^26.0.24",
     "@types/node": "^14.17.33",
-    "@types/react": "^16.14.21",
+    "@types/react": "^17.0.45",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
     "@zeit/next-less": "^1.0.1",
     "babel-jest": "^26.6.0",
     "babel-plugin-import": "^1.13.1",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.5",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-typescript": "^11.4.0",
     "eslint-plugin-import": "^2.22.1",
