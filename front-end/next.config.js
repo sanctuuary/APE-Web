@@ -20,6 +20,7 @@ const themeVariables = lessToJs(
 
 module.exports = withAntdLess({
   modifyVars: themeVariables,
+  webpack5: false,
 
   webpack(config) {
     return config;
