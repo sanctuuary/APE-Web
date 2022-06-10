@@ -75,6 +75,15 @@ module.exports = {
      */
     'object-curly-newline': ['error', { 'consistent': true }],
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-one-expression-per-line.md
-    'react/jsx-one-expression-per-line':  0
+    'react/jsx-one-expression-per-line':  0,
+    'react/jsx-no-bind': [
+      'error',
+      {
+        "allowArrowFunctions": true,
+        "allowFunctions": true
+      }
+    ],
+    'react/require-default-props': 0,
+    'react/no-array-index-key': 'warn',
   }
 };

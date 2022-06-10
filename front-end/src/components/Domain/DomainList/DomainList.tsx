@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Button, Input, Space, Table, Tag, Tooltip } from 'antd';
+import { Button, Input, InputRef, Space, Table, Tag, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { ColumnFilterItem } from 'antd/lib/table/interface';
 import { CheckCircleTwoTone, CloseCircleTwoTone, MinusCircleTwoTone, SearchOutlined } from '@ant-design/icons';
@@ -50,7 +50,7 @@ interface IState {
  */
 class DomainList extends React.Component<IProps, IState> {
   /** React RefObject to refer to the domain name search input */
-  titleSearchRef: React.RefObject<Input>;
+  titleSearchRef: React.RefObject<InputRef>;
 
   /**
    * Constructor
@@ -96,7 +96,7 @@ class DomainList extends React.Component<IProps, IState> {
             Search
           </Button>
           <Button
-            onClick={() => clearFilters()}
+            onClick={() => { clearFilters(); confirm(); }}
             size="small"
             style={{ width: 90 }}
             data-testid="searchNameReset"

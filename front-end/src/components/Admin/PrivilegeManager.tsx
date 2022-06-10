@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Input, Popconfirm, Space, Table, Tag, Tooltip } from 'antd';
+import { Button, Input, InputRef, Popconfirm, Space, Table, Tag, Tooltip } from 'antd';
 import { ColumnsType } from 'antd/lib/table';
 import { SearchOutlined } from '@ant-design/icons';
 import UserInfo from '@models/User';
@@ -18,7 +18,7 @@ interface PrivilegeManagerState {
  */
 class PrivilegeManager extends React.Component<{}, PrivilegeManagerState> {
   /** React RefObject to refer to the user displayName search input */
-  nameSearchRef: React.RefObject<Input>;
+  nameSearchRef: React.RefObject<InputRef>;
 
   /**
    * Constructor
