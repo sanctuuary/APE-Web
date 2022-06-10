@@ -18,7 +18,7 @@ import styles from './Sidebar.module.less';
  */
 interface SidebarState {
   /**
-   * Checkedlist gives the indices/values of the selected checkboxes
+   * The indices/values of the selected checkboxes
    */
   checkedList: CheckboxValueType[];
   /**
@@ -31,7 +31,7 @@ interface SidebarState {
  */
 interface SidebarProps {
   /**
-   * Workflows is a list of all workflowdata, that are the results
+   * Workflows is a list of all workflow data, that are the results
    * obtained when run is pressed.
    */
   workflows: WorkflowData[];
@@ -99,7 +99,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
     const type = event.key;
     if (!['bash', 'cwl', 'png'].includes(type)) {
-      console.error(`Unknown download type: ${type}.`);
       return;
     }
 
