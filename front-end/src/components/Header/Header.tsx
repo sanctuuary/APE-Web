@@ -12,7 +12,7 @@ import { useSession, signOut } from 'next-auth/client';
 import styles from './Header.module.less';
 
 /**
- * The header component, used accross the entire site.
+ * The header component, used across the entire site.
  */
 function Header() {
   const [session]: any = useSession();
@@ -40,8 +40,8 @@ function Header() {
     </Menu>
   );
 
-  // Menu to show when the user is logged in, and they press on their displayname.
-  const usermenu = (
+  // Menu to show when the user is logged in, and they press on their display name.
+  const UserMenu = (
     <Menu>
       {admin()
       && (
@@ -60,13 +60,13 @@ function Header() {
     </Menu>
   );
 
-  // If the user is logged in show their displayname instead of login
+  // If the user is logged in show their display name instead of login
   const login = () => {
     if (session && session.user) {
       document.cookie = `${session.user.sessionid}; path:'/'`;
       return (
         <Dropdown
-          overlay={usermenu}
+          overlay={UserMenu}
           trigger={['click']}
           getPopupContainer={(node) => node.parentElement}
         >
