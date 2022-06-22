@@ -48,6 +48,8 @@ interface ApprovalProps {
  */
 function Approval(props: ApprovalProps) {
   const { approvalRequests, postUserStatus } = props;
+  // The loading boolean for each row. Used for the approve/decline buttons.
+  const [loading, setLoading] = useState(false);
 
   // The columns that will be shown in the Table
   const columns = [
@@ -71,9 +73,6 @@ function Approval(props: ApprovalProps) {
     {
       title: 'Approve/Decline',
       render: (request: ApprovalRequest) => {
-        // The loading boolean for each row. Used for the approve/decline buttons.
-        const [loading, setLoading] = useState(false);
-
         const postStatus = async (status: string) => {
           setLoading(true);
           postUserStatus(request, status)
