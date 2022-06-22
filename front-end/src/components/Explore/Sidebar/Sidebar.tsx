@@ -77,13 +77,15 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   /**
    * Define the download dropdown menu.
    */
-  downloadMenu = () => (
-    <Menu onClick={this.downloadSelectedWorkflows}>
-      <Menu.Item key="bash" icon={<DownloadOutlined />}>Bash</Menu.Item>
-      <Menu.Item key="cwl" icon={<DownloadOutlined />}>Abstract CWL</Menu.Item>
-      <Menu.Item key="png" icon={<DownloadOutlined />}>PNG</Menu.Item>
-    </Menu>
-  );
+  downloadMenu = () => {
+    const items = [
+      { key: 'bash', icon: <DownloadOutlined />, label: 'Bash' },
+      { key: 'cwl', icon: <DownloadOutlined />, label: 'Abstract CWL' },
+      { key: 'png', icon: <DownloadOutlined />, label: 'PNG' },
+    ];
+
+    return <Menu items={items} onClick={this.downloadSelectedWorkflows} />;
+  };
 
   /**
    * Downloads the selected workflows
