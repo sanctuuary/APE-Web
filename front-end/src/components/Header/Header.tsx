@@ -17,48 +17,45 @@ import styles from './Header.module.less';
 function Header() {
   const [session]: any = useSession();
 
-  const createDomain = () => {
-    if (session && session.user) {
-      return (
-        <Menu.Item key="1">
-          <a href="/domain/new">Create a domain</a>
-        </Menu.Item>
-      );
-    }
-    return null;
-  };
-
   const admin = () => session && session.user && session.user.admin;
 
   // Menu items that are used in the dropdown
-  const menu = (
-    <Menu>
-      <Menu.Item key="0">
-        <a href="/">Home</a>
-      </Menu.Item>
-      {createDomain()}
-    </Menu>
-  );
+  const menu = () => {
+    const items = [
+      { key: 0, label: <a href="/">Home</a> },
+    ];
+    if (session && session.user) {
+      items.push({
+        key: 1,
+        label: <a href="/domain/new">Create a domain</a>,
+      });
+    }
+
+    return (
+      <Menu items={items} />
+    );
+  };
 
   // Menu to show when the user is logged in, and they press on their display name.
-  const UserMenu = (
-    <Menu>
-      {admin()
-      && (
-      <>
-        <Menu.Item key="0">
-          <a href="/admin">Administrator page</a>
-        </Menu.Item>
-        <Menu.Divider />
-      </>
-      )}
-      <Menu.Item key="1">
+  const UserMenu = () => {
+    const items = [];
+
+    if (admin()) {
+      items.push({ key: 0, label: <a href="/admin">Administrator page</a> });
+    }
+    items.push({
+      key: 1,
+      label: (
         <div role="button" tabIndex={0} onClick={() => signOut()} onKeyPress={() => {}}>
           Sign out
         </div>
-      </Menu.Item>
-    </Menu>
-  );
+      ),
+    });
+
+    return (
+      <Menu items={items} />
+    );
+  };
 
   // If the user is logged in show their display name instead of login
   const login = () => {
