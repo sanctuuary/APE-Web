@@ -100,6 +100,7 @@ describe('DomainList', () => {
     userEvent.click(page.openSearch);
     const searchNameReset = getByTestId('searchNameReset');
     userEvent.click(searchNameReset);
+    userEvent.click(searchNameButton);
     domainA = getAllByText('Domain A');
     domainB = getByText('Domain B');
 
@@ -164,6 +165,7 @@ describe('DomainList', () => {
     userEvent.click(page.openTopicFilter);
     const reset = getByText(/Reset/);
     userEvent.click(reset);
+    userEvent.click(ok);
 
     domainA = getAllByText('Domain A');
     domainB = getByText('Domain B');

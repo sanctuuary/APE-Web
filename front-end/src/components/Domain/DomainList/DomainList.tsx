@@ -96,7 +96,7 @@ class DomainList extends React.Component<IProps, IState> {
             Search
           </Button>
           <Button
-            onClick={() => { clearFilters(); confirm(); }}
+            onClick={() => clearFilters()}
             size="small"
             style={{ width: 90 }}
             data-testid="searchNameReset"
