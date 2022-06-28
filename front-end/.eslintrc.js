@@ -88,5 +88,10 @@ module.exports = {
     ],
     'react/require-default-props': 0,
     'react/no-array-index-key': 'warn',
+    'react/no-unstable-nested-components': 'warn',
+    'class-methods-use-this': 0,
+    'function-paren-newline': 0,
+    'function-call-argument-newline': 0,
+    'react/function-component-definition': 0,
   }
 };

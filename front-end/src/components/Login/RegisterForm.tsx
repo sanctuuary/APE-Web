@@ -66,6 +66,7 @@ function RegisterForm() {
    *
    * This form is shown at first.
    */
+  // eslint-disable-next-line react/no-unstable-nested-components
   const FormElements = () => (
     <Row>
       <Col className={styles['Login-container']}>

@@ -37,6 +37,7 @@ function Header() {
   };
 
   // Menu to show when the user is logged in, and they press on their display name.
+  // eslint-disable-next-line react/no-unstable-nested-components
   const UserMenu = () => {
     const items = [];
 

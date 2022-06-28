@@ -179,7 +179,7 @@ describe.skip('Workflow input', () => {
   });
 
   test('decline unallowed run option values', () => {
-    const options: {input: HTMLInputElement, value: any}[] = [
+    const options: { input: HTMLInputElement, value: any }[] = [
       {
         input: getByLabelText(run.container, 'Max duration') as HTMLInputElement,
         value: 'string, not allowed',
@@ -193,7 +193,7 @@ describe.skip('Workflow input', () => {
         value: 10000,
       },
     ];
-    options.forEach((option: {input: HTMLInputElement, value: any}) => {
+    options.forEach((option: { input: HTMLInputElement, value: any }) => {
       fireEvent.change(option.input, {
         target: {
           value: option.value,
