@@ -20,7 +20,10 @@ module.exports = {
     project: './tsconfig.eslint.json',
   },
   // Load AirBnB rules
-  extends: ['airbnb-typescript'],
+  extends: [
+    'airbnb',
+    'airbnb-typescript'
+  ],
   // Setting to 0 disables the rule
   rules: {
     // Enable rules
