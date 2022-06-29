@@ -7,13 +7,13 @@
 
 import React from 'react';
 import { Col, Divider, Layout, Row, Typography } from 'antd';
-import { version } from 'package.json';
+import packageInfo from 'package.json';
 import styles from './Footer.module.less';
 
 const { Text } = Typography;
 
 /**
- * The footer component, used accross the entire site.
+ * The footer component, used across the entire site.
  */
 function Footer() {
   return (
@@ -54,7 +54,7 @@ function Footer() {
         <Col span={24}>© Utrecht University (ICS)</Col>
       </Row>
       <Row>
-        <Col span={24}><Text type="secondary">Version: {version}</Text></Col>
+        <Col span={24}><Text type="secondary">Version: {packageInfo.version}</Text></Col>
       </Row>
     </Layout.Footer>
   );
