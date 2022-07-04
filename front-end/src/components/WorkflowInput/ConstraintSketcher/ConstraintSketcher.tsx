@@ -35,7 +35,7 @@ interface ConstraintSketcherProps {
   defaultTool: () => Tool;
   /** Check whether the sketch has been opened. If so, reinstantiate */
   sketchOpened: boolean;
-  /** Set functdion for the sketchOpened */
+  /** Set function for the sketchOpened */
   setSketchOpened: (sketchOpened: boolean) => void;
 }
 
