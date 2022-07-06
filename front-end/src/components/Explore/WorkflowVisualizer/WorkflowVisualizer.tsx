@@ -55,8 +55,8 @@ interface WorkflowVisualizerState {
 /**
  * The component for visualizing APE workflows.
  *
- * When WorkflowVisualizer is initiated, it passes the elements to {@link WorkflowParser}.
- * WorkflowParser restructures the data from APE to
+ * When WorkflowVisualizer is initiated, it passes the elements to {@link WorkflowSerializer}.
+ * WorkflowSerializer restructures the data from APE to
  * a structure which the React Flow library uses to render graphs.
  *
  * Custom node and edge types are used to define the look of the graphs.
