@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * springmockk 2.0.3 -> 3.1.1
   * json 20200518 -> 20220320
 - Update APE dependency version 1.1.12 -> 2.0.0.
+- Replace placeholder values in .env file of the front-end with working values.
 
 ## [1.6.0] - 2022-04-22
 
