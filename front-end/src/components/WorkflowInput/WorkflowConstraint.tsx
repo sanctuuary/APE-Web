@@ -188,7 +188,7 @@ function WorkflowConstraint(props: WorkflowConstraintProps) {
           allowClear
           placeholder="Select constraint"
           onChange={onConstraintTypeChange}
-          filterOption={(input, option) => (
+          filterOption={(input, option: any) => (
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           )}
           value={constraint.constraintType.id}

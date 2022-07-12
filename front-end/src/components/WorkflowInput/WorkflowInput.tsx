@@ -72,7 +72,9 @@ interface WorkflowInputProps {
   downloadToolsAnnotationsFile: () => void;
 }
 
-/** The state for the @{link WorkflowInput} component */
+/**
+ * The state for the {@link WorkflowInput} component.
+ */
 interface WorkflowInputState {
   /** List of the input data */
   inputs: Data[];
@@ -387,7 +389,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
      * After filtering invalid elements, that is when a tool is not filled in
      * or when multiple fields from a type constraint are not filled in.
      * We check if there's any type constraints that have one field not filled in.
-     * And replace that field with the root from datatypeoptions.
+     * And replace that field with the root from datatype options.
      */
     return filtered.map((elem) => {
       const { parameterTypes } = elem.constraintType;

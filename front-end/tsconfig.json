@@ -3,9 +3,7 @@
  * Utrecht University within the Software Project course.
  *
  * © Copyright Utrecht University (Department of Information and Computing Sciences)
- */
-
-{
+ */{
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -14,7 +12,7 @@
       "@pages/*": ["src/pages/*"],
       "@models/*": ["src/models/*"],
       "@helpers/*": ["src/helpers/*"],
-      "@tests/*": ["tests/*"],
+      "@tests/*": ["tests/*"]
     },
     "target": "es5",
     "lib": [
@@ -32,7 +30,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "incremental": true
   },
   "include": [
     "next-env.d.ts",
@@ -42,13 +41,15 @@
   ],
   "exclude": [
     "node_modules",
-    "./tests/**/*.tsx",
+    "./tests/**/*.tsx"
   ],
   "typedocOptions": {
     "name": "APE Web front-end documentation",
     "includeVersion": true,
     "entryPointStrategy": "Expand",
-    "entryPoints": ["src"],
+    "entryPoints": [
+      "src"
+    ],
     "excludeExternals": true,
     "out": "docs"
   }

@@ -1,4 +1,4 @@
-import React, { CSSProperties, ReactNode, Ref } from 'react';
+import React, { ChangeEventHandler, CSSProperties, ReactNode } from 'react';
 import { Input, message } from 'antd';
 import UserInfo from '@models/User';
 
@@ -22,6 +22,8 @@ interface UserSearchProps {
    * Return false if a user may not be selected, or true if a user may be selected.
    */
   userValidation?: (email: string) => boolean,
+  /** Callback called on value change. */
+  onChange?: ChangeEventHandler<HTMLInputElement>,
   /** CSS styling for the internal Search component. */
   style?: CSSProperties,
 }
@@ -29,7 +31,7 @@ interface UserSearchProps {
 /**
  * Component to search users by their e-mail address.
  */
-const UserSearch = React.forwardRef((props: UserSearchProps, ref: Ref<Input>) => {
+const UserSearch = React.forwardRef((props: UserSearchProps) => {
   /**
    * Search the user with the given e-mail address.
    * @param mail The e-mail address to search by.
@@ -57,7 +59,7 @@ const UserSearch = React.forwardRef((props: UserSearchProps, ref: Ref<Input>) =>
       });
   };
 
-  const { placeholder, enterButton, style } = props;
+  const { placeholder, enterButton, onChange, style } = props;
 
   return (
     <Search
@@ -65,8 +67,8 @@ const UserSearch = React.forwardRef((props: UserSearchProps, ref: Ref<Input>) =>
       placeholder={placeholder}
       enterButton={enterButton}
       onSearch={searchUser}
-      ref={ref}
       style={style}
+      onChange={onChange}
     />
   );
 });

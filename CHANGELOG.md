@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Update APE dependency version 1.1.12 -> 2.0.0.
+- Update front-end dependencies, most notably:
+  * Ant Design 4.7.0 -> 4.20.6
+  * Next.js 9.5.5 -> 12.1.5
+  * React 16.14.0 -> 17.0.2
+  * ESLint 7.32.0 -> 8.18.0
+  * TypeScript 4.4.4 -> 4.7.4
+  * eslint-config-airbnb-typescript 11.4.0 -> 17.0.0
 - Update back-end dependencies.
   * spring boot 2.3.4 -> 2.6.7
   * owlapi 5.1.17 -> 5.1.20
@@ -18,7 +26,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * graphviz-java 0.17.0 -> 0.18.1
   * springmockk 2.0.3 -> 3.1.1
   * json 20200518 -> 20220320
-- Update APE dependency version 1.1.12 -> 2.0.0.
 - Replace placeholder values in .env file of the front-end with working values.
 
 ## [1.6.0] - 2022-04-22

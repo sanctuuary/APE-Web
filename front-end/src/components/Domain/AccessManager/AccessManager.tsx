@@ -37,13 +37,9 @@ interface AccessManagerState {
  * Component for managing access to a domain.
  */
 class AccessManager extends React.Component<AccessManagerProps, AccessManagerState> {
-  /** React RefObject to refer to the UserSearch element. */
-  userSearchRef: React.RefObject<Input>;
-
   constructor(props: AccessManagerProps) {
     super(props);
 
-    this.userSearchRef = React.createRef();
     this.state = {
       currentUser: null,
       usersWithAccess: [],
@@ -149,7 +145,6 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
     const { addUserSelectedRole } = this.state;
     await this.updateAccessLevel(user.userId, addUserSelectedRole);
     this.getUsersWithAccess();
-    this.userSearchRef.current.setValue(null);
   };
 
   /**
@@ -358,7 +353,6 @@ class AccessManager extends React.Component<AccessManagerProps, AccessManagerSta
                 enterButton={<UserAddOutlined />}
                 onUserFound={this.onAddUser}
                 userValidation={this.validateAddUser}
-                ref={this.userSearchRef}
               />
             </Form.Item>
             <Form.Item

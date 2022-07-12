@@ -55,8 +55,8 @@ interface WorkflowVisualizerState {
 /**
  * The component for visualizing APE workflows.
  *
- * When WorkflowVisualizer is initiated, it passes the elements to {@link WorkflowParser}.
- * WorkflowParser restructures the data from APE to
+ * When WorkflowVisualizer is initiated, it passes the elements to {@link WorkflowSerializer}.
+ * WorkflowSerializer restructures the data from APE to
  * a structure which the React Flow library uses to render graphs.
  *
  * Custom node and edge types are used to define the look of the graphs.
@@ -227,13 +227,15 @@ class WorkflowVisualizer extends React.Component<WorkflowVisualizerProps, Workfl
   /**
    * Define the download dropdown menu.
    */
-  downloadMenu = () => (
-    <Menu onClick={this.handleDownloadClick}>
-      <Menu.Item key="bash" icon={<DownloadOutlined />}>Bash</Menu.Item>
-      <Menu.Item key="cwl" icon={<DownloadOutlined />}>Abstract CWL</Menu.Item>
-      <Menu.Item key="png" icon={<DownloadOutlined />}>PNG</Menu.Item>
-    </Menu>
-  );
+  downloadMenu = () => {
+    const items = [
+      { key: 'bash', icon: <DownloadOutlined />, label: 'Bash' },
+      { key: 'cwl', icon: <DownloadOutlined />, label: 'Abstract CWL' },
+      { key: 'png', icon: <DownloadOutlined />, label: 'PNG' },
+    ];
+
+    return <Menu items={items} onClick={this.handleDownloadClick} />;
+  };
 
   render() {
     const { name, isReference, referenceWorkflow } = this.props;

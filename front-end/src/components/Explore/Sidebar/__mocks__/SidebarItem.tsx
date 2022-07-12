@@ -9,23 +9,23 @@ import React from 'react';
 import { Checkbox } from 'antd';
 
 /**
- * Mock of the sidebaritem component props.
+ * Mock of the sidebar item component props.
  * This only contains the props we need for the mock.
  */
 interface MockProps {
   /**
-   * Index of the sidebaritem in the sidebar
+   * Index of the sidebar item in the sidebar
    */
   index: number,
   /**
-   * Indicate whether the sidebaritem is disabled or not.
+   * Indicate whether the sidebar item is disabled or not.
    */
   disabled: boolean,
 }
 
-// Simplified mock of the sidebaritem
-const SidebarItem = ({ index, disabled }: MockProps) => (
-  <Checkbox disabled={disabled} value={index} />
-);
+// Simplified mock of the sidebar item
+function SidebarItem({ index, disabled }: MockProps) {
+  return <Checkbox disabled={disabled} value={index} />;
+}
 
 export default SidebarItem;

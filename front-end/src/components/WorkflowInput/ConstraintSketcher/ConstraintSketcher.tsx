@@ -35,7 +35,7 @@ interface ConstraintSketcherProps {
   defaultTool: () => Tool;
   /** Check whether the sketch has been opened. If so, reinstantiate */
   sketchOpened: boolean;
-  /** Set functdion for the sketchOpened */
+  /** Set function for the sketchOpened */
   setSketchOpened: (sketchOpened: boolean) => void;
 }
 
@@ -77,7 +77,8 @@ class ConstraintSketcher extends React.Component<ConstraintSketcherProps, Constr
   }
 
   /**
-   * Convert the sketch into nodes and edges and and return it as a {@link ConstraintSketcherState}
+   * Convert the sketch into nodes and edges
+   * and returns it as a state for the {@link ConstraintSketcher}.
    * @param sketch - the sketch that will be converted
    */
   initiateState = (sketch: Sketch): ConstraintSketcherState => {

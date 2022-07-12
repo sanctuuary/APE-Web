@@ -9,7 +9,7 @@
 import React from 'react';
 import 'antd/dist/antd.less';
 import '../styles/globals.less';
-import { AppProps } from 'next/dist/next-server/lib/router/router';
+import { AppProps } from 'next/dist/shared/lib/router/router';
 import Header from '@components/Header/Header';
 import Footer from '@components/Footer/Footer';
 import { Provider } from 'next-auth/client';

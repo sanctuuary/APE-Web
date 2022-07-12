@@ -15,7 +15,7 @@ import styles from './Sidebar.module.less';
  */
 interface SidebarItemProps {
   /**
-   * Index of the sidebaritem in the sidebar
+   * Index of the sidebar item in the sidebar
    */
   index: number,
   /**
