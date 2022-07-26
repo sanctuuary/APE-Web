@@ -4,6 +4,7 @@ config/
 coverage/
 node_modules/
 docs/
+src/SLTLx/
 
 # Files
 *.config.js

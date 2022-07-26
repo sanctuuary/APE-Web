@@ -1,17 +1,22 @@
-import { CommonTokenStream, InputStream, Token, Lexer } from 'antlr4';
+import { CommonTokenStream, InputStream, Token, Lexer, Recognizer } from 'antlr4';
 import { ErrorListener } from 'antlr4/error/ErrorListener';
 import SLTLxLexer from 'src/SLTLx/SLTLxLexer';
 import SLTLxParser from 'src/SLTLx/SLTLxParser';
 
 class SLTLxErrorListener extends ErrorListener {
-  // eslint-disable-next-line class-methods-use-this
-  syntaxError(_recognizer, _offendingSymbol, _line, _column, msg) {
+  syntaxError(
+    _recognizer: Recognizer,
+    _offendingSymbol: Token,
+    _line: number,
+    _column: number,
+    msg: any,
+  ) {
     // eslint-disable-next-line no-console
     console.log(`ERROR ${msg}`);
   }
 }
 
-function createLexer(input: string) {
+export function createLexer(input: string): SLTLxLexer {
   const chars = new InputStream(input);
   const lexer = new SLTLxLexer(chars);
 
@@ -27,7 +32,17 @@ function createParserFromLexer(lexer: Lexer): SLTLxParser {
   return new SLTLxParser(tokens);
 }
 
-export function parseTreeStr(input: string) {
+export function createParser(input: string): SLTLxParser {
+  const lexer = createLexer(input);
+  return createParserFromLexer(lexer);
+}
+
+export function parseTree(input: string) {
+  const parser = createParser(input);
+  return parser.compilationUnit();
+}
+
+export function parseTreeStr(input: string): string {
   const lexer = createLexer(input);
   lexer.removeErrorListeners();
   lexer.addErrorListener(new SLTLxErrorListener());
@@ -37,5 +52,5 @@ export function parseTreeStr(input: string) {
   parser.addErrorListener(new SLTLxErrorListener());
 
   const tree = parser.compilationUnit();
-  return tree.toStringTree(parser.ruleNames);
+  return tree.toStringTree(parser.ruleNames, parser);
 }
