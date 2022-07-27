@@ -6,7 +6,15 @@ import { SLTLxVS, SLTLxVSDark } from './Themes';
 
 const { Option } = Select;
 
-function SLTLxEditor() {
+/**
+ * Props definition for the SLTLxEditor component.
+ */
+interface SLTLxEditorProps {
+  /** The height of the editor. */
+  height: string | number,
+}
+
+function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
   const defaultTheme = 'SLTLxVS';
   const [theme, setTheme] = useState<string>(defaultTheme);
 
@@ -29,6 +37,8 @@ function SLTLxEditor() {
    */
   const handleThemeChange = (value: string) => setTheme(value);
 
+  const { height } = props;
+
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
       <Space style={{ float: 'right' }}>
@@ -44,7 +54,7 @@ function SLTLxEditor() {
         </Select>
       </Space>
       <Editor
-        height="90vh"
+        height={height}
         defaultLanguage="SLTLx"
         defaultValue="!F Exists (?x1) (<'operation_0004'(?x1,?x1;)> true)"
         language="SLTLx"
