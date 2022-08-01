@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Select, Space } from 'antd';
-import Editor, { Monaco } from '@monaco-editor/react';
+import Editor, { Monaco, useMonaco } from '@monaco-editor/react';
 import SLTLxTokensProvider from './SLTLxTokensProvider';
 import { SLTLxVS, SLTLxVSDark } from './Themes';
+import { validate } from './SLTLxErrorListener';
 
 const { Option } = Select;
 
@@ -14,21 +15,25 @@ interface SLTLxEditorProps {
   height: string | number,
 }
 
+/**
+ * Code editor component for writing SLTLx code.
+ */
 function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
   const defaultTheme = 'SLTLxVS';
   const [theme, setTheme] = useState<string>(defaultTheme);
+  const monaco = useMonaco();
 
   /**
    * Configure Monaco before loading the editor.
-   * @param monaco The monaco instance to configure.
+   * @param m The monaco instance to configure.
    */
-  const editorWillMount = (monaco: Monaco) => {
-    monaco.languages.register({ id: 'SLTLx' });
+  const editorWillMount = (m: Monaco) => {
+    m.languages.register({ id: 'SLTLx' });
 
-    monaco.languages.setTokensProvider('SLTLx', new SLTLxTokensProvider());
+    m.languages.setTokensProvider('SLTLx', new SLTLxTokensProvider());
 
-    monaco.editor.defineTheme('SLTLxVS', SLTLxVS());
-    monaco.editor.defineTheme('SLTLxVSDark', SLTLxVSDark());
+    m.editor.defineTheme('SLTLxVS', SLTLxVS());
+    m.editor.defineTheme('SLTLxVSDark', SLTLxVSDark());
   };
 
   /**
@@ -36,6 +41,24 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
    * @param value The selected value.
    */
   const handleThemeChange = (value: string) => setTheme(value);
+
+  /**
+   * Handle changes to the text in the editor.
+   *
+   * In this case, check the SLTLx code for errors.
+   * @param value The current text.
+   */
+  const handleTextChange = (value: string) => {
+    // Check for lexer or parser errors
+    const errors = validate(value);
+
+    // Show errors (if there are none, all previous errors are removed)
+    if (monaco !== null) {
+      const markerData = errors.map((e) => e.toMarker());
+      const models = monaco.editor.getModels();
+      monaco.editor.setModelMarkers(models[0], 'owner', markerData);
+    }
+  };
 
   const { height } = props;
 
@@ -60,6 +83,7 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
         language="SLTLx"
         theme={theme}
         beforeMount={editorWillMount}
+        onChange={handleTextChange}
       />
     </Space>
   );

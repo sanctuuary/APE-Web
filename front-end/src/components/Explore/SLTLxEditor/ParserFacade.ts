@@ -27,7 +27,7 @@ export default function getTokens(input: string): Token[] {
   return createLexer(input).getAllTokens();
 }
 
-function createParserFromLexer(lexer: Lexer): SLTLxParser {
+export function createParserFromLexer(lexer: Lexer): SLTLxParser {
   const tokens = new CommonTokenStream(lexer);
   return new SLTLxParser(tokens);
 }
