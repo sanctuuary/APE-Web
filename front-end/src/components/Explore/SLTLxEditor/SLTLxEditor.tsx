@@ -30,8 +30,48 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
   const editorWillMount = (m: Monaco) => {
     m.languages.register({ id: 'SLTLx' });
 
+    // Add language tokens
     m.languages.setTokensProvider('SLTLx', new SLTLxTokensProvider());
 
+    // Add autocomplete
+    m.languages.registerCompletionItemProvider('SLTLx', {
+      provideCompletionItems(model, position, _context, _token) {
+        const word = model.getWordAtPosition(position);
+        const range = {
+          startLineNumber: position.lineNumber,
+          endLineNumber: position.lineNumber,
+          startColumn: word.startColumn,
+          endColumn: word.endColumn,
+        };
+
+        const suggestions = [
+          {
+            label: 'Exists',
+            kind: 17, // Keyword
+            insertText: 'Exists',
+            range,
+          },
+          {
+            label: 'Forall',
+            kind: 17, // Keyword
+            insertText: 'Forall',
+            range,
+          },
+          {
+            label: 'true',
+            kind: 17, // Keyword
+            insertText: 'true',
+            range,
+          },
+        ];
+
+        return {
+          suggestions,
+        };
+      },
+    });
+
+    // Define themes
     m.editor.defineTheme('SLTLxVS', SLTLxVS());
     m.editor.defineTheme('SLTLxVSDark', SLTLxVSDark());
   };

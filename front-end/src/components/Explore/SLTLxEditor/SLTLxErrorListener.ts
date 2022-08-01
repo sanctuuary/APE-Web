@@ -111,28 +111,28 @@ class SLTLxErrorStrategy extends DefaultErrorStrategy {
  * @returns A list of lexer or parser errors.
  */
 export function validate(input: string): SLTLxError[] {
-  const errors: SLTLxError[] = [];
-
   const lexer = createLexer(input);
   lexer.removeErrorListeners();
-  lexer.addErrorListener(new CollectorErrorListener(errors));
+  const errorsLexer: SLTLxError[] = [];
+  lexer.addErrorListener(new CollectorErrorListener(errorsLexer));
   lexer.getAllTokens(); // Run lexer
-  if (errors.length > 0) {
+  if (errorsLexer.length > 0) {
     /*
      * Return only lexer errors, if any exist.
      * Otherwise, parser errors might simply be a result of lexer errors,
      * which may cause confusion.
      */
-    return errors;
+    return errorsLexer;
   }
 
   const parser = createParserFromLexer(lexer);
   parser.removeErrorListeners();
-  parser.addErrorListener(new CollectorErrorListener(errors));
+  const errorsParser: SLTLxError[] = [];
+  parser.addErrorListener(new CollectorErrorListener(errorsParser));
   // eslint-disable-next-line no-underscore-dangle
   parser._errHandler = new SLTLxErrorStrategy();
 
   // Run parser and return parser errors
   parser.compilationUnit();
-  return errors;
+  return errorsParser;
 }
