@@ -14,14 +14,20 @@ const { Option } = Select;
 interface SLTLxEditorProps {
   /** The height of the editor. */
   height: string | number,
+  /** The theme to use for the editor. */
+  theme?: string,
+  /** Whether to show the dropdown for theme selection. */
+  showThemeSelect?: boolean,
 }
 
 /**
  * Code editor component for writing SLTLx code.
  */
 function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
+  const { theme } = props;
+
   const defaultTheme = 'SLTLxVS';
-  const [theme, setTheme] = useState<string>(defaultTheme);
+  const [selectedTheme, setSelectedTheme] = useState<string>(theme);
   const monaco = useMonaco();
 
   /**
@@ -103,7 +109,7 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
    * Change the theme when a different theme is selected.
    * @param value The selected value.
    */
-  const handleThemeChange = (value: string) => setTheme(value);
+  const handleThemeChange = (value: string) => setSelectedTheme(value);
 
   /**
    * Handle changes to the text in the editor.
@@ -123,33 +129,40 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
     }
   };
 
-  const { height } = props;
+  const { height, showThemeSelect } = props;
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
-      <Space style={{ float: 'right' }}>
-        Theme:
-        <Select
-          defaultValue={defaultTheme}
-          onChange={handleThemeChange}
-          size="small"
-          style={{ width: 100 }}
-        >
-          <Option value="SLTLxVS">vs</Option>
-          <Option value="SLTLxVSDark">vs-dark</Option>
-        </Select>
-      </Space>
+      { showThemeSelect && (
+        <Space style={{ float: 'right' }}>
+          Theme:
+          <Select
+            defaultValue={defaultTheme}
+            onChange={handleThemeChange}
+            size="small"
+            style={{ width: 100 }}
+          >
+            <Option value="SLTLxVS">vs</Option>
+            <Option value="SLTLxVSDark">vs-dark</Option>
+          </Select>
+        </Space>
+      ) }
       <Editor
         height={height}
         defaultLanguage="SLTLx"
         defaultValue="!F Exists (?x1) (<'operation_0004'(?x1,?x1;)> true)"
         language="SLTLx"
-        theme={theme}
+        theme={selectedTheme}
         beforeMount={editorWillMount}
         onChange={handleTextChange}
       />
     </Space>
   );
 }
+
+SLTLxEditor.defaultProps = {
+  theme: 'SLTLxVS',
+  showThemeSelect: false,
+};
 
 export default SLTLxEditor;
