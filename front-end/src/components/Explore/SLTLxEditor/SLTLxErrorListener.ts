@@ -52,7 +52,7 @@ export class SLTLxError {
   }
 }
 
-class CollectorErrorListener extends ErrorListener {
+class SLTLxLexerErrorListener extends ErrorListener {
   private errors: SLTLxError[] = [];
 
   constructor(errors: SLTLxError[]) {
@@ -68,11 +68,34 @@ class CollectorErrorListener extends ErrorListener {
     msg: string,
     _e: any,
   ) {
-    let endColumn = column + 1;
+    const startColumn = column + 1;
+    const endColumn = startColumn + 1;
+    this.errors.push(new SLTLxError(line, line, startColumn, endColumn, msg));
+  }
+}
+
+class SLTLxParserErrorListener extends ErrorListener {
+  private errors: SLTLxError[] = [];
+
+  constructor(errors: SLTLxError[]) {
+    super();
+    this.errors = errors;
+  }
+
+  syntaxError(
+    _recognizer: Recognizer,
+    offendingSymbol: Token,
+    line: number,
+    column: number,
+    msg: string,
+    _e: any,
+  ) {
+    const startColumn = column;
+    let endColumn = startColumn + 1;
     if (offendingSymbol !== null && offendingSymbol.text !== null) {
-      endColumn = column + offendingSymbol.text.length;
+      endColumn = startColumn + offendingSymbol.text.length;
     }
-    this.errors.push(new SLTLxError(line, line, column, endColumn, msg));
+    this.errors.push(new SLTLxError(line, line, startColumn, endColumn, msg));
   }
 }
 
@@ -114,7 +137,7 @@ export function validate(input: string): SLTLxError[] {
   const lexer = createLexer(input);
   lexer.removeErrorListeners();
   const errorsLexer: SLTLxError[] = [];
-  lexer.addErrorListener(new CollectorErrorListener(errorsLexer));
+  lexer.addErrorListener(new SLTLxLexerErrorListener(errorsLexer));
   lexer.getAllTokens(); // Run lexer
   if (errorsLexer.length > 0) {
     /*
@@ -129,7 +152,7 @@ export function validate(input: string): SLTLxError[] {
   const parser = createParserFromLexer(lexer);
   parser.removeErrorListeners();
   const errorsParser: SLTLxError[] = [];
-  parser.addErrorListener(new CollectorErrorListener(errorsParser));
+  parser.addErrorListener(new SLTLxParserErrorListener(errorsParser));
   // eslint-disable-next-line no-underscore-dangle
   parser._errHandler = new SLTLxErrorStrategy();
 
