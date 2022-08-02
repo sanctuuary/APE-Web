@@ -124,6 +124,7 @@ export function validate(input: string): SLTLxError[] {
      */
     return errorsLexer;
   }
+  lexer.reset();
 
   const parser = createParserFromLexer(lexer);
   parser.removeErrorListeners();
