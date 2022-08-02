@@ -4,6 +4,7 @@ import Editor, { Monaco, useMonaco } from '@monaco-editor/react';
 import SLTLxTokensProvider from './SLTLxTokensProvider';
 import { SLTLxVS, SLTLxVSDark } from './Themes';
 import { validate } from './SLTLxErrorListener';
+import QuickFixes from './QuickFixes';
 
 const { Option } = Select;
 
@@ -67,6 +68,28 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
 
         return {
           suggestions,
+        };
+      },
+    });
+
+    // Add quick fixes for errors
+    m.languages.registerCodeActionProvider('SLTLx', {
+      provideCodeActions(model, range, context, token) {
+        const actions = [];
+
+        context.markers.forEach((error) => {
+          // Check the available quick fixes
+          QuickFixes.forEach((fix) => {
+            // Add any quick fixes that are applicable
+            if (fix.condition(error)) {
+              actions.push(fix.action(error, model, range, context, token));
+            }
+          });
+        });
+
+        return {
+          actions,
+          dispose: () => {},
         };
       },
     });

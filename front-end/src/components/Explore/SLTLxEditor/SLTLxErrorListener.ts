@@ -62,14 +62,15 @@ class SLTLxLexerErrorListener extends ErrorListener {
 
   syntaxError(
     _recognizer: Recognizer,
-    offendingSymbol: Token,
+    _offendingSymbol: Token,
     line: number,
     column: number,
     msg: string,
     _e: any,
   ) {
+    const tokenStr = msg.substring(msg.indexOf("'") + 1, msg.lastIndexOf("'")).trim();
     const startColumn = column + 1;
-    const endColumn = startColumn + 1;
+    const endColumn = startColumn + tokenStr.length;
     this.errors.push(new SLTLxError(line, line, startColumn, endColumn, msg));
   }
 }
