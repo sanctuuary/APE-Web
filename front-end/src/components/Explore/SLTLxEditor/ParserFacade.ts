@@ -1,7 +1,7 @@
 import { CommonTokenStream, InputStream, Token, Lexer, Recognizer } from 'antlr4';
 import { ErrorListener } from 'antlr4/error/ErrorListener';
-import SLTLxLexer from 'src/SLTLx/SLTLxLexer';
-import SLTLxParser from 'src/SLTLx/SLTLxParser';
+import SLTLxLexer from './SLTLx/SLTLxLexer';
+import SLTLxParser from './SLTLx/SLTLxParser';
 
 class SLTLxErrorListener extends ErrorListener {
   syntaxError(

@@ -2,7 +2,7 @@
 import * as monaco from 'monaco-editor';
 import { Recognizer, Token } from 'antlr4';
 import { ErrorListener } from 'antlr4/error/ErrorListener';
-import SLTLxLexer from 'src/SLTLx/SLTLxLexer';
+import SLTLxLexer from './SLTLx/SLTLxLexer';
 import { createLexer } from './ParserFacade';
 
 export class SLTLxState implements monaco.languages.IState {

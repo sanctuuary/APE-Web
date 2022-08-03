@@ -4,7 +4,7 @@ import * as monaco from 'monaco-editor';
 import { Parser, Recognizer, Token } from 'antlr4';
 import { ErrorListener } from 'antlr4/error/ErrorListener';
 import { DefaultErrorStrategy } from 'antlr4/error/ErrorStrategy';
-import SLTLxParser from 'src/SLTLx/SLTLxParser';
+import SLTLxParser from './SLTLx/SLTLxParser';
 import { createLexer, createParserFromLexer } from './ParserFacade';
 
 /**
