@@ -111,7 +111,8 @@ class SLTLxErrorStrategy extends DefaultErrorStrategy {
       return null;
     }
 
-    const expecting = this.getExpectedTokens(recognizer);
+    // Set type to any as @types/antlr4 type definitions are incomplete
+    const expecting: any = this.getExpectedTokens(recognizer);
     if (expecting.intervals.includes(nextTokenType)) {
       this.reportUnwantedToken(recognizer);
       recognizer.consume();
