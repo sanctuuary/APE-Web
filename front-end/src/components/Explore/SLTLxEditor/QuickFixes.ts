@@ -46,7 +46,7 @@ const QuickFixes: QuickFix[] = [
                 startLineNumber: error.startLineNumber,
                 endLineNumbeR: error.endLineNumber,
                 startColumn: error.startColumn + 1,
-                endColumn: error.endColumn,
+                endColumn: error.startColumn + 1,
               },
               text: ')',
             },
@@ -57,8 +57,33 @@ const QuickFixes: QuickFix[] = [
     }),
   },
   {
+    condition: (error) => error.message.includes("missing '>'"),
+    action: (error, model, _range, _context, _token) => ({
+      title: "Add missing '>'",
+      diagnostics: [error],
+      kind: 'quickfix',
+      edit: {
+        edits: [
+          {
+            resource: model.uri,
+            edit: {
+              range: {
+                startLineNumber: error.startLineNumber,
+                endLineNumbeR: error.endLineNumber,
+                startColumn: error.startColumn,
+                endColumn: error.startColumn + 1,
+              },
+              text: '> ',
+            },
+          },
+        ],
+      },
+      isPreferred: true,
+    }),
+  },
+  {
     condition: (error) => {
-      const m = error.message.match('Ex?i?s?t?');
+      const m = error.message.match("token recognition error.+'Ex?i?s?t?'");
       return m !== null && m.length > 0;
     },
     action: (error, model, _range, _context, _token) => ({
@@ -81,7 +106,7 @@ const QuickFixes: QuickFix[] = [
   },
   {
     condition: (error) => {
-      const m = error.message.match('Fo?r?a?l?');
+      const m = error.message.match("token recognition error.+'Fo?r?a?l?'");
       return m !== null && m.length > 0;
     },
     action: (error, model, _range, _context, _token) => ({
