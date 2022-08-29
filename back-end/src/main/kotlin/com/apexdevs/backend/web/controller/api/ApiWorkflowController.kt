@@ -28,6 +28,7 @@ import com.apexdevs.backend.web.controller.entity.domain.DomainVerificationResul
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import nl.uu.cs.ape.models.enums.SynthesisFlag
+import nl.uu.cs.ape.models.sltlxStruc.SLTLxParsingAnnotationException
 import org.json.JSONObject
 import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
@@ -172,6 +173,8 @@ class ApiWorkflowController(
                     throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
                 is SynthesisFlagException ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, exc.getFriendlyMessage(), exc)
+                is SLTLxParsingAnnotationException ->
+                    throw ResponseStatusException(HttpStatus.BAD_REQUEST, exc.message, exc)
                 else ->
                     throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "", exc)
             }
