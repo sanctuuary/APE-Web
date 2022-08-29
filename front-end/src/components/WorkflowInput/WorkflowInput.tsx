@@ -145,7 +145,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       sketchChanges: false,
       sketchOpened: false,
       formulaEditorOpen: false,
-      currentFormula: null,
+      currentFormula: DefaultSLTLxFormula,
       formulas: [],
       formulaIndex: null,
       importModalEnabled: false,
@@ -539,24 +539,48 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
   setSketchOpened = (sketchOpened: boolean) => this.setState({ sketchOpened });
 
   /** Called when a new SLTLx formula is being added. */
-  openSLTLxEditor = () => this.setState({
-    formulaEditorOpen: true,
-    currentFormula: DefaultSLTLxFormula,
-  });
+  openSLTLxEditor = (save: boolean, index?: number) => {
+    const { formulas } = this.state;
+
+    if (save) {
+      this.saveCurrentFormula();
+    }
+
+    let currentFormula = DefaultSLTLxFormula;
+    if (index !== null && index !== undefined) {
+      currentFormula = formulas[index];
+    }
+
+    this.setState({
+      formulaEditorOpen: true,
+      currentFormula,
+      formulaIndex: index,
+    });
+  };
 
   /** The SLTLx formula has been edited. */
   onFormulaChange = (formula: string) => {
     this.setState({ currentFormula: formula });
   };
 
-  /** SLTLx editor cancel/close button is called. */
-  closeFormulaEditor = () => this.setState({ formulaEditorOpen: false });
+  /** Close the SLTLx formula editor. */
+  closeFormulaEditor = () => this.setState({
+    formulaEditorOpen: false,
+    formulaIndex: null,
+  });
 
-  /** Save is called on the SLTLx editor. */
-  saveFormula = () => {
-    const { formulas, currentFormula } = this.state;
+  /** Save the currently being edited formula. */
+  saveCurrentFormula = () => {
+    const { formulas, currentFormula, formulaIndex } = this.state;
 
-    formulas.push(currentFormula);
+    // Check whether a formula was being edited.
+    if (formulaIndex !== null && formulaIndex !== undefined) {
+      // Override the edited formula.
+      formulas[formulaIndex] = currentFormula;
+    } else {
+      // Add a new formula.
+      formulas.push(currentFormula);
+    }
     this.setState({ formulas, currentFormula: null });
     this.closeFormulaEditor();
   };
@@ -986,6 +1010,7 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       runOptions,
       formulas,
       formulaIndex,
+      currentFormula,
     } = this.state;
 
     const {
@@ -1105,13 +1130,14 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
             actions={[
               <Space>
                 <Button onClick={this.closeFormulaEditor}>Cancel</Button>
-                <Button type="primary" onClick={this.saveFormula}>Ok</Button>
+                <Button type="primary" onClick={this.saveCurrentFormula}>Ok</Button>
               </Space>,
             ]}
           >
             <SLTLxEditor
               height="10vh"
               onChange={this.onFormulaChange}
+              value={currentFormula}
             />
           </Card>
         )}

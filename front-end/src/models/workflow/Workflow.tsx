@@ -114,9 +114,9 @@ interface ConstraintRun {
   /** Parameters of the constraint. */
   parameters?: {
     taxonomyRoots: {},
-  }[],
+  }[];
   /** The formula of the constraint, in case it is an SLTLx formula. */
-  formula?: string,
+  formula?: string;
 }
 
 export type { Ontology, OntologyNode, DataType,

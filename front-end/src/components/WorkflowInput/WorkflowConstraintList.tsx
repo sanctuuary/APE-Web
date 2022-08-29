@@ -11,6 +11,7 @@ import { Button, Checkbox, Col, Divider, Popconfirm, Row, Space, Typography } fr
 import { ConstraintType, Tool, Constraint, Data, Ontology } from '@models/workflow/Workflow';
 import SketchTranslation from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Sketch } from '@components/WorkflowInput/ConstraintSketcher/ConstraintSketcher';
+import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 
 const { Text } = Typography;
 
@@ -62,11 +63,15 @@ interface WorkflowConstraintListProps {
   /** Function to clear all constraints. */
   clearConstraints: () => void;
 
-  /** Callback function for when an SLTLx formula is being added. */
-  onFormulaAdd: () => void;
   formulas: string[];
   formulaIndex: number;
   deleteFormula: (index: number) => void;
+  /**
+   * Callback function when the SLTLx editor should be opened.
+   * @param save Whether the currently being editor formula should be saved.
+   * @param index The index of the formula if the editor is to edit an existing formula.
+   */
+  openSLTLxEditor: (save: boolean, index?: number) => void;
 }
 
 /** The ids of the shortlist constraints */
@@ -104,10 +109,10 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
     defaultTool,
     defaultConstraint,
     clearConstraints,
-    onFormulaAdd,
     formulas,
     formulaIndex,
     deleteFormula,
+    openSLTLxEditor,
   } = props;
 
   /*
@@ -224,7 +229,16 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
     }
   };
 
+  const onFormulaAdd = () => {
+    openSLTLxEditor(false);
+  };
+
+  /** List of added SLTLx formula constraints. */
   const formulaList = formulas.map((formula: string, index: number) => {
+    const onEdit = () => {
+      openSLTLxEditor(false, index);
+    };
+
     const onDelete = () => deleteFormula(index);
 
     return (
@@ -237,7 +251,8 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
       >
         <Space>
           <Text ellipsis copyable style={{ maxWidth: 300 }}>{formula}</Text>
-          <Button size="small" onClick={onDelete}>x</Button>
+          <Button size="small" onClick={onEdit} icon={<EditOutlined />} />
+          <Button size="small" onClick={onDelete} icon={<CloseOutlined />} />
         </Space>
       </div>
     );

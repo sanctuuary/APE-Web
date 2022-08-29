@@ -68,8 +68,12 @@ interface ConstraintBoxProps {
   /** Function to clear all constraints. */
   clearConstraints: () => void;
 
-  /** Callback function for when an SLTLx formula is being added. */
-  openSLTLxEditor: () => void;
+  /**
+   * Callback function when the SLTLx editor should be opened.
+   * @param save Whether the currently being editor formula should be saved.
+   * @param index The index of the formula if the editor is to edit an existing formula.
+   */
+  openSLTLxEditor: (save: boolean, index?: number) => void;
 
   /** The current SLTLx formulas. */
   formulas: string[];
@@ -144,10 +148,10 @@ function ConstraintBox(props: ConstraintBoxProps) {
           defaultTool={defaultTool}
           defaultConstraint={defaultConstraint}
           clearConstraints={clearConstraints}
-          onFormulaAdd={openSLTLxEditor}
           formulas={formulas}
           formulaIndex={formulaIndex}
           deleteFormula={deleteFormula}
+          openSLTLxEditor={openSLTLxEditor}
         />
       </Card>
     </div>
