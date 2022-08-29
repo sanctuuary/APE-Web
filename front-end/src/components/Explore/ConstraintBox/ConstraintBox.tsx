@@ -67,6 +67,15 @@ interface ConstraintBoxProps {
 
   /** Function to clear all constraints. */
   clearConstraints: () => void;
+
+  /** Callback function for when an SLTLx formula is being added. */
+  openSLTLxEditor: () => void;
+
+  /** The current SLTLx formulas. */
+  formulas: string[];
+  /** The currently selected formula. */
+  formulaIndex: number;
+  deleteFormula: (index: number) => void;
 }
 
 /**
@@ -92,6 +101,10 @@ function ConstraintBox(props: ConstraintBoxProps) {
     defaultTool,
     defaultConstraint,
     clearConstraints,
+    openSLTLxEditor,
+    formulas,
+    formulaIndex,
+    deleteFormula,
   } = props;
 
   return (
@@ -131,6 +144,10 @@ function ConstraintBox(props: ConstraintBoxProps) {
           defaultTool={defaultTool}
           defaultConstraint={defaultConstraint}
           clearConstraints={clearConstraints}
+          onFormulaAdd={openSLTLxEditor}
+          formulas={formulas}
+          formulaIndex={formulaIndex}
+          deleteFormula={deleteFormula}
         />
       </Card>
     </div>

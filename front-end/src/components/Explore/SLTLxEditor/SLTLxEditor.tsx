@@ -18,7 +18,14 @@ interface SLTLxEditorProps {
   theme?: string,
   /** Whether to show the dropdown for theme selection. */
   showThemeSelect?: boolean,
+  /** Callback when the text in the editor has been changed. */
+  onChange?: (value: string) => void,
+  /** The current formula. */
+  value?: string,
 }
+
+/** The default SLTLx formula that is in the editor when it is initially loaded. */
+export const DefaultSLTLxFormula: string = "!F Exists (?x1) (<'operation_0004'(?x1,?x1;)> true)";
 
 /**
  * Code editor component for writing SLTLx code.
@@ -118,6 +125,8 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
    * @param value The current text.
    */
   const handleTextChange = (value: string) => {
+    const { onChange } = props;
+
     // Check for lexer or parser errors
     const errors = validate(value);
 
@@ -127,9 +136,14 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
       const models = monaco.editor.getModels();
       monaco.editor.setModelMarkers(models[0], 'owner', markerData);
     }
+
+    // Call callback function if given
+    if (onChange !== null) {
+      onChange(value);
+    }
   };
 
-  const { height, showThemeSelect } = props;
+  const { height, showThemeSelect, value } = props;
 
   return (
     <Space direction="vertical" style={{ width: '100%' }}>
@@ -150,11 +164,12 @@ function SLTLxEditor(props: SLTLxEditorProps): JSX.Element {
       <Editor
         height={height}
         defaultLanguage="SLTLx"
-        defaultValue="!F Exists (?x1) (<'operation_0004'(?x1,?x1;)> true)"
+        defaultValue={DefaultSLTLxFormula}
         language="SLTLx"
         theme={selectedTheme}
         beforeMount={editorWillMount}
         onChange={handleTextChange}
+        value={value}
       />
     </Space>
   );
