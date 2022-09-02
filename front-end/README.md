@@ -4,7 +4,7 @@ This the front-end of the APE Web project.
 
 ## Requirements
 
-To run APE Web you need to have [Node.js 14](https://nodejs.org) (or higher) installed on your system (use command `$ node --version` to check your local version).
+To run APE Web you need to have [Node.js 16](https://nodejs.org) (or higher) installed on your system (use command `$ node --version` to check your local version).
 
 For instructions for Docker, please see the README file in the project root.
 
