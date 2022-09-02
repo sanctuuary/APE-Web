@@ -56,7 +56,7 @@ jobs:
     - stage: "Unit"
       name: "Unit test front-end"
       language: node_js
-      node_js: 14
+      node_js: 16
       cache: npm
       before_script:
         - cd front-end
@@ -68,7 +68,7 @@ jobs:
     - stage: "Build"
       name: "Build front-end"
       language: node_js
-      node_js: 14
+      node_js: 16
       cache: npm
       before_script:
         - cd front-end
@@ -80,7 +80,7 @@ jobs:
     - stage: "Lint"
       name: "Lint front-end"
       language: node_js
-      node_js: 14
+      node_js: 16
       cache: npm
       before_script:
         - cd front-end

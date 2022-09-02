@@ -18,30 +18,39 @@ data class Constraint(
     val id: String,
     val description: String? = null,
     val parameterTypes: List<String>? = null,
-    val parameters: List<Data>? = null
+    val parameters: List<Data>? = null,
+    val formula: String? = null
 ) {
     fun toJSONObject(): JSONObject {
         // Each constraint is an object
         val constraintJSON = JSONObject()
         // Add the id of the constraint
         constraintJSON.put("constraintid", id)
-        // The parameters are a JSON Array
-        val constraintParams = JSONArray()
-        // For every provided parameter add it to the array
-        parameters?.forEach { param ->
-            // Create the object for the parameters
-            val taxonomyJSONObject = JSONObject()
-            param.taxonomyRoots.forEach { taxonomyRoot ->
-                // The value of the object is an array
-                val taxonomyValueArray = JSONArray()
-                // Insert the value into the array
-                taxonomyValueArray.put(taxonomyRoot.value)
-                // Insert the identifier along with its values
-                taxonomyJSONObject.put(taxonomyRoot.key, taxonomyValueArray)
+
+        if (parameters != null) {
+            // The parameters are a JSON Array
+            val constraintParams = JSONArray()
+            // For every provided parameter add it to the array
+            parameters.forEach { param ->
+                // Create the object for the parameters
+                val taxonomyJSONObject = JSONObject()
+                param.taxonomyRoots.forEach { taxonomyRoot ->
+                    // The value of the object is an array
+                    val taxonomyValueArray = JSONArray()
+                    // Insert the value into the array
+                    taxonomyValueArray.put(taxonomyRoot.value)
+                    // Insert the identifier along with its values
+                    taxonomyJSONObject.put(taxonomyRoot.key, taxonomyValueArray)
+                }
+                constraintParams.put(taxonomyJSONObject)
             }
-            constraintParams.put(taxonomyJSONObject)
+            constraintJSON.put("parameters", constraintParams)
         }
-        constraintJSON.put("parameters", constraintParams)
+
+        if (formula != null) {
+            constraintJSON.put("formula", formula)
+        }
+
         return constraintJSON
     }
 }
@@ -56,10 +65,12 @@ fun constraintsFromJSON(json: ArrayList<LinkedHashMap<String, Any>>): List<Const
     json.forEach { linkedHashmap ->
         val id: String = linkedHashmap["constraintid"] as String
         val parameters = dataListFromJSON(linkedHashmap["parameters"] as ArrayList<LinkedHashMap<String, ArrayList<String>>>)
+        val formula: String? = linkedHashmap["formula"] as String?
         result.add(
             Constraint(
                 id = id,
                 parameters = parameters,
+                formula = formula
             )
         )
     }

@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { Button, Divider, message, Modal, Typography, Upload } from 'antd';
+import { Button, Card, Divider, message, Modal, Space, Typography, Upload } from 'antd';
 import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import WorkflowRun from '@components/WorkflowInput/WorkflowRun';
 import InOutBox from '@components/Explore/InOutBox/InOutBox';
@@ -16,6 +16,7 @@ import { downloadFile } from '@helpers/Files';
 
 import {
   Constraint,
+  ConstraintRun,
   ConstraintType,
   Data,
   DataType,
@@ -31,6 +32,7 @@ import { Config } from '@models/Configuration/Config';
 import { FormInstance } from 'antd/lib/form';
 import { DomainDetails } from '@models/Domain';
 import { clamp } from '@helpers/Math';
+import SLTLxEditor, { DefaultSLTLxFormula } from '@components/Explore/SLTLxEditor/SLTLxEditor';
 import styles from './WorkflowInput.module.less';
 
 const { Title } = Typography;
@@ -88,6 +90,7 @@ interface WorkflowInputState {
   /** List of sketches */
   sketches: Sketch[];
 
+  /** The currently configured run options/parameters. */
   runOptions: RunOptions;
 
   /** The current sketch shown */
@@ -102,11 +105,26 @@ interface WorkflowInputState {
   /** Opened new sketch */
   sketchOpened: boolean;
 
+  /** Whether the SLTLx editor is currently opened. */
+  formulaEditorOpen: boolean;
+
+  /** The SLTLx formula that is currently being edited. */
+  currentFormula: string;
+
+  /** The default SLTLx formula for this domain. */
+  defaultFormula: string;
+
+  /** The currently saved SLTLx formulas. */
+  formulas: string[];
+
+  /** The currently selected formula. */
+  formulaIndex: number;
+
   /** Boolean to check modal visibility */
   importModalEnabled: boolean;
 
   /** Boolean to check download modal visibility */
-  downloadModalEnabled: boolean
+  downloadModalEnabled: boolean;
 }
 
 /**
@@ -117,8 +135,12 @@ interface WorkflowInputState {
 class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputState> {
   formRef = React.createRef<FormInstance>();
 
-  constructor(props: any) {
+  constructor(props: WorkflowInputProps) {
     super(props);
+
+    // Create the default formula for this domain.
+    const { toolOntology } = props;
+    const defaultFormula = DefaultSLTLxFormula.replace('root', toolOntology.roots[0].id);
 
     // All test data
     this.state = {
@@ -129,6 +151,11 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       currentSketch: undefined,
       sketchChanges: false,
       sketchOpened: false,
+      formulaEditorOpen: false,
+      currentFormula: defaultFormula,
+      defaultFormula,
+      formulas: [],
+      formulaIndex: null,
       importModalEnabled: false,
       downloadModalEnabled: false,
       runOptions: {
@@ -519,13 +546,71 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
    */
   setSketchOpened = (sketchOpened: boolean) => this.setState({ sketchOpened });
 
+  /** Called when a new SLTLx formula is being added. */
+  openSLTLxEditor = (save: boolean, index?: number) => {
+    const { formulas, defaultFormula } = this.state;
+
+    if (save) {
+      this.saveCurrentFormula();
+    }
+
+    let currentFormula = defaultFormula;
+    if (index !== null && index !== undefined) {
+      currentFormula = formulas[index];
+    }
+
+    this.setState({
+      formulaEditorOpen: true,
+      currentFormula,
+      formulaIndex: index,
+    });
+  };
+
+  /** The SLTLx formula has been edited. */
+  onFormulaChange = (formula: string) => {
+    this.setState({ currentFormula: formula });
+  };
+
+  /** Close the SLTLx formula editor. */
+  closeFormulaEditor = () => this.setState({
+    formulaEditorOpen: false,
+    formulaIndex: null,
+  });
+
+  /** Save the currently being edited formula. */
+  saveCurrentFormula = () => {
+    const { formulas, currentFormula, formulaIndex } = this.state;
+
+    // Check whether a formula was being edited.
+    if (formulaIndex !== null && formulaIndex !== undefined) {
+      // Override the edited formula.
+      formulas[formulaIndex] = currentFormula;
+    } else {
+      // Add a new formula.
+      formulas.push(currentFormula);
+    }
+    this.setState({ formulas, currentFormula: null });
+    this.closeFormulaEditor();
+  };
+
+  /** Delete the formula with the given index. */
+  deleteFormula = (index: number) => {
+    const { formulas, formulaIndex } = this.state;
+    formulas.splice(index, 1);
+
+    this.setState({
+      formulas,
+      formulaIndex: formulaIndex === index ? null : formulaIndex,
+    });
+  };
+
   /**
    * Filter the the constraints and then refactor them to
    * the structure required by ape.
    * @param data List with all constraints currently in the state
    * @returns refactored list of filtered constraints
    */
-  refactorConstraints = (data: Constraint[]) => {
+  refactorConstraints = (data: Constraint[]): ConstraintRun[] => {
     const constraints = this.filterConstraints(data);
     return constraints.map((elem) => {
       const { constraintType, parameters } = elem;
@@ -561,14 +646,23 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
   });
 
   onRun = (runOptions: RunOptions): Promise<void> => {
-    const { inputs, outputs, constraints, sketches } = this.state;
+    const { inputs, outputs, constraints, sketches, formulas } = this.state;
     const { onRun } = this.props;
     onRun([]); // Force a re-render so current data is hidden instantly on click
     const input = this.refactorInOut(inputs);
     const expectedOutput = this.refactorInOut(outputs);
+    // Add ConstraintSketcher constraints
     const allConstraints = this.refactorConstraints(
       constraints.concat(sketches.flatMap((s: Sketch) => translateSketch(s))),
     );
+    // Add SLTLx formula constraints
+    formulas.forEach((f: string) => {
+      allConstraints.push({
+        id: 'SLTLx',
+        description: 'An SLTLx formula.',
+        formula: f,
+      });
+    });
     const body = { input, expectedOutput, constraints: allConstraints, ...runOptions };
     const base = process.env.NEXT_PUBLIC_BASE_URL;
     const runEndpoint = `${base}/api/workflow/run`;
@@ -918,9 +1012,13 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       sketchChanges,
       sketchOpened,
       currentSketch,
+      formulaEditorOpen,
       importModalEnabled,
       downloadModalEnabled,
       runOptions,
+      formulas,
+      formulaIndex,
+      currentFormula,
     } = this.state;
 
     const {
@@ -1007,6 +1105,10 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
             defaultTool={this.defaultTool}
             defaultConstraint={this.defaultConstraint}
             clearConstraints={this.clearConstraints}
+            openSLTLxEditor={this.openSLTLxEditor}
+            formulas={formulas}
+            formulaIndex={formulaIndex}
+            deleteFormula={this.deleteFormula}
           />
           {/* Run */}
           <WorkflowRun
@@ -1029,6 +1131,24 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
             defaultTool={this.defaultTool}
           />
         ) }
+        { formulaEditorOpen && (
+          <Card
+            className={styles.Editor}
+            title="SLTLx editor"
+            actions={[
+              <Space>
+                <Button onClick={this.closeFormulaEditor}>Cancel</Button>
+                <Button type="primary" onClick={this.saveCurrentFormula}>Ok</Button>
+              </Space>,
+            ]}
+          >
+            <SLTLxEditor
+              height="10vh"
+              onChange={this.onFormulaChange}
+              value={currentFormula}
+            />
+          </Card>
+        )}
         <Modal
           title="Import configuration"
           visible={importModalEnabled}

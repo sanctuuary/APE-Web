@@ -12,7 +12,8 @@
       "@pages/*": ["src/pages/*"],
       "@models/*": ["src/models/*"],
       "@helpers/*": ["src/helpers/*"],
-      "@tests/*": ["tests/*"]
+      "@tests/*": ["tests/*"],
+      "antlr4/error/ErrorStrategy": ["config/ErrorStrategy.d.ts"]
     },
     "target": "es5",
     "lib": [

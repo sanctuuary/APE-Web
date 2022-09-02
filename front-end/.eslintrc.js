@@ -93,5 +93,11 @@ module.exports = {
     'function-paren-newline': 0,
     'function-call-argument-newline': 0,
     'react/function-component-definition': 0,
+
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+
+    'lines-between-class-members': 'off',
+    '@typescript-eslint/lines-between-class-members': 'off'
   }
 };

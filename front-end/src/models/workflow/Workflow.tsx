@@ -105,6 +105,20 @@ interface RunOptions {
   maxLength: number;
 }
 
+/** Constraint, ready to be sent to the back-end and run in APE. */
+interface ConstraintRun {
+  /** The ID of the constraint. */
+  id: string;
+  /** The description of the constraint. */
+  description: string;
+  /** Parameters of the constraint. */
+  parameters?: {
+    taxonomyRoots: {},
+  }[];
+  /** The formula of the constraint, in case it is an SLTLx formula. */
+  formula?: string;
+}
+
 export type { Ontology, OntologyNode, DataType,
-  ConstraintType, RunOptions, Data, Tool, Constraint };
+  ConstraintType, RunOptions, Data, Tool, Constraint, ConstraintRun };
 export { ParameterType };
