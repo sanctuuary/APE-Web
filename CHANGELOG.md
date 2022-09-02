@@ -6,9 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- SLTLx editor. It allows writing SLTLx formulas to use as constraints for workflows.
+
 ### Changed
 
-- Update APE dependency version 1.1.12 -> 2.0.0.
+- Update APE dependency version 1.1.12 -> 2.0.3.
 - Update front-end dependencies, most notably:
   * Ant Design 4.7.0 -> 4.20.6
   * Next.js 9.5.5 -> 12.1.5
