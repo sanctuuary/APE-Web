@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2022-09-02
+
 ### Added
 
 - SLTLx editor. It allows writing SLTLx formulas to use as constraints for workflows.
@@ -220,6 +222,7 @@ This release is paired with the APE Web [DOI release](https://zenodo.org/badge/l
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.7.0]: https://github.com/sanctuuary/APE-Web/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/sanctuuary/APE-Web/compare/v1.5.1...v1.6.0
 [1.5.1]: https://github.com/sanctuuary/APE-Web/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/sanctuuary/APE-Web/compare/v1.4.0...v1.5.0
