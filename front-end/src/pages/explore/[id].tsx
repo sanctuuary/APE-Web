@@ -357,18 +357,20 @@ class ExplorePage extends React.Component<IExplorePageProps, IExplorePageState> 
           <title>{domain.title} | APE</title>
         </Head>
         <Layout data-testid="parameters" className={styles.Ant}>
-          <WorkflowInput
-            downloadToolsAnnotationsFile={this.downloadToolsAnnotations}
-            downloadOntologyFile={this.downloadOntologyFile}
-            onRun={this.onRun}
-            dataOntology={dataOntology}
-            toolOntology={toolOntology}
-            constraintOptions={constraintOptions}
-            useCaseConfig={useCaseConfig}
-            useCaseConstraints={useCaseConstraints}
-            domain={domain}
-            runParametersLimits={runParametersLimits}
-          />
+          { toolOntology.roots[0].id !== null && (
+            <WorkflowInput
+              downloadToolsAnnotationsFile={this.downloadToolsAnnotations}
+              downloadOntologyFile={this.downloadOntologyFile}
+              onRun={this.onRun}
+              dataOntology={dataOntology}
+              toolOntology={toolOntology}
+              constraintOptions={constraintOptions}
+              useCaseConfig={useCaseConfig}
+              useCaseConstraints={useCaseConstraints}
+              domain={domain}
+              runParametersLimits={runParametersLimits}
+            />
+          ) }
         </Layout>
         <div ref={this.workflowViewRef}>
           <Layout

@@ -24,8 +24,13 @@ interface SLTLxEditorProps {
   value?: string,
 }
 
-/** The default SLTLx formula that is in the editor when it is initially loaded. */
-export const DefaultSLTLxFormula: string = "!F Exists (?x1) (<'operation_0004'(?x1,?x1;)> true)";
+/**
+ * The default SLTLx formula that is in the editor when it is initially loaded.
+ *
+ * This is not a formula that should actually work:
+ * "root" is intended to be replaced with the root node ID of the domain the formula is used in.
+ */
+export const DefaultSLTLxFormula: string = "!F Exists (?x1) (<'root'(?x1,?x1;)> true)";
 
 /**
  * Code editor component for writing SLTLx code.

@@ -111,6 +111,9 @@ interface WorkflowInputState {
   /** The SLTLx formula that is currently being edited. */
   currentFormula: string;
 
+  /** The default SLTLx formula for this domain. */
+  defaultFormula: string;
+
   /** The currently saved SLTLx formulas. */
   formulas: string[];
 
@@ -132,8 +135,12 @@ interface WorkflowInputState {
 class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputState> {
   formRef = React.createRef<FormInstance>();
 
-  constructor(props: any) {
+  constructor(props: WorkflowInputProps) {
     super(props);
+
+    // Create the default formula for this domain.
+    const { toolOntology } = props;
+    const defaultFormula = DefaultSLTLxFormula.replace('root', toolOntology.roots[0].id);
 
     // All test data
     this.state = {
@@ -145,7 +152,8 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
       sketchChanges: false,
       sketchOpened: false,
       formulaEditorOpen: false,
-      currentFormula: DefaultSLTLxFormula,
+      currentFormula: defaultFormula,
+      defaultFormula,
       formulas: [],
       formulaIndex: null,
       importModalEnabled: false,
@@ -540,13 +548,13 @@ class WorkflowInput extends React.Component<WorkflowInputProps, WorkflowInputSta
 
   /** Called when a new SLTLx formula is being added. */
   openSLTLxEditor = (save: boolean, index?: number) => {
-    const { formulas } = this.state;
+    const { formulas, defaultFormula } = this.state;
 
     if (save) {
       this.saveCurrentFormula();
     }
 
-    let currentFormula = DefaultSLTLxFormula;
+    let currentFormula = defaultFormula;
     if (index !== null && index !== undefined) {
       currentFormula = formulas[index];
     }
