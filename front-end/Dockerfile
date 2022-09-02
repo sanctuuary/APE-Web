@@ -5,7 +5,7 @@
 # © Copyright Utrecht University (Department of Information and Computing Sciences)
 #
 
-FROM node:14
+FROM node:16
 WORKDIR /app
 COPY package.json /app
 COPY package-lock.json /app

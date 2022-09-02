@@ -13,9 +13,9 @@ import { signIn, useSession } from 'next-auth/client';
 import styles from './Login.module.less';
 
 /**
- * Form for loging in.
+ * Form for logging in.
  *
- * Defines the {@LoginPage}.
+ * Defines the {@link LoginPage}.
  */
 function Login() {
   const router = useRouter();

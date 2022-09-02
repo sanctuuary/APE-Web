@@ -18,7 +18,7 @@ import Providers from 'next-auth/providers';
 /**
  * Options to pass to NextAuth.
  * Providers array can easily be extended
- * with providers that nextauth supports (like GitLab/GitHub).
+ * with providers that NextAuth supports (like GitLab/GitHub).
  */
 const options = {
   providers: [
@@ -47,11 +47,11 @@ const options = {
         try {
           // Check if user credentials were valid
           if (loginReq.status === 401 || loginReq.status === 403) {
-            return Promise.resolve(false);
+            return await Promise.resolve(false);
           }
           const data = await loginReq.json();
           data.sessionid = jses;
-          return Promise.resolve(data);
+          return await Promise.resolve(data);
         } catch (err) {
           // Server error?
           return Promise.reject(err);
@@ -71,7 +71,7 @@ const options = {
 };
 
 /**
- * Callback functions for nextauth
+ * Callback functions for NextAuth
  */
 const callbacks = {
   signIn: undefined,

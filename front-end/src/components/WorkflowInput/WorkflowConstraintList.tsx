@@ -7,10 +7,13 @@
 
 import React, { useState } from 'react';
 import WorkflowConstraint from '@components/WorkflowInput/WorkflowConstraint';
-import { Button, Checkbox, Col, Divider, Popconfirm, Row } from 'antd';
+import { Button, Checkbox, Col, Divider, Popconfirm, Row, Space, Typography } from 'antd';
 import { ConstraintType, Tool, Constraint, Data, Ontology } from '@models/workflow/Workflow';
 import SketchTranslation from '@components/WorkflowInput/ConstraintSketcher/SketchTranslation';
 import { Sketch } from '@components/WorkflowInput/ConstraintSketcher/ConstraintSketcher';
+import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+
+const { Text } = Typography;
 
 /**
  * The props for the {@link WorkflowConstraintList} component
@@ -59,6 +62,16 @@ interface WorkflowConstraintListProps {
 
   /** Function to clear all constraints. */
   clearConstraints: () => void;
+
+  formulas: string[];
+  formulaIndex: number;
+  deleteFormula: (index: number) => void;
+  /**
+   * Callback function when the SLTLx editor should be opened.
+   * @param save Whether the currently being editor formula should be saved.
+   * @param index The index of the formula if the editor is to edit an existing formula.
+   */
+  openSLTLxEditor: (save: boolean, index?: number) => void;
 }
 
 /** The ids of the shortlist constraints */
@@ -96,6 +109,10 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
     defaultTool,
     defaultConstraint,
     clearConstraints,
+    formulas,
+    formulaIndex,
+    deleteFormula,
+    openSLTLxEditor,
   } = props;
 
   /*
@@ -212,6 +229,35 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
     }
   };
 
+  const onFormulaAdd = () => {
+    openSLTLxEditor(false);
+  };
+
+  /** List of added SLTLx formula constraints. */
+  const formulaList = formulas.map((formula: string, index: number) => {
+    const onEdit = () => {
+      openSLTLxEditor(false, index);
+    };
+
+    const onDelete = () => deleteFormula(index);
+
+    return (
+      <div
+        key={`formula${index.toString()}`}
+        style={{
+          // Change the background color if the index is the sketchIndex
+          backgroundColor: index === formulaIndex ? '#dddddd' : '#ffffff',
+        }}
+      >
+        <Space>
+          <Text ellipsis copyable style={{ maxWidth: 300 }}>{formula}</Text>
+          <Button size="small" onClick={onEdit} icon={<EditOutlined />} />
+          <Button size="small" onClick={onDelete} icon={<CloseOutlined />} />
+        </Space>
+      </div>
+    );
+  });
+
   return (
     <div className="WorkflowConstraintList" id="Constraints">
       <Row>
@@ -273,6 +319,17 @@ function WorkflowConstraintList(props: WorkflowConstraintListProps) {
           >+ Add
           </Button>
         </Popconfirm>
+      </div>
+      <div>
+        <Divider>SLTLx</Divider>
+        { formulaList }
+        <Button
+          type="default"
+          shape="round"
+          onClick={onFormulaAdd}
+          style={{ marginTop: 10 }}
+        >+ Add
+        </Button>
       </div>
     </div>
   );

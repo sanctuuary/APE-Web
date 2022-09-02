@@ -21,7 +21,13 @@ const themeVariables = lessToJs(
 module.exports = withAntdLess({
   modifyVars: themeVariables,
 
-  webpack(config) {
+  webpack(config, { isServer }) {
+    if (!isServer) {
+      config.resolve.fallback = {
+        fs: false,
+        process: require.resolve('process/browser'),
+      }
+    }
     return config;
   },
 });

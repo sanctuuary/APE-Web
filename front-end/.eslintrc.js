@@ -20,7 +20,10 @@ module.exports = {
     project: './tsconfig.eslint.json',
   },
   // Load AirBnB rules
-  extends: ['airbnb-typescript'],
+  extends: [
+    'airbnb',
+    'airbnb-typescript'
+  ],
   // Setting to 0 disables the rule
   rules: {
     // Enable rules
@@ -75,6 +78,26 @@ module.exports = {
      */
     'object-curly-newline': ['error', { 'consistent': true }],
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-one-expression-per-line.md
-    'react/jsx-one-expression-per-line':  0
+    'react/jsx-one-expression-per-line':  0,
+    'react/jsx-no-bind': [
+      'error',
+      {
+        "allowArrowFunctions": true,
+        "allowFunctions": true
+      }
+    ],
+    'react/require-default-props': 0,
+    'react/no-array-index-key': 'warn',
+    'react/no-unstable-nested-components': 'warn',
+    'class-methods-use-this': 0,
+    'function-paren-newline': 0,
+    'function-call-argument-newline': 0,
+    'react/function-component-definition': 0,
+
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+
+    'lines-between-class-members': 'off',
+    '@typescript-eslint/lines-between-class-members': 'off'
   }
 };

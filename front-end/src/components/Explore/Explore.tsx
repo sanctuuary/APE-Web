@@ -40,7 +40,7 @@ interface ExploreState {
 }
 
 /**
- * The Explore component connects the {@link SideBar} and {@link WorkflowVisualizer} components.
+ * The Explore component connects the {@link Sidebar} and {@link WorkflowVisualizer} components.
  *
  * When the sidebar trigger `onSelect`,
  * this component updates it state and shows or hides the corresponding WorkflowVisualizer.

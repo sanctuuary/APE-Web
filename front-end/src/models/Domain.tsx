@@ -109,7 +109,7 @@ export interface DomainWithAccess {
 }
 
 /**
- * The possible options for a {@link Domain}'s visibility level.
+ * The possible options for a domain's visibility level.
  */
 export enum Visibility {
   /** Everyone can use this domain */
@@ -132,7 +132,7 @@ export interface Topic {
 }
 
 /**
- * Possible access levels for a {@link Domain}
+ * Possible access levels for a domain.
  */
 export enum Access {
   Owner = 'Owner',

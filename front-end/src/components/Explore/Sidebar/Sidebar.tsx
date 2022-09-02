@@ -18,7 +18,7 @@ import styles from './Sidebar.module.less';
  */
 interface SidebarState {
   /**
-   * Checkedlist gives the indices/values of the selected checkboxes
+   * The indices/values of the selected checkboxes
    */
   checkedList: CheckboxValueType[];
   /**
@@ -31,7 +31,7 @@ interface SidebarState {
  */
 interface SidebarProps {
   /**
-   * Workflows is a list of all workflowdata, that are the results
+   * Workflows is a list of all workflow data, that are the results
    * obtained when run is pressed.
    */
   workflows: WorkflowData[];
@@ -77,13 +77,15 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
   /**
    * Define the download dropdown menu.
    */
-  downloadMenu = () => (
-    <Menu onClick={this.downloadSelectedWorkflows}>
-      <Menu.Item key="bash" icon={<DownloadOutlined />}>Bash</Menu.Item>
-      <Menu.Item key="cwl" icon={<DownloadOutlined />}>Abstract CWL</Menu.Item>
-      <Menu.Item key="png" icon={<DownloadOutlined />}>PNG</Menu.Item>
-    </Menu>
-  );
+  downloadMenu = () => {
+    const items = [
+      { key: 'bash', icon: <DownloadOutlined />, label: 'Bash' },
+      { key: 'cwl', icon: <DownloadOutlined />, label: 'Abstract CWL' },
+      { key: 'png', icon: <DownloadOutlined />, label: 'PNG' },
+    ];
+
+    return <Menu items={items} onClick={this.downloadSelectedWorkflows} />;
+  };
 
   /**
    * Downloads the selected workflows
@@ -99,7 +101,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
 
     const type = event.key;
     if (!['bash', 'cwl', 'png'].includes(type)) {
-      console.error(`Unknown download type: ${type}.`);
       return;
     }
 

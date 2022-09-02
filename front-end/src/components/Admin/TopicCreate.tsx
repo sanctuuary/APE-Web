@@ -13,8 +13,7 @@ import { Topic } from '@models/Domain';
  * Component for viewing and adding new topics.
  */
 function TopicCreate() {
-  // Reference to the topic name input field
-  const inputRef: React.RefObject<Input> = React.createRef();
+  const [inputValue, setInputValue] = useState<string>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
 
   /**
@@ -36,7 +35,7 @@ function TopicCreate() {
    */
   function uploadTopic() {
     // Get the input value
-    const name: string = inputRef.current.input.value;
+    const name: string = inputValue;
 
     // Upload the topic
     const endpoint: string = `${process.env.NEXT_PUBLIC_FE_URL}/api/admin/topic/upload`;
@@ -54,7 +53,7 @@ function TopicCreate() {
           return;
         }
         // Empty the input field
-        inputRef.current.setValue(null);
+        setInputValue(null);
         // Load the updated list op topics
         loadTopics();
       });
@@ -72,9 +71,10 @@ function TopicCreate() {
         <Divider />
         <Space>
           <Input
-            ref={inputRef}
             style={{ width: 300 }}
             placeholder="Enter new topic..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
             onPressEnter={uploadTopic}
           />
           <Button

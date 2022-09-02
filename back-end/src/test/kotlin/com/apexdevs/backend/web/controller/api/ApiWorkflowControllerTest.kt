@@ -21,7 +21,7 @@ import com.apexdevs.backend.persistence.exception.SynthesisFlagException
 import com.apexdevs.backend.persistence.filesystem.StorageService
 import io.mockk.every
 import io.mockk.mockk
-import nl.uu.cs.ape.sat.models.enums.SynthesisFlag
+import nl.uu.cs.ape.models.enums.SynthesisFlag
 import org.bson.types.ObjectId
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach

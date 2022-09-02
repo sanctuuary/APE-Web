@@ -6,6 +6,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2022-09-02
+
+### Added
+
+- SLTLx editor. It allows writing SLTLx formulas to use as constraints for workflows.
+
+### Changed
+
+- Update front-end Docker container Node.js version 14 -> 16.
+- Update APE dependency version 1.1.12 -> 2.0.3.
+- Update front-end dependencies, most notably:
+  * Ant Design 4.7.0 -> 4.20.6
+  * Next.js 9.5.5 -> 12.1.5
+  * React 16.14.0 -> 17.0.2
+  * ESLint 7.32.0 -> 8.18.0
+  * TypeScript 4.4.4 -> 4.7.4
+  * eslint-config-airbnb-typescript 11.4.0 -> 17.0.0
+- Update back-end dependencies.
+  * spring boot 2.3.4 -> 2.6.7
+  * owlapi 5.1.17 -> 5.1.20
+  * gson 8.6 -> 9.0
+  * spring boot starter data mongodb 2.6.2 -> 2.6.7
+  * log4j-core 2.17.0 -> 2.17.2
+  * log4j-api 2.17.0 -> 2.17.2
+  * graphviz-java 0.17.0 -> 0.18.1
+  * springmockk 2.0.3 -> 3.1.1
+  * json 20200518 -> 20220320
+- Update Travis CI Node.js version 14 -> 16.
+- Replace placeholder values in .env file of the front-end with working values.
+
 ## [1.6.0] - 2022-04-22
 
 ### Added
@@ -192,6 +222,7 @@ This release is paired with the APE Web [DOI release](https://zenodo.org/badge/l
   * Approve user accounts.
   
 [Unreleased]: https://github.com/sanctuuary/APE-Web/compare/master...dev
+[1.7.0]: https://github.com/sanctuuary/APE-Web/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/sanctuuary/APE-Web/compare/v1.5.1...v1.6.0
 [1.5.1]: https://github.com/sanctuuary/APE-Web/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/sanctuuary/APE-Web/compare/v1.4.0...v1.5.0
